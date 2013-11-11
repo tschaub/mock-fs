@@ -29,9 +29,9 @@ These `fs` functions are implemented by the built-in binding.  They need to be p
 
 | function        | status | notes |
 |-----------------|-------:|-------|
-| `Stats`         |     0% | implement `binding.Stats` |
-| `exists`        |     0% | implement `binding.stat` |
-| `existsSync`    |     0% | implement `binding.stat` |
+| `Stats`         |    30% | implement `binding.Stats` |
+| `exists`        |    30% | implement `binding.stat` |
+| `existsSync`    |    30% | implement `binding.stat` |
 | `close`         |     0% | implement `binding.close` |
 | `closeSync`     |     0% | implement `binding.close` |
 | `open`          |     0% | implement `binding.open` |
@@ -57,10 +57,10 @@ These `fs` functions are implemented by the built-in binding.  They need to be p
 | `readdirSync`   |     0% | implement `binding.readdir` |
 | `fstat`         |     0% | implement `binding.fstat` |
 | `lstat`         |     0% | implement `binding.lstat` |
-| `stat`          |     0% | implement `binding.stat` |
+| `stat`          |    30% | implement `binding.stat` |
 | `fstatSync`     |     0% | implement `binding.fstat` |
 | `lstatSync`     |     0% | implement `binding.lstat` |
-| `statSync`      |     0% | implement `binding.stat` |
+| `statSync`      |    30% | implement `binding.stat` |
 | `readlink`      |     0% | implement `binding.readlink` |
 | `readlinkSync`  |     0% | implement `binding.readlink` |
 | `symlink`       |     0% | implement `binding.symlink` |
