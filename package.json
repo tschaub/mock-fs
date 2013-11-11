@@ -1,0 +1,37 @@
+{
+  "name": "mock-fs",
+  "description": "Mock fs implementation for testing",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "homepage": "https://github.com/tschaub/mock-fs",
+  "author": {
+    "name": "Tim Schaub",
+    "url": "http://tschaub.net/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tschaub/mock-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tschaub/mock-fs/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://tschaub.mit-license.org/"
+    }
+  ],
+  "scripts": {
+    "test": "grunt test",
+    "start": "grunt start"
+  },
+  "devDependencies": {
+    "grunt-cli": "~0.1.10",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-cafe-mocha": "~0.1.9",
+    "grunt": "~0.4.1",
+    "chai": "~1.8.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-newer": "~0.5.4"
+  }
+}
