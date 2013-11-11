@@ -23,59 +23,61 @@ var system = mock.create({
 });
 ```
 
-## TODO
+## Status
 
 These `fs` functions are implemented by the built-in binding.  They need to be provided by the mock binding.
 
- * `Stats`
- * `exists`
- * `existsSync`
- * `close`
- * `closeSync`
- * `open`
- * `openSync`
- * `read`
- * `readSync`
- * `write`
- * `writeSync`
- * `rename`
- * `renameSync`
- * `truncate`
- * `ftruncate`
- * `ftruncateSync`
- * `rmdir`
- * `rmdirSync`
- * `fdatasync`
- * `fdatasyncSync`
- * `fsync`
- * `fsyncSync`
- * `mkdir`
- * `mkdirSync`
- * `readdir`
- * `readdirSync`
- * `fstat`
- * `lstat`
- * `stat`
- * `fstatSync`
- * `lstatSync`
- * `statSync`
- * `readlink`
- * `readlinkSync`
- * `symlink`
- * `symlinkSync`
- * `link`
- * `linkSync`
- * `unlink`
- * `unlinkSync`
- * `fchmod`
- * `fchmodSync`
- * `chmod`
- * `chmodSync`
- * `fchown`
- * `fchownSync`
- * `utimes`
- * `utimesSync`
- * `futimes`
- * `futimesSync`
+| function        | status | notes |
+|-----------------|-------:|-------|
+| `Stats`         |     0% | implement `binding.Stats` |
+| `exists`        |     0% | implement `binding.stat` |
+| `existsSync`    |     0% | implement `binding.stat` |
+| `close`         |     0% | implement `binding.close` |
+| `closeSync`     |     0% | implement `binding.close` |
+| `open`          |     0% | implement `binding.open` |
+| `openSync`      |     0% | implement `binding.open` |
+| `read`          |     0% | implement `binding.read` |
+| `readSync`      |     0% | implement `binding.read` |
+| `write`         |     0% | implement `binding.write` |
+| `writeSync`     |     0% | implement `binding.write` |
+| `rename`        |     0% | implement `binding.rename` |
+| `renameSync`    |     0% | implement `binding.rename` |
+| `truncate`      |     0% | implement `binding.ftruncate` |
+| `ftruncate`     |     0% | implement `binding.ftruncate` |
+| `ftruncateSync` |     0% | implement `binding.ftruncate` |
+| `rmdir`         |     0% | implement `binding.rmdir` |
+| `rmdirSync`     |     0% | implement `binding.rmdir` |
+| `fdatasync`     |     0% | implement `binding.fdatasync` |
+| `fdatasyncSync` |     0% | implement `binding.fdatasync` |
+| `fsync`         |     0% | implement `binding.fsync` |
+| `fsyncSync`     |     0% | implement `binding.fsync` |
+| `mkdir`         |     0% | implement `binding.mkdir` |
+| `mkdirSync`     |     0% | implement `binding.mkdir` |
+| `readdir`       |     0% | implement `binding.readdir` |
+| `readdirSync`   |     0% | implement `binding.readdir` |
+| `fstat`         |     0% | implement `binding.fstat` |
+| `lstat`         |     0% | implement `binding.lstat` |
+| `stat`          |     0% | implement `binding.stat` |
+| `fstatSync`     |     0% | implement `binding.fstat` |
+| `lstatSync`     |     0% | implement `binding.lstat` |
+| `statSync`      |     0% | implement `binding.stat` |
+| `readlink`      |     0% | implement `binding.readlink` |
+| `readlinkSync`  |     0% | implement `binding.readlink` |
+| `symlink`       |     0% | implement `binding.symlink` |
+| `symlinkSync`   |     0% | implement `binding.symlink` |
+| `link`          |     0% | implement `binding.link` |
+| `linkSync`      |     0% | implement `binding.link` |
+| `unlink`        |     0% | implement `binding.unlink` |
+| `unlinkSync`    |     0% | implement `binding.unlink` |
+| `fchmod`        |     0% | implement `binding.fchmod` |
+| `fchmodSync`    |     0% | implement `binding.fchmod` |
+| `chmod`         |     0% | implement `binding.chmod` |
+| `chmodSync`     |     0% | implement `binding.chmod` |
+| `fchown`        |     0% | implement `binding.chown` |
+| `fchownSync`    |     0% | implement `binding.chown` |
+| `utimes`        |     0% | implement `binding.utimes` |
+| `utimesSync`    |     0% | implement `binding.utimes` |
+| `futimes`       |     0% | implement `binding.futimes` |
+| `futimesSync`   |     0% | implement `binding.futimes` |
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
