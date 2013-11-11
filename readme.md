@@ -1,6 +1,6 @@
 # Mock FS
 
-A configurable mock filesystem.  You know, for testing.
+A configurable mock file system.  You know, for testing.
 
 ## Purpose
 
@@ -25,7 +25,7 @@ var system = mock.create({
 
 ## TODO
 
-These `fs` functions are implemented by the built in binding.  They need to be provided by the mock binding.
+These `fs` functions are implemented by the built-in binding.  They need to be provided by the mock binding.
 
  * `Stats`
  * `exists`

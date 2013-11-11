@@ -182,7 +182,7 @@ describe('create', function() {
 
   });
 
-  it('accepts file factory generator', function() {
+  it('accepts file factory', function() {
 
     var system = mock.create({
       'path/to/file.js': mock.file({content: 'foo'})
@@ -197,7 +197,7 @@ describe('create', function() {
 
   });
 
-  it('accepts directory factory generator', function() {
+  it('accepts directory factory', function() {
 
     var system = mock.create({
       'path/to/dir': mock.directory()
