@@ -37,6 +37,15 @@ describe('File', function() {
       assert.equal(String(file.getContent()), '');
     });
 
+    it('updates the atime', function() {
+      var file = new File('foo');
+      file.setContent('bar');
+      var old = new Date(1);
+      file.setATime(old);
+      file.getContent();
+      assert.isTrue(file.getATime() > old);
+    });
+
   });
 
   describe('#setContent()', function() {
@@ -62,6 +71,16 @@ describe('File', function() {
         var file = new File('foo');
         file.setContent(123);
       });
+    });
+
+    it('updates the ctime and mtime', function() {
+      var file = new File('foo');
+      var old = new Date(1);
+      file.setCTime(old);
+      file.setMTime(old);
+      file.setContent('bar');
+      assert.isTrue(file.getCTime() > old);
+      assert.isTrue(file.getMTime() > old);
     });
 
   });
