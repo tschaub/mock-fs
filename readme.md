@@ -6,14 +6,12 @@ A configurable mock file system.  You know, for testing.
 
 Instead of testing against real file system resources, it should be easy to mock up a file system for tests.
 
-Eventually, this module will provide a full mock for the `fs` module.  For now, it provides facilities for creating an in-memory file system.
-
 E.g.
 
 ```js
 var mock = require('mock-fs');
 
-var system = mock.create({
+var fs = mock.fs({
   'path/to/fake/dir': {
     'some-file.txt': 'file content here',
     'empty-dir': {/** empty directory */}
