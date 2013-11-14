@@ -19,14 +19,15 @@ describe('Binding', function() {
           atime: new Date(1),
           ctime: new Date(2),
           mtime: new Date(3)
-        })
+        }),
+        'three.bin': new Buffer([1, 2, 3])
       }
     });
   });
 
   describe('constructor', function() {
 
-    it('creates a new instanc', function() {
+    it('creates a new instance', function() {
       var binding = new Binding(system);
       assert.instanceOf(binding, Binding);
     });
@@ -92,6 +93,58 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var stats = binding.stat('mock-dir');
       assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
+    });
+
+    it('includes atime, ctime, and mtime', function(done) {
+      var binding = new Binding(system);
+      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.atime.getTime(), new Date(1).getTime());
+        assert.equal(stats.ctime.getTime(), new Date(2).getTime());
+        assert.equal(stats.mtime.getTime(), new Date(3).getTime());
+        done();
+      });
+    });
+
+    it('includes mode with file permissions (default)', function(done) {
+      var binding = new Binding(system);
+      binding.stat(path.join('mock-dir', 'one.txt'), function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.mode & 0777, 0666);
+        done();
+      });
+    });
+
+    it('includes mode with file permissions (custom)', function(done) {
+      var binding = new Binding(system);
+      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.mode & 0777, 0644);
+        done();
+      });
+    });
+
+    it('includes size in bytes (async)', function(done) {
+      var binding = new Binding(system);
+      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.size, 11);
+        done();
+      });
+    });
+
+    it('includes size in bytes (sync)', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'three.bin'));
+      assert.equal(stats.size, 3);
     });
 
   });
