@@ -27,55 +27,55 @@ These `fs` functions are implemented by the built-in binding.  They need to be p
 
 | function        | status | notes |
 |-----------------|-------:|-------|
-| `Stats`         |    90% | implement `binding.Stats` |
-| `exists`        |   100% | implement `binding.stat` |
-| `existsSync`    |   100% | implement `binding.stat` |
-| `close`         |     0% | implement `binding.close` |
-| `closeSync`     |     0% | implement `binding.close` |
-| `open`          |     0% | implement `binding.open` |
-| `openSync`      |     0% | implement `binding.open` |
-| `read`          |     0% | implement `binding.read` |
-| `readSync`      |     0% | implement `binding.read` |
-| `write`         |     0% | implement `binding.write` |
-| `writeSync`     |     0% | implement `binding.write` |
-| `rename`        |     0% | implement `binding.rename` |
-| `renameSync`    |     0% | implement `binding.rename` |
-| `truncate`      |     0% | implement `binding.ftruncate` |
-| `ftruncate`     |     0% | implement `binding.ftruncate` |
-| `ftruncateSync` |     0% | implement `binding.ftruncate` |
-| `rmdir`         |     0% | implement `binding.rmdir` |
-| `rmdirSync`     |     0% | implement `binding.rmdir` |
-| `fdatasync`     |     0% | implement `binding.fdatasync` |
-| `fdatasyncSync` |     0% | implement `binding.fdatasync` |
-| `fsync`         |     0% | implement `binding.fsync` |
-| `fsyncSync`     |     0% | implement `binding.fsync` |
-| `mkdir`         |     0% | implement `binding.mkdir` |
-| `mkdirSync`     |     0% | implement `binding.mkdir` |
-| `readdir`       |     0% | implement `binding.readdir` |
-| `readdirSync`   |     0% | implement `binding.readdir` |
-| `fstat`         |     0% | implement `binding.fstat` |
-| `lstat`         |     0% | implement `binding.lstat` |
-| `stat`          |    90% | implement `binding.stat` |
-| `fstatSync`     |     0% | implement `binding.fstat` |
-| `lstatSync`     |     0% | implement `binding.lstat` |
-| `statSync`      |    90% | implement `binding.stat` |
-| `readlink`      |     0% | implement `binding.readlink` |
-| `readlinkSync`  |     0% | implement `binding.readlink` |
-| `symlink`       |     0% | implement `binding.symlink` |
-| `symlinkSync`   |     0% | implement `binding.symlink` |
-| `link`          |     0% | implement `binding.link` |
-| `linkSync`      |     0% | implement `binding.link` |
-| `unlink`        |     0% | implement `binding.unlink` |
-| `unlinkSync`    |     0% | implement `binding.unlink` |
-| `fchmod`        |     0% | implement `binding.fchmod` |
-| `fchmodSync`    |     0% | implement `binding.fchmod` |
-| `chmod`         |     0% | implement `binding.chmod` |
-| `chmodSync`     |     0% | implement `binding.chmod` |
-| `fchown`        |     0% | implement `binding.chown` |
-| `fchownSync`    |     0% | implement `binding.chown` |
-| `utimes`        |     0% | implement `binding.utimes` |
-| `utimesSync`    |     0% | implement `binding.utimes` |
-| `futimes`       |     0% | implement `binding.futimes` |
-| `futimesSync`   |     0% | implement `binding.futimes` |
+| `fs.Stats`         |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `isFile()`, and `isDirectory()` |
+| `fs.exists`        |   100% | Complete |
+| `fs.existsSync`    |   100% | Complete |
+| `fs.close`         |     0% | Implement `binding.close` |
+| `fs.closeSync`     |     0% | Implement `binding.close` |
+| `fs.open`          |     0% | Implement `binding.open` |
+| `fs.openSync`      |     0% | Implement `binding.open` |
+| `fs.read`          |     0% | Implement `binding.read` |
+| `fs.readSync`      |     0% | Implement `binding.read` |
+| `fs.write`         |     0% | Implement `binding.write` |
+| `fs.writeSync`     |     0% | Implement `binding.write` |
+| `fs.rename`        |     0% | Implement `binding.rename` |
+| `fs.renameSync`    |     0% | Implement `binding.rename` |
+| `fs.truncate`      |     0% | Implement `binding.ftruncate` |
+| `fs.ftruncate`     |     0% | Implement `binding.ftruncate` |
+| `fs.ftruncateSync` |     0% | Implement `binding.ftruncate` |
+| `fs.rmdir`         |     0% | Implement `binding.rmdir` |
+| `fs.rmdirSync`     |     0% | Implement `binding.rmdir` |
+| `fs.fdatasync`     |     0% | Implement `binding.fdatasync` |
+| `fs.fdatasyncSync` |     0% | Implement `binding.fdatasync` |
+| `fs.fsync`         |     0% | Implement `binding.fsync` |
+| `fs.fsyncSync`     |     0% | Implement `binding.fsync` |
+| `fs.mkdir`         |     0% | Implement `binding.mkdir` |
+| `fs.mkdirSync`     |     0% | Implement `binding.mkdir` |
+| `fs.readdir`       |     0% | Implement `binding.readdir` |
+| `fs.readdirSync`   |     0% | Implement `binding.readdir` |
+| `fs.fstat`         |     0% | Implement `binding.fstat` |
+| `fs.lstat`         |     0% | Implement `binding.lstat` |
+| `fs.stat`          |    90% | Provides stats object [described above](#Stats) |
+| `fs.fstatSync`     |     0% | Implement `binding.fstat` |
+| `fs.lstatSync`     |     0% | Implement `binding.lstat` |
+| `fs.statSync`      |    90% | Provides stats object [described above](#Stats) |
+| `fs.readlink`      |     0% | Implement `binding.readlink` |
+| `fs.readlinkSync`  |     0% | Implement `binding.readlink` |
+| `fs.symlink`       |     0% | Implement `binding.symlink` |
+| `fs.symlinkSync`   |     0% | Implement `binding.symlink` |
+| `fs.link`          |     0% | Implement `binding.link` |
+| `fs.linkSync`      |     0% | Implement `binding.link` |
+| `fs.unlink`        |     0% | Implement `binding.unlink` |
+| `fs.unlinkSync`    |     0% | Implement `binding.unlink` |
+| `fs.fchmod`        |     0% | Implement `binding.fchmod` |
+| `fs.fchmodSync`    |     0% | Implement `binding.fchmod` |
+| `fs.chmod`         |     0% | Implement `binding.chmod` |
+| `fs.chmodSync`     |     0% | Implement `binding.chmod` |
+| `fs.fchown`        |     0% | Implement `binding.chown` |
+| `fs.fchownSync`    |     0% | Implement `binding.chown` |
+| `fs.utimes`        |     0% | Implement `binding.utimes` |
+| `fs.utimesSync`    |     0% | Implement `binding.utimes` |
+| `fs.futimes`       |     0% | Implement `binding.futimes` |
+| `fs.futimesSync`   |     0% | Implement `binding.futimes` |
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
