@@ -2,7 +2,7 @@ var path = require('path');
 
 var Directory = require('../../lib/directory').Directory;
 var File = require('../../lib/file').File;
-var mock = require('../../lib/filesystem');
+var FileSystem = require('../../lib/filesystem');
 var assert = require('../helper').assert;
 
 
@@ -11,8 +11,8 @@ describe('FileSystem', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var system = new mock.FileSystem();
-      assert.instanceOf(system, mock.FileSystem);
+      var system = new FileSystem();
+      assert.instanceOf(system, FileSystem);
     });
 
   });
@@ -20,7 +20,7 @@ describe('FileSystem', function() {
   describe('#addRoot()', function() {
 
     it('adds a new root directory', function() {
-      var system = new mock.FileSystem();
+      var system = new FileSystem();
       var root = system.addRoot('');
       assert.instanceOf(root, Directory);
       assert.equal(root.getName(), '');
@@ -31,7 +31,7 @@ describe('FileSystem', function() {
   describe('#getRoot()', function() {
 
     it('gets a named root directory', function() {
-      var system = new mock.FileSystem();
+      var system = new FileSystem();
       system.addRoot('C:\\');
       var root = system.getRoot('C:\\');
       assert.instanceOf(root, Directory);
@@ -43,7 +43,7 @@ describe('FileSystem', function() {
   describe('#getItem()', function() {
 
     it('gets an item', function() {
-      var system = new mock.FileSystem();
+      var system = new FileSystem();
       system.addRoot('')
           .addItem(new Directory('one'))
           .addItem(new Directory('two'))
@@ -57,7 +57,7 @@ describe('FileSystem', function() {
     });
 
     it('returns null if not found', function() {
-      var system = new mock.FileSystem();
+      var system = new FileSystem();
       system.addRoot('')
           .addItem(new Directory('one'))
           .addItem(new Directory('two'))
@@ -78,10 +78,10 @@ describe('FileSystem', function() {
 
 });
 
-describe('file', function() {
+describe('FileSystem.file', function() {
 
   it('creates a factory for files', function() {
-    var factory = mock.file();
+    var factory = FileSystem.file();
     assert.isFunction(factory);
 
     var file = factory('foo');
@@ -94,7 +94,7 @@ describe('file', function() {
   });
 
   it('accepts a content member', function() {
-    var factory = mock.file({content: 'foo'});
+    var factory = FileSystem.file({content: 'foo'});
     assert.isFunction(factory);
 
     var file = factory('bar');
@@ -108,10 +108,10 @@ describe('file', function() {
 });
 
 
-describe('directory', function() {
+describe('FileSystem.directory', function() {
 
   it('creates a factory for directories', function() {
-    var factory = mock.directory();
+    var factory = FileSystem.directory();
     assert.isFunction(factory);
 
     var dir = factory('foo');
@@ -126,11 +126,11 @@ describe('directory', function() {
 });
 
 
-describe('create', function() {
+describe('FileSystem.create', function() {
 
   it('provides a convenient way to populate a file system', function() {
 
-    var system = mock.create({
+    var system = FileSystem.create({
       'path/to/one': {
         'file.js': 'file.js content',
         'dir': {}
@@ -139,7 +139,7 @@ describe('create', function() {
       'path/to/three': {}
     });
 
-    assert.instanceOf(system, mock.FileSystem);
+    assert.instanceOf(system, FileSystem);
 
     var filepath, item;
 
@@ -184,11 +184,11 @@ describe('create', function() {
 
   it('accepts file factory', function() {
 
-    var system = mock.create({
-      'path/to/file.js': mock.file({content: 'foo'})
+    var system = FileSystem.create({
+      'path/to/file.js': FileSystem.file({content: 'foo'})
     });
 
-    assert.instanceOf(system, mock.FileSystem);
+    assert.instanceOf(system, FileSystem);
 
     var file = system.getItem(path.join('path', 'to', 'file.js'));
     assert.instanceOf(file, File);
@@ -199,11 +199,11 @@ describe('create', function() {
 
   it('accepts directory factory', function() {
 
-    var system = mock.create({
-      'path/to/dir': mock.directory()
+    var system = FileSystem.create({
+      'path/to/dir': FileSystem.directory()
     });
 
-    assert.instanceOf(system, mock.FileSystem);
+    assert.instanceOf(system, FileSystem);
 
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
