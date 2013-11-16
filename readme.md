@@ -6,7 +6,9 @@ A configurable mock file system.  You know, for testing.
 
 Instead of testing against real file system resources, it should be easy to mock up a file system for tests.
 
-E.g.
+## Example
+
+The code below creates a mock `fs` module that is configured to work with a few mock files and directories.
 
 ```js
 var mock = require('mock-fs');
@@ -19,6 +21,19 @@ var fs = mock.fs({
   'path/to/some.png': new Buffer([8, 6, 7, 5, 3, 0, 9]),
   'some/other/path': {/** another empty directory */}
 });
+```
+
+If you are testing a module that `require`s the real `fs` module, you can use [`rewire`](https://npmjs.org/package/rewire) to inject a mock `fs` module for testing.
+
+```js
+var rewire = require("rewire");
+var moduleToTest = rewire('./path/to/module');
+
+// inject the mock fs created above
+moduleToTest.__set__('fs', fs);
+
+// now functions in moduleToTest will use
+// your mock fs instead of the real one
 ```
 
 ## Status
