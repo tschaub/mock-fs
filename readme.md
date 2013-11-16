@@ -38,7 +38,7 @@ moduleToTest.__set__('fs', fs);
 
 ## Status
 
-These `fs` functions are implemented by the built-in binding.  They need to be provided by the mock binding.
+The table below shows what is covered by the mock `fs`.  Tests are currently run on Node 0.8 and 0.10.  Eventually more versions will be supported.
 
 | function        | status | notes |
 |-----------------|-------:|-------|
