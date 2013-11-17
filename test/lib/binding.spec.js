@@ -1,7 +1,7 @@
 var path = require('path');
 
 var Binding = require('../../lib/binding').Binding;
-var mock = require('../../lib/filesystem');
+var FileSystem = require('../../lib/filesystem');
 var assert = require('../helper').assert;
 
 var constants = process.binding('constants');
@@ -10,10 +10,10 @@ describe('Binding', function() {
 
   var system;
   beforeEach(function() {
-    system = mock.create({
+    system = FileSystem.create({
       'mock-dir': {
         'one.txt': 'one content',
-        'two.txt': mock.file({
+        'two.txt': FileSystem.file({
           content: 'two content',
           mode: 0644,
           atime: new Date(1),
@@ -32,6 +32,20 @@ describe('Binding', function() {
       assert.instanceOf(binding, Binding);
     });
 
+  });
+
+  describe('#getSystem()', function() {
+    var binding = new Binding(system);
+    assert.equal(binding.getSystem(), system);
+  });
+
+  describe('#setSystem()', function() {
+    var firstSystem = new FileSystem();
+    var binding = new Binding(firstSystem);
+    assert.equal(binding.getSystem(), firstSystem);
+
+    binding.setSystem(system);
+    assert.equal(binding.getSystem(), system);
   });
 
   describe('#Stats', function() {
