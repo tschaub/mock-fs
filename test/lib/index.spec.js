@@ -38,6 +38,26 @@ describe('The API', function() {
 
     });
 
+    describe('_reconfigure()', function() {
+
+      it('provides a method to reconfigure the mock file system', function() {
+
+        var fs = mock.fs({
+          'first-file.txt': 'file content'
+        });
+        assert.isTrue(fs.existsSync('first-file.txt'));
+
+        fs._reconfigure({
+          'second-file.txt': 'new content'
+        });
+
+        assert.isFalse(fs.existsSync('first-file.txt'));
+        assert.isTrue(fs.existsSync('second-file.txt'));
+
+      });
+
+    });
+
   });
 
   describe('file()', function() {
