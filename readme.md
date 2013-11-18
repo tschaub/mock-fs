@@ -66,8 +66,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.fsyncSync`     |     0% | Implement `binding.fsync` |
 | `fs.mkdir`         |     0% | Implement `binding.mkdir` |
 | `fs.mkdirSync`     |     0% | Implement `binding.mkdir` |
-| `fs.readdir`       |     0% | Implement `binding.readdir` |
-| `fs.readdirSync`   |     0% | Implement `binding.readdir` |
+| `fs.readdir`       |   100% | Complete |
+| `fs.readdirSync`   |   100% | Complete |
 | `fs.fstat`         |     0% | Implement `binding.fstat` |
 | `fs.lstat`         |     0% | Implement `binding.lstat` |
 | `fs.stat`          |    90% | Provides stats object [described above](#Stats) |

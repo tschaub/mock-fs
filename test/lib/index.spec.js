@@ -114,3 +114,87 @@ describe('The API', function() {
   });
 
 });
+
+describe('fs.readdir(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'nested': {
+        'sub': {
+          'dir': {
+            'one.txt': 'one content',
+            'two.txt': 'two content',
+            'empty': {}
+          }
+        }
+      }
+    });
+  });
+
+  it('lists directory contents', function(done) {
+    fs.readdir(path.join('path', 'to'), function(err, items) {
+      assert.isNull(err);
+      assert.isArray(items);
+      assert.deepEqual(items, ['file.txt']);
+      done();
+    });
+  });
+
+  it('lists nested directory contents', function(done) {
+    fs.readdir(path.join('nested', 'sub', 'dir'), function(err, items) {
+      assert.isNull(err);
+      assert.isArray(items);
+      assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
+      done();
+    });
+  });
+
+  it('calls with an error for bogus path', function(done) {
+    fs.readdir('bogus', function(err, items) {
+      assert.instanceOf(err, Error);
+      assert.isUndefined(items);
+      done();
+    });
+  });
+
+});
+
+describe('fs.readdirSync(path)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'nested': {
+        'sub': {
+          'dir': {
+            'one.txt': 'one content',
+            'two.txt': 'two content',
+            'empty': {}
+          }
+        }
+      }
+    });
+  });
+
+  it('lists directory contents', function() {
+    var items = fs.readdirSync(path.join('path', 'to'));
+    assert.isArray(items);
+    assert.deepEqual(items, ['file.txt']);
+  });
+
+  it('lists nested directory contents', function() {
+    var items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
+    assert.isArray(items);
+    assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
+  });
+
+  it('throws for bogus path', function() {
+    assert.throws(function() {
+      fs.readdirSync('bogus');
+    });
+  });
+
+});

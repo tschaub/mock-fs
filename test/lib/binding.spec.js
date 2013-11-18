@@ -20,7 +20,8 @@ describe('Binding', function() {
           ctime: new Date(2),
           mtime: new Date(3)
         }),
-        'three.bin': new Buffer([1, 2, 3])
+        'three.bin': new Buffer([1, 2, 3]),
+        'empty': {}
       }
     });
   });
@@ -159,6 +160,47 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var stats = binding.stat(path.join('mock-dir', 'three.bin'));
       assert.equal(stats.size, 3);
+    });
+
+  });
+
+  describe('#readdir()', function() {
+
+    it('calls callback with file list', function(done) {
+      var binding = new Binding(system);
+      binding.readdir('mock-dir', function(err, items) {
+        assert.isNull(err);
+        assert.isArray(items);
+        assert.deepEqual(
+            items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+        done();
+      });
+    });
+
+    it('calls callback with file list (sync)', function() {
+      var binding = new Binding(system);
+      var items = binding.readdir('mock-dir');
+      assert.isArray(items);
+      assert.deepEqual(
+          items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+    });
+
+    it('calls callback with error for bogus dir', function(done) {
+      var binding = new Binding(system);
+      binding.readdir('bogus', function(err, items) {
+        assert.instanceOf(err, Error);
+        assert.isUndefined(items);
+        done();
+      });
+    });
+
+    it('calls callback with error for file path', function(done) {
+      var binding = new Binding(system);
+      binding.readdir(path.join('mock-dir', 'one.txt'), function(err, items) {
+        assert.instanceOf(err, Error);
+        assert.isUndefined(items);
+        done();
+      });
     });
 
   });
