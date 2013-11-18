@@ -45,6 +45,10 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.Stats`         |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `isFile()`, and `isDirectory()` |
 | `fs.exists`        |   100% | Complete |
 | `fs.existsSync`    |   100% | Complete |
+| `fs.readdir`       |   100% | Complete |
+| `fs.readdirSync`   |   100% | Complete |
+| `fs.stat`          |    90% | Provides stats object [described above](#Stats) |
+| `fs.statSync`      |    90% | Provides stats object [described above](#Stats) |
 | `fs.close`         |     0% | Implement `binding.close` |
 | `fs.closeSync`     |     0% | Implement `binding.close` |
 | `fs.open`          |     0% | Implement `binding.open` |
@@ -66,14 +70,10 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.fsyncSync`     |     0% | Implement `binding.fsync` |
 | `fs.mkdir`         |     0% | Implement `binding.mkdir` |
 | `fs.mkdirSync`     |     0% | Implement `binding.mkdir` |
-| `fs.readdir`       |   100% | Complete |
-| `fs.readdirSync`   |   100% | Complete |
 | `fs.fstat`         |     0% | Implement `binding.fstat` |
 | `fs.lstat`         |     0% | Implement `binding.lstat` |
-| `fs.stat`          |    90% | Provides stats object [described above](#Stats) |
 | `fs.fstatSync`     |     0% | Implement `binding.fstat` |
 | `fs.lstatSync`     |     0% | Implement `binding.lstat` |
-| `fs.statSync`      |    90% | Provides stats object [described above](#Stats) |
 | `fs.readlink`      |     0% | Implement `binding.readlink` |
 | `fs.readlinkSync`  |     0% | Implement `binding.readlink` |
 | `fs.symlink`       |     0% | Implement `binding.symlink` |
