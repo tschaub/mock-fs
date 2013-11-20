@@ -53,19 +53,6 @@ describe('Item', function() {
 
   });
 
-  describe('#getPath()', function() {
-
-    it('constructs a path', function() {
-      var parent = new Item('foo');
-      var child = new Item('bar');
-      var grandchild = new Item('baz.js');
-      child.setParent(parent);
-      grandchild.setParent(child);
-      assert.equal(grandchild.getPath(), path.join('foo', 'bar', 'baz.js'));
-    });
-
-  });
-
   describe('#getATime()', function() {
 
     it('returns a date', function() {
