@@ -17,59 +17,30 @@ describe('FileSystem', function() {
 
   });
 
-  describe('#addRoot()', function() {
-
-    it('adds a new root directory', function() {
-      var system = new FileSystem();
-      var root = system.addRoot('');
-      assert.instanceOf(root, Directory);
-      assert.equal(root.getName(), '');
-    });
-
-  });
-
-  describe('#getRoot()', function() {
-
-    it('gets a named root directory', function() {
-      var system = new FileSystem();
-      system.addRoot('C:\\');
-      var root = system.getRoot('C:\\');
-      assert.instanceOf(root, Directory);
-      assert.equal(root.getName(), 'C:\\');
-    });
-
-  });
-
   describe('#getItem()', function() {
 
     it('gets an item', function() {
-      var system = new FileSystem();
-      system.addRoot('')
-          .addItem(new Directory('one'))
-          .addItem(new Directory('two'))
-          .addItem(new File('three.js'));
+      var system = FileSystem.create({
+        'one/two/three.js': 'contents'
+      });
 
-      var filepath = path.join(path.sep, 'one', 'two', 'three.js');
+      var filepath = path.join('one', 'two', 'three.js');
       var item = system.getItem(filepath);
       assert.instanceOf(item, File);
       assert.equal(item.getName(), 'three.js');
     });
 
     it('returns null if not found', function() {
-      var system = new FileSystem();
-      system.addRoot('')
-          .addItem(new Directory('one'))
-          .addItem(new Directory('two'))
-          .addItem(new File('three.js'));
+      var system = FileSystem.create({
+        'one/two/three.js': 'contents'
+      });
 
       assert.isNull(
-          system.getItem(path.join(path.sep, 'one', 'two', 'four.js')));
+          system.getItem(path.join('one', 'two', 'four.js')));
       assert.isNull(
-          system.getItem(path.join(path.sep, 'one', '2', 'three.js')));
+          system.getItem(path.join('one', '2', 'three.js')));
       assert.isNull(
-          system.getItem(path.join(path.sep, 'um', 'two', 'three.js')));
-      assert.isNull(
-          system.getItem(path.join('one', 'two', 'three.js')));
+          system.getItem(path.join('um', 'two', 'three.js')));
 
     });
 
