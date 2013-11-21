@@ -40,8 +40,8 @@ moduleToTest.__set__('fs', fs);
 
 The table below shows what is covered by the mock `fs`.  Tests are currently run on Node 0.8 and 0.10.  Eventually more versions will be supported.
 
-| function        | status | notes |
-|-----------------|-------:|-------|
+| function           | status | notes |
+|--------------------|:------:|-------|
 | `fs.Stats`         |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `isFile()`, and `isDirectory()` |
 | `fs.exists`        |   100% | Complete |
 | `fs.existsSync`    |   100% | Complete |
@@ -57,8 +57,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.readSync`      |     0% | Implement `binding.read` |
 | `fs.write`         |     0% | Implement `binding.write` |
 | `fs.writeSync`     |     0% | Implement `binding.write` |
-| `fs.rename`        |     0% | Implement `binding.rename` |
-| `fs.renameSync`    |     0% | Implement `binding.rename` |
+| `fs.rename`        |   100% | Complete |
+| `fs.renameSync`    |   100% | Complete |
 | `fs.truncate`      |     0% | Implement `binding.ftruncate` |
 | `fs.ftruncate`     |     0% | Implement `binding.ftruncate` |
 | `fs.ftruncateSync` |     0% | Implement `binding.ftruncate` |
