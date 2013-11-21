@@ -22,8 +22,8 @@
     }
   ],
   "scripts": {
-    "test": "grunt test",
-    "start": "grunt start"
+    "test": "grunt --stack test",
+    "start": "grunt --stack start"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.11",
