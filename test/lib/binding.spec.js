@@ -177,7 +177,7 @@ describe('Binding', function() {
       });
     });
 
-    it('calls callback with file list (sync)', function() {
+    it('returns a file list (sync)', function() {
       var binding = new Binding(system);
       var items = binding.readdir('mock-dir');
       assert.isArray(items);
@@ -199,6 +199,96 @@ describe('Binding', function() {
       binding.readdir(path.join('mock-dir', 'one.txt'), function(err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
+        done();
+      });
+    });
+
+  });
+
+  describe('#rename()', function() {
+
+    it('allows files to be renamed', function(done) {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'one.txt');
+      var newPath = path.join('mock-dir', 'empty', 'new.txt');
+      binding.rename(oldPath, newPath, function(err) {
+        var stats = binding.stat(newPath);
+        assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
+        assert.equal(stats.size, 11);
+        done();
+      });
+    });
+
+    it('allows files to be renamed (sync)', function() {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'one.txt');
+      var newPath = path.join('mock-dir', 'new.txt');
+      binding.rename(oldPath, newPath);
+      var stats = binding.stat(newPath);
+      assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
+      assert.equal(stats.size, 11);
+    });
+
+    it('replaces existing files (sync)', function() {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'one.txt');
+      var newPath = path.join('mock-dir', 'two.txt');
+      binding.rename(oldPath, newPath);
+      var stats = binding.stat(newPath);
+      assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
+      assert.equal(stats.size, 11);
+    });
+
+    it('allows directories to be renamed', function(done) {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'empty');
+      var newPath = path.join('mock-dir', 'new');
+      binding.rename(oldPath, newPath, function(err) {
+        var stats = binding.stat(newPath);
+        assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
+        done();
+      });
+    });
+
+    it('allows directories to be renamed (sync)', function() {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir');
+      var newPath = path.join('new-dir');
+      binding.rename(oldPath, newPath);
+      var stats = binding.stat(newPath);
+      assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
+      var items = binding.readdir(newPath);
+      assert.isArray(items);
+      assert.deepEqual(
+          items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+    });
+
+    it('calls callback with error for bogus old path', function(done) {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'bogus');
+      var newPath = path.join('mock-dir', 'new');
+      binding.rename(oldPath, newPath, function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+
+    it('calls callback with error for file->dir rename', function(done) {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'one.txt');
+      var newPath = path.join('mock-dir', 'empty');
+      binding.rename(oldPath, newPath, function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+
+    it('calls callback with error for dir->file rename', function(done) {
+      var binding = new Binding(system);
+      var oldPath = path.join('mock-dir', 'one.txt');
+      var newPath = path.join('mock-dir', 'empty');
+      binding.rename(oldPath, newPath, function(err) {
+        assert.instanceOf(err, Error);
         done();
       });
     });

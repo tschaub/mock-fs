@@ -115,6 +115,126 @@ describe('The API', function() {
 
 });
 
+describe('fs.rename(oldPath, newPath, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/a.bin': new Buffer([1, 2, 3]),
+      'empty': {},
+      'nested': {
+        'dir': {
+          'file.txt': ''
+        }
+      }
+    });
+  });
+
+  it('allows files to be renamed', function(done) {
+    fs.rename('path/to/a.bin', 'path/to/b.bin', function(err) {
+      assert.isTrue(!err);
+      assert.isFalse(fs.existsSync('path/to/a.bin'));
+      assert.isTrue(fs.existsSync('path/to/b.bin'));
+      done();
+    });
+  });
+
+  it('calls callback with an error if old path does not exist', function(done) {
+    fs.rename('bogus', 'empty', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+  it('overwrites existing files', function(done) {
+    fs.rename('path/to/a.bin', 'nested/dir/file.txt', function(err) {
+      assert.isTrue(!err);
+      assert.isFalse(fs.existsSync('path/to/a.bin'));
+      assert.isTrue(fs.existsSync('nested/dir/file.txt'));
+      done();
+    });
+  });
+
+  it('allows directories to be renamed', function(done) {
+    fs.rename('path/to', 'path/foo', function(err) {
+      assert.isTrue(!err);
+      assert.isFalse(fs.existsSync('path/to'));
+      assert.isTrue(fs.existsSync('path/foo'));
+      assert.deepEqual(fs.readdirSync('path/foo'), ['a.bin']);
+      done();
+    });
+  });
+
+  it('calls callback with error if new directory is not empty', function(done) {
+    fs.rename('path', 'nested', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.renameSync(oldPath, newPath)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/a.bin': new Buffer([1, 2, 3]),
+      'empty': {},
+      'nested': {
+        'dir': {
+          'file.txt': ''
+        }
+      }
+    });
+  });
+
+  it('allows files to be renamed', function() {
+    fs.renameSync('path/to/a.bin', 'path/to/b.bin');
+    assert.isFalse(fs.existsSync('path/to/a.bin'));
+    assert.isTrue(fs.existsSync('path/to/b.bin'));
+  });
+
+  it('overwrites existing files', function() {
+    fs.renameSync('path/to/a.bin', 'nested/dir/file.txt');
+    assert.isFalse(fs.existsSync('path/to/a.bin'));
+    assert.isTrue(fs.existsSync('nested/dir/file.txt'));
+  });
+
+  it('allows directories to be renamed', function() {
+    fs.renameSync('path/to', 'path/foo');
+    assert.isFalse(fs.existsSync('path/to'));
+    assert.isTrue(fs.existsSync('path/foo'));
+    assert.deepEqual(fs.readdirSync('path/foo'), ['a.bin']);
+  });
+
+  it('replaces existing directories (if empty)', function() {
+    fs.renameSync('path/to', 'empty');
+    assert.isFalse(fs.existsSync('path/to'));
+    assert.isTrue(fs.existsSync('empty'));
+    assert.deepEqual(fs.readdirSync('empty'), ['a.bin']);
+  });
+
+  it('throws if old path does not exist', function() {
+    assert.throws(function() {
+      fs.renameSync('bogus', 'empty');
+    });
+  });
+
+  it('throws if new path basename is not directory', function() {
+    assert.throws(function() {
+      fs.renameSync('path/to/a.bin', 'bogus/a.bin');
+    });
+  });
+
+  it('throws if new dir is not empty dir', function() {
+    assert.throws(function() {
+      fs.renameSync('path/to', 'nested');
+    });
+  });
+
+});
+
 describe('fs.exists(path, callback)', function() {
 
   var fs;
