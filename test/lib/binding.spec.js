@@ -409,6 +409,47 @@ describe('Binding', function() {
 
   });
 
+  describe('#read()', function() {
+
+    it('reads from a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
+      var buffer = new Buffer(11);
+      var read = binding.read(fd, buffer, 0, 11, 0);
+      assert.equal(read, 11);
+      assert.equal(String(buffer), 'two content');
+    });
+
+    it('interprets null position as current position', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
+      var buffer = new Buffer(4);
+
+      // chunk 1
+      assert.equal(binding.read(fd, buffer, 0, 11, null), 4);
+      assert.equal(String(buffer), 'one ');
+
+      // chunk 2
+      assert.equal(binding.read(fd, buffer, 0, 11, null), 4);
+      assert.equal(String(buffer), 'cont');
+
+      // chunk 3
+      assert.equal(binding.read(fd, buffer, 0, 11, null), 3);
+      assert.equal(String(buffer.slice(0, 3)), 'ent');
+
+    });
+
+    it('throws if not open for reading', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'));
+      var buffer = new Buffer(11);
+      assert.throws(function() {
+        binding.read(fd, buffer, 0, 11, 0);
+      });
+    });
+
+  });
+
   describe('#rename()', function() {
 
     it('allows files to be renamed', function(done) {

@@ -647,3 +647,191 @@ describe('fs.closeSync(fd)', function() {
   });
 
 });
+
+describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('allows file contents to be read', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(12);
+      fs.read(fd, buffer, 0, 12, 0, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 12);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer), 'file content');
+        done();
+      });
+    });
+  });
+
+  it('allows file contents to be read w/ offset', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(12);
+      fs.read(fd, buffer, 5, 12, 0, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 7);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer.slice(5)), 'file co');
+        done();
+      });
+    });
+  });
+
+  it('allows file contents to be read w/ length', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(12);
+      fs.read(fd, buffer, 0, 4, 0, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 4);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer.slice(0, 4)), 'file');
+        done();
+      });
+    });
+  });
+
+  it('allows file contents to be read w/ offset & length', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(12);
+      fs.read(fd, buffer, 2, 4, 0, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 4);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer.slice(2, 6)), 'file');
+        done();
+      });
+    });
+  });
+
+  it('allows file contents to be read w/ position', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(7);
+      fs.read(fd, buffer, 0, 7, 5, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 7);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer), 'content');
+        done();
+      });
+    });
+  });
+
+  it('allows read w/ offset, length, & position', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(12);
+      fs.read(fd, buffer, 2, 7, 5, function(err, bytesRead, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(bytesRead, 7);
+        assert.equal(buf, buffer);
+        assert.equal(String(buffer.slice(2, 9)), 'content');
+        done();
+      });
+    });
+  });
+
+  it('fails for closed file descriptor', function(done) {
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    fs.closeSync(fd);
+    fs.read(fd, new Buffer(12), 0, 12, 0, function(err, bytesRead, buf) {
+      assert.instanceOf(err, Error);
+      assert.equal(0, bytesRead);
+      done();
+    });
+  });
+
+  it('fails if not open for reading', function(done) {
+    var fd = fs.openSync('path/to/file.txt', 'w');
+    fs.read(fd, new Buffer(12), 0, 12, 0, function(err, bytesRead, buf) {
+      assert.instanceOf(err, Error);
+      assert.equal(0, bytesRead);
+      done();
+    });
+  });
+
+});
+
+describe('fs.readSync(fd, buffer, offset, length, position)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('allows a file to be read synchronously', function() {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    var buffer = new Buffer(12);
+    var read = fs.readSync(fd, buffer, 0, 12, 0);
+    assert.equal(read, 12);
+    assert.equal(String(buffer), 'file content');
+
+  });
+
+  it('allows a file to be read in two parts', function() {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    var first = new Buffer(4);
+    fs.readSync(fd, first, 0, 4, 0);
+    assert.equal(String(first), 'file');
+
+    var second = new Buffer(7);
+    fs.readSync(fd, second, 0, 7, 5);
+    assert.equal(String(second), 'content');
+
+  });
+
+  it('treats null position as current position', function() {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    var first = new Buffer(4);
+    fs.readSync(fd, first, 0, 4, null);
+    assert.equal(String(first), 'file');
+
+    // consume the space
+    assert.equal(fs.readSync(fd, new Buffer(1), 0, 1, null), 1);
+
+    var second = new Buffer(7);
+    fs.readSync(fd, second, 0, 7, null);
+    assert.equal(String(second), 'content');
+
+  });
+
+});
