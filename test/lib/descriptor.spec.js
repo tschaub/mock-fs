@@ -27,6 +27,25 @@ describe('FileDescriptor', function() {
 
   });
 
+  describe('#getPosition()', function() {
+
+    it('returns zero by default', function() {
+      var fd = new FileDescriptor('foo/bar', flags('r'));
+      assert.equal(fd.getPosition(), 0);
+    });
+
+  });
+
+  describe('#setPosition()', function() {
+
+    it('updates the position', function() {
+      var fd = new FileDescriptor('foo/bar', flags('r'));
+      fd.setPosition(10);
+      assert.equal(fd.getPosition(), 10);
+    });
+
+  });
+
   describe('#isAppend()', function() {
 
     it('not opened for appending (r)', function() {
