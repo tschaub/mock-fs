@@ -1,50 +1,11 @@
 var path = require('path');
 
 var FileDescriptor = require('../../lib/descriptor').FileDescriptor;
-var assert = require('../helper').assert;
+var helper = require('../helper');
 
-var constants = process.binding('constants');
+var assert = helper.assert;
+var flags = helper.flags;
 
-function flags(str) {
-  switch (str) {
-    case 'r' :
-      return constants.O_RDONLY;
-    case 'rs' :
-      return constants.O_RDONLY | constants.O_SYNC;
-    case 'r+' :
-      return constants.O_RDWR;
-    case 'rs+' :
-      return constants.O_RDWR | constants.O_SYNC;
-
-    case 'w' :
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY;
-    case 'wx' : // fall through
-    case 'xw' :
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY |
-          constants.O_EXCL;
-
-    case 'w+' :
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR;
-    case 'wx+': // fall through
-    case 'xw+':
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR |
-          constants.O_EXCL;
-
-    case 'a' :
-      return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY;
-    case 'ax' : // fall through
-    case 'xa' :
-      return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY |
-          constants.O_EXCL;
-
-    case 'a+' :
-      return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR;
-    case 'ax+': // fall through
-    case 'xa+':
-      return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR |
-          constants.O_EXCL;
-  }
-}
 
 describe('FileDescriptor', function() {
 

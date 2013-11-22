@@ -10,3 +10,53 @@ chai.Assertion.includeStack = true;
  * @type {function}
  */
 exports.assert = chai.assert;
+
+
+var constants = process.binding('constants');
+
+
+/**
+ * Convert a string to flags for fs.open.
+ * @param {string} str String.
+ * @return {number} Flags.
+ */
+exports.flags = function(str) {
+  switch (str) {
+    case 'r' :
+      return constants.O_RDONLY;
+    case 'rs' :
+      return constants.O_RDONLY | constants.O_SYNC;
+    case 'r+' :
+      return constants.O_RDWR;
+    case 'rs+' :
+      return constants.O_RDWR | constants.O_SYNC;
+
+    case 'w' :
+      return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY;
+    case 'wx' : // fall through
+    case 'xw' :
+      return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY |
+          constants.O_EXCL;
+
+    case 'w+' :
+      return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR;
+    case 'wx+': // fall through
+    case 'xw+':
+      return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR |
+          constants.O_EXCL;
+
+    case 'a' :
+      return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY;
+    case 'ax' : // fall through
+    case 'xa' :
+      return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY |
+          constants.O_EXCL;
+
+    case 'a+' :
+      return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR;
+    case 'ax+': // fall through
+    case 'xa+':
+      return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR |
+          constants.O_EXCL;
+  }
+};

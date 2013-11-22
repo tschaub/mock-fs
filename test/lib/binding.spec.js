@@ -1,8 +1,12 @@
 var path = require('path');
 
 var Binding = require('../../lib/binding').Binding;
+var File = require('../../lib/file').File;
 var FileSystem = require('../../lib/filesystem');
-var assert = require('../helper').assert;
+var helper = require('../helper');
+
+var assert = helper.assert;
+var flags = helper.flags;
 
 var constants = process.binding('constants');
 
@@ -200,6 +204,187 @@ describe('Binding', function() {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
+      });
+    });
+
+  });
+
+  describe('#open()', function() {
+
+    it('creates a file descriptor for reading (r)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
+      assert.isNumber(fd);
+    });
+
+    it('generates error if file does not exist (r)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('bogus', flags('r'));
+      });
+    });
+
+    it('creates a file descriptor for reading and writing (r+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r+'));
+      assert.isNumber(fd);
+    });
+
+    it('generates error if file does not exist (r+)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('bogus', flags('r+'));
+      });
+    });
+
+    it('creates a file descriptor for reading (rs)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('rs'));
+      assert.isNumber(fd);
+    });
+
+    it('generates error if file does not exist (rs)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('bogus', flags('rs'));
+      });
+    });
+
+    it('creates a file descriptor for reading and writing (rs+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('rs+'));
+      assert.isNumber(fd);
+    });
+
+    it('generates error if file does not exist (rs+)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('bogus', flags('rs+'));
+      });
+    });
+
+    it('opens a new file for writing (w)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('w'), 0644);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0644);
+    });
+
+    it('truncates an existing file for writing (w)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'), 0666);
+      var file = system.getItem(path.join('mock-dir', 'two.txt'));
+      assert.instanceOf(file, File);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('generates error if file exists (wx)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open(path.join('mock-dir', 'two.txt'), flags('wx'));
+      });
+    });
+
+    it('opens a new file for reading and writing (w+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('w+'), 0644);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0644);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('truncates an existing file for writing (w+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(
+          path.join('mock-dir', 'one.txt'), flags('w+'), 0666);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('opens a new file for reading and writing (wx+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('wx+'), 0644);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0644);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('generates error if file exists (wx+)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open(path.join('mock-dir', 'one.txt'), flags('wx+'), 0666);
+      });
+    });
+
+    it('opens a new file for appending (a)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('a'), 0666);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0666);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('opens an existing file for appending (a)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(
+          path.join('mock-dir', 'one.txt'), flags('a'), 0666);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      assert.equal(String(file.getContent()), 'one content');
+    });
+
+    it('opens a new file for appending (ax)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('ax'), 0664);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0664);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('generates error if file exists (ax)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open(path.join('mock-dir', 'one.txt'), flags('ax'), 0666);
+      });
+    });
+
+    it('opens a new file for appending and reading (a+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('a+'), 0666);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0666);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('opens an existing file for appending and reading (a+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(
+          path.join('mock-dir', 'one.txt'), flags('a+'), 0666);
+      var file = system.getItem(path.join('mock-dir', 'two.txt'));
+      assert.instanceOf(file, File);
+      assert.equal(String(file.getContent()), 'two content');
+    });
+
+    it('opens a new file for appending and reading (ax+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('ax+'), 0666);
+      var file = system.getItem('new.txt');
+      assert.instanceOf(file, File);
+      assert.equal(file.getMode(), 0666);
+      assert.equal(String(file.getContent()), '');
+    });
+
+    it('opens an existing file for appending and reading (ax+)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open(path.join('mock-dir', 'two.txt'), flags('ax+'), 0666);
       });
     });
 

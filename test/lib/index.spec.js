@@ -480,3 +480,119 @@ describe('fs.readdirSync(path)', function() {
   });
 
 });
+
+describe('fs.open(path, flags, [mode], callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'nested': {
+        'sub': {
+          'dir': {
+            'one.txt': 'one content',
+            'two.txt': 'two content',
+            'empty': {}
+          }
+        }
+      }
+    });
+  });
+
+  it('opens an existing file for reading (r)', function(done) {
+    fs.open('nested/sub/dir/one.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      assert.isNumber(fd);
+      done();
+    });
+  });
+
+  it('fails if file does not exist (r)', function(done) {
+    fs.open('bogus.txt', 'r', function(err, fd) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+  it('creates a new file for writing (w)', function(done) {
+    fs.open('path/to/new.txt', 'w', 0666, function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      assert.isNumber(fd);
+      assert.isTrue(fs.existsSync('path/to/new.txt'));
+      done();
+    });
+  });
+
+  it('opens an existing file for writing (w)', function(done) {
+    fs.open('path/to/one.txt', 'w', 0666, function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      assert.isNumber(fd);
+      done();
+    });
+  });
+
+  it('fails if file exists (wx)', function(done) {
+    fs.open('path/to/one.txt', 'wx', 0666, function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      assert.isNumber(fd);
+      done();
+    });
+  });
+
+});
+
+describe('fs.openSync(path, flags, [mode])', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'nested': {
+        'sub': {
+          'dir': {
+            'one.txt': 'one content',
+            'two.txt': 'two content',
+            'empty': {}
+          }
+        }
+      }
+    });
+  });
+
+  it('opens an existing file for reading (r)', function() {
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    assert.isNumber(fd);
+  });
+
+  it('fails if file does not exist (r)', function() {
+    assert.throws(function() {
+      fs.openSync('bogus.txt', 'r');
+    });
+  });
+
+  it('creates a new file for writing (w)', function() {
+    var fd = fs.openSync('nested/sub/new.txt', 'w', 0666);
+    assert.isNumber(fd);
+    assert.isTrue(fs.existsSync('nested/sub/new.txt'));
+  });
+
+  it('opens an existing file for writing (w)', function() {
+    var fd = fs.openSync('path/to/one.txt', 'w', 0666);
+    assert.isNumber(fd);
+  });
+
+  it('fails if file exists (wx)', function() {
+    assert.throws(function() {
+      fs.openSync('path/to/file.txt', 'wx', 0666);
+    });
+  });
+
+});
