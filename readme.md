@@ -49,10 +49,10 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.readdirSync`   |   100% | Complete |
 | `fs.stat`          |    90% | Provides stats object [described above](#Stats) |
 | `fs.statSync`      |    90% | Provides stats object [described above](#Stats) |
-| `fs.close`         |     0% | Implement `binding.close` |
-| `fs.closeSync`     |     0% | Implement `binding.close` |
-| `fs.open`          |     0% | Implement `binding.open` |
-| `fs.openSync`      |     0% | Implement `binding.open` |
+| `fs.close`         |   100% | Complete |
+| `fs.closeSync`     |   100% | Complete |
+| `fs.open`          |   100% | Complete |
+| `fs.openSync`      |   100% | Complete |
 | `fs.read`          |     0% | Implement `binding.read` |
 | `fs.readSync`      |     0% | Implement `binding.read` |
 | `fs.write`         |     0% | Implement `binding.write` |
