@@ -20,9 +20,9 @@ describe('FileDescriptor', function() {
 
   describe('#getPath()', function() {
 
-    it('returns the absolute path', function() {
+    it('returns the supplied path', function() {
       var fd = new FileDescriptor('foo/bar', flags('r'));
-      assert.equal(fd.getPath(), path.resolve('foo/bar'));
+      assert.equal(fd.getPath(), 'foo/bar');
     });
 
   });
