@@ -596,3 +596,54 @@ describe('fs.openSync(path, flags, [mode])', function() {
   });
 
 });
+
+describe('fs.close(fd, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({'dir': {}});
+  });
+
+  it('closes a file descriptor', function(done) {
+    var fd = fs.openSync('dir/file.txt', 'w');
+    fs.close(fd, function(err) {
+      done(err);
+    });
+  });
+
+  it('fails for closed file descriptors', function(done) {
+    var fd = fs.openSync('dir/file.txt', 'w');
+    fs.close(fd, function(err) {
+      if (err) {
+        return done(err);
+      }
+      fs.close(fd, function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+  });
+
+});
+
+describe('fs.closeSync(fd)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({'dir': {}});
+  });
+
+  it('closes a file descriptor', function() {
+    var fd = fs.openSync('dir/file.txt', 'w');
+    fs.closeSync(fd);
+  });
+
+  it('fails for closed file descriptors', function() {
+    var fd = fs.openSync('dir/file.txt', 'w');
+    fs.closeSync(fd);
+    assert.throws(function() {
+      fs.closeSync(fd);
+    });
+  });
+
+});

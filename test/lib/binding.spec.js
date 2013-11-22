@@ -390,6 +390,25 @@ describe('Binding', function() {
 
   });
 
+  describe('#close()', function() {
+
+    it('closes an existing file descriptor', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('w'), 0644);
+      binding.close(fd);
+    });
+
+    it('fails for closed file descriptor', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('new.txt', flags('w'), 0644);
+      binding.close(fd);
+      assert.throws(function() {
+        binding.close(fd);
+      });
+    });
+
+  });
+
   describe('#rename()', function() {
 
     it('allows files to be renamed', function(done) {
