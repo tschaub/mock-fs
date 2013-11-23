@@ -166,6 +166,13 @@ describe('Binding', function() {
       assert.equal(stats.size, 3);
     });
 
+    it('includes non-zero size for directories', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat('mock-dir');
+      assert.isNumber(stats.size);
+      assert.isTrue(stats.size > 0);
+    });
+
   });
 
   describe('#readdir()', function() {
