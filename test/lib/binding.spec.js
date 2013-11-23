@@ -175,6 +175,81 @@ describe('Binding', function() {
 
   });
 
+  describe('#fstat()', function() {
+
+    it('calls callback with a Stats instance', function(done) {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
+      binding.fstat(fd, function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.instanceOf(stats, binding.Stats);
+        done();
+      });
+    });
+
+    it('returns a Stats instance when called synchronously', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
+      var stats = binding.fstat(fd);
+      assert.instanceOf(stats, binding.Stats);
+    });
+
+    it('identifies files (async)', function(done) {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
+      binding.fstat(fd, function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
+        done();
+      });
+    });
+
+    it('identifies directories (async)', function(done) {
+      var binding = new Binding(system);
+      var fd = binding.open('mock-dir', flags('r'));
+      binding.fstat(fd, function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
+        done();
+      });
+    });
+
+
+    it('includes size in bytes (async)', function(done) {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
+      binding.fstat(fd, function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(stats.size, 11);
+        done();
+      });
+    });
+
+    it('includes size in bytes (sync)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'three.bin'), flags('r'));
+      var stats = binding.fstat(fd);
+      assert.equal(stats.size, 3);
+    });
+
+    it('includes non-zero size for directories', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('mock-dir', flags('r'));
+      var stats = binding.fstat(fd);
+      assert.isNumber(stats.size);
+      assert.isTrue(stats.size > 0);
+    });
+
+  });
+
   describe('#readdir()', function() {
 
     it('calls callback with file list', function(done) {

@@ -235,6 +235,95 @@ describe('fs.renameSync(oldPath, newPath)', function() {
 
 });
 
+describe('fs.fstat(fd, callback)', function() {
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'empty': {}
+    });
+  });
+
+  it('accepts a file descriptor for a file (r)', function(done) {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    fs.fstat(fd, function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isFile());
+      assert.equal(stats.size, 12);
+      done();
+    });
+
+  });
+
+  it('accepts a file descriptor for a directory (r)', function(done) {
+
+    var fd = fs.openSync('path/to', 'r');
+    fs.fstat(fd, function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isDirectory());
+      assert.isTrue(stats.size > 0);
+      done();
+    });
+
+  });
+
+  it('fails for bad file descriptor', function(done) {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    fs.closeSync(fd);
+    fs.fstat(fd, function(err, stats) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+
+  });
+
+});
+
+describe('fs.fstatSync(fd)', function() {
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content',
+      'empty': {}
+    });
+  });
+
+  it('accepts a file descriptor for a file (r)', function() {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    var stats = fs.fstatSync(fd);
+    assert.isTrue(stats.isFile());
+    assert.equal(stats.size, 12);
+
+  });
+
+  it('accepts a file descriptor for a directory (r)', function() {
+
+    var fd = fs.openSync('path/to', 'r');
+    var stats = fs.fstatSync(fd);
+    assert.isTrue(stats.isDirectory());
+    assert.isTrue(stats.size > 0);
+
+  });
+
+  it('fails for bad file descriptor', function() {
+
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    fs.closeSync(fd);
+    assert.throws(function() {
+      fs.fstatSync(fd);
+    });
+
+  });
+
+});
+
 describe('fs.exists(path, callback)', function() {
 
   var fs;
