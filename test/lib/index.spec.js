@@ -924,3 +924,74 @@ describe('fs.readSync(fd, buffer, offset, length, position)', function() {
   });
 
 });
+
+describe('fs.readFile(filename, [options], callback)', function() {
+
+  // this is provided by fs.open, fs.fstat, and fs.read
+  // so more heavily tested elsewhere
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('allows a file to be read asynchronously', function(done) {
+    fs.readFile('path/to/file.txt', function(err, data) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(Buffer.isBuffer(data));
+      assert.equal(String(data), 'file content');
+      done();
+    });
+  });
+
+  it('fails for directory', function(done) {
+    fs.readFile('path/to', function(err, data) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+  it('fails for bad path', function(done) {
+    fs.readFile('path/to/bogus', function(err, data) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.readFileSync(filename, [options])', function() {
+
+  // this is provided by fs.openSync, fs.fstatSync, and fs.readSync
+  // so more heavily tested elsewhere
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('allows a file to be read synchronously', function() {
+    var data = fs.readFileSync('path/to/file.txt');
+    assert.isTrue(Buffer.isBuffer(data));
+    assert.equal(String(data), 'file content');
+  });
+
+  it('fails for directory', function() {
+    assert.throws(function() {
+      fs.readFileSync('path/to');
+    });
+  });
+
+  it('fails for bad path', function() {
+    assert.throws(function() {
+      fs.readFileSync('path/to/bogus');
+    });
+  });
+
+});
