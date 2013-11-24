@@ -532,6 +532,71 @@ describe('Binding', function() {
 
   });
 
+  describe('#write()', function() {
+
+    it('writes to a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
+      var buffer = new Buffer('new content');
+      var written = binding.write(fd, buffer, 0, 11, 0);
+      assert.equal(written, 11);
+      var file = system.getItem(path.join('mock-dir', 'new.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'new content');
+    });
+
+    it('can overwrite a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('w'));
+      var buffer = new Buffer('bingo');
+      var written = binding.write(fd, buffer, 0, 5, null);
+      assert.equal(written, 5);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'bingo');
+    });
+
+    it('can append to a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
+      var buffer = new Buffer(' more');
+      var written = binding.write(fd, buffer, 0, 5, null);
+      assert.equal(written, 5);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'one content more');
+    });
+
+    it('can overwrite part of a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
+      var buffer = new Buffer('new');
+      var written = binding.write(fd, buffer, 0, 3, 0);
+      assert.equal(written, 3);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'new content');
+    });
+
+    it('throws if not open for writing', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
+      var buffer = new Buffer('some content');
+      assert.throws(function() {
+        binding.write(fd, buffer, 0, 12, 0);
+      });
+    });
+
+  });
+
   describe('#rename()', function() {
 
     it('allows files to be renamed', function(done) {
