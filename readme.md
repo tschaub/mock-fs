@@ -2,10 +2,6 @@
 
 A configurable mock file system.  You know, for testing.
 
-## Purpose
-
-Instead of testing against real file system resources, it should be easy to mock up a file system for tests.
-
 ## Example
 
 The code below creates a mock `fs` module that is configured to work with a few mock files and directories.
@@ -91,16 +87,16 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.futimesSync`       |     0% | Implement `binding.futimes` |
 | `fs.fsync`             |     0% | Implement `binding.fsync` |
 | `fs.fsyncSync`         |     0% | Implement `binding.fsync` |
-| `fs.write`             |     0% | Implement `binding.write` |
-| `fs.writeSync`         |     0% | Implement `binding.write` |
+| `fs.write`             |   100% | Complete |
+| `fs.writeSync`         |   100% | Complete |
 | `fs.read`              |   100% | Complete |
 | `fs.readSync`          |   100% | Complete |
 | `fs.readFile`          |   100% | Complete |
 | `fs.readFileSync`      |   100% | Complete |
-| `fs.writeFile`         |     0% | Implement `binding.write` |
-| `fs.writeFileSync`     |     0% | Implement `binding.write` |
-| `fs.appendFile`        |     0% | Implement `binding.write` |
-| `fs.appendFileSync`    |     0% | Implement `binding.write` |
+| `fs.writeFile`         |   100% | Complete |
+| `fs.writeFileSync`     |   100% | Complete |
+| `fs.appendFile`        |   100% | Complete |
+| `fs.appendFileSync`    |   100% | Complete |
 | `fs.watchFile`         |     0% | Implement `binding.StatWatcher` |
 | `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |
