@@ -995,3 +995,130 @@ describe('fs.readFileSync(filename, [options])', function() {
   });
 
 });
+
+describe('fs.write(fd, buffer, offset, length, position, callback)',
+    function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('writes a buffer to a file', function(done) {
+    fs.open('path/new-file.txt', 'w', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer('new file');
+      fs.write(fd, buffer, 0, buffer.length, null, function(err, written, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(written, 8);
+        assert.equal(buf, buffer);
+        assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
+        done();
+      });
+    });
+
+  });
+
+  it('can write a portion of a buffer to a file', function(done) {
+    fs.open('path/new-file.txt', 'w', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer('new file');
+      fs.write(fd, buffer, 1, 5, null, function(err, written, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(written, 5);
+        assert.equal(buf, buffer);
+        assert.equal(String(fs.readFileSync('path/new-file.txt')), 'ew fi');
+        done();
+      });
+    });
+
+  });
+
+  it('can append to a file', function(done) {
+    fs.open('path/to/file.txt', 'a', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var buffer = new Buffer(' more');
+      fs.write(fd, buffer, 0, 5, null, function(err, written, buf) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(written, 5);
+        assert.equal(buf, buffer);
+        assert.equal(String(fs.readFileSync('path/to/file.txt')),
+            'file content more');
+        done();
+      });
+    });
+  });
+
+  it('fails if file not open for writing', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      fs.write(fd, new Buffer('oops'), 0, 4, null, function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+  });
+
+});
+
+describe('fs.writeSync(fd, buffer, offset, length, position)',
+    function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('writes a buffer to a file', function() {
+    var buffer = new Buffer('new file');
+    var fd = fs.openSync('path/new-file.txt', 'w');
+    var written = fs.writeSync(fd, buffer, 0, buffer.length);
+    assert.equal(written, 8);
+    assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
+
+  });
+
+  it('can write a portion of a buffer to a file', function() {
+    var buffer = new Buffer('new file');
+    var fd = fs.openSync('path/new-file.txt', 'w');
+    var written = fs.writeSync(fd, buffer, 1, 5);
+    assert.equal(written, 5);
+    assert.equal(String(fs.readFileSync('path/new-file.txt')), 'ew fi');
+
+  });
+
+  it('can append to a file', function() {
+    var buffer = new Buffer(' more');
+    var fd = fs.openSync('path/to/file.txt', 'a');
+    var written = fs.writeSync(fd, buffer, 0, 5);
+    assert.equal(written, 5);
+    assert.equal(String(fs.readFileSync('path/to/file.txt')),
+        'file content more');
+  });
+
+  it('fails if file not open for writing', function() {
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    assert.throws(function() {
+      fs.writeSync(fd, new Buffer('oops'), 0, 4);
+    });
+  });
+
+});
