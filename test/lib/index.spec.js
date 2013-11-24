@@ -1122,3 +1122,68 @@ describe('fs.writeSync(fd, buffer, offset, length, position)',
   });
 
 });
+
+describe('fs.writeFile(filename, data, [options], callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      '.': {}
+    });
+  });
+
+  it('writes a string to a file', function(done) {
+    fs.writeFile('foo', 'bar', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(String(fs.readFileSync('foo')), 'bar');
+      done();
+    });
+  });
+
+  it('writes a buffer to a file', function(done) {
+    fs.writeFile('foo', new Buffer('bar'), function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(String(fs.readFileSync('foo')), 'bar');
+      done();
+    });
+  });
+
+  it('fails if directory does not exist', function(done) {
+    fs.writeFile('foo/bar', 'baz', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.writeFileSync(filename, data, [options]', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      '.': {}
+    });
+  });
+
+  it('writes a string to a file', function() {
+    fs.writeFileSync('foo', 'bar');
+    assert.equal(String(fs.readFileSync('foo')), 'bar');
+  });
+
+  it('writes a buffer to a file', function() {
+    fs.writeFileSync('foo', new Buffer('bar'));
+    assert.equal(String(fs.readFileSync('foo')), 'bar');
+  });
+
+  it('fails if directory does not exist', function() {
+    assert.throws(function() {
+      fs.writeFileSync('foo/bar', 'baz');
+    });
+  });
+
+});
