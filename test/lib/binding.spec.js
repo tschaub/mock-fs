@@ -725,4 +725,39 @@ describe('Binding', function() {
 
   });
 
+  describe('#rmdir()', function() {
+
+    it('removes an empty directory', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('mock-dir', 'empty');
+      binding.rmdir(dirPath);
+      assert.isNull(system.getItem(dirPath));
+    });
+
+    it('fails if directory is not empty', function() {
+      var binding = new Binding(system);
+      var dirPath = 'mock-dir';
+      assert.throws(function() {
+        binding.rmdir(dirPath);
+      });
+    });
+
+    it('fails if directory does not exist', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('bogus', 'path');
+      assert.throws(function() {
+        binding.rmdir(dirPath);
+      });
+    });
+
+    it('fails if a file exists', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('mock-dir', 'one.txt');
+      assert.throws(function() {
+        binding.rmdir(dirPath);
+      });
+    });
+
+  });
+
 });

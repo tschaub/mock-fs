@@ -71,8 +71,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.realpathSync`      |     0% | Implement `binding.readlink` & `binding.lstat` |
 | `fs.unlink`            |     0% | Implement `binding.unlink` |
 | `fs.unlinkSync`        |     0% | Implement `binding.unlink` |
-| `fs.rmdir`             |     0% | Implement `binding.rmdir` |
-| `fs.rmdirSync`         |     0% | Implement `binding.rmdir` |
+| `fs.rmdir`             |   100% | Complete |
+| `fs.rmdirSync`         |   100% | Complete |
 | `fs.mkdir`             |   100% | Complete |
 | `fs.mkdirSync`         |   100% | Complete |
 | `fs.readdir`           |   100% | Complete |

@@ -1353,3 +1353,66 @@ describe('fs.mkdirSync(path, [mode])', function() {
   });
 
 });
+
+describe('fs.rmdir(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/empty': {}
+    });
+  });
+
+  it('removes an empty directory', function(done) {
+    fs.rmdir('path/to/empty', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('path/to/empty'));
+      done();
+    });
+  });
+
+  it('fails if not empty', function(done) {
+    fs.rmdir('path/to', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.rmdirSync(path)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/empty': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('removes an empty directory', function() {
+    fs.rmdirSync('path/empty');
+    assert.isFalse(fs.existsSync('path/empty'));
+  });
+
+  it('fails if directory does not exist', function() {
+    assert.throws(function() {
+      fs.rmdirSync('path/bogus');
+    });
+  });
+
+  it('fails if not empty', function() {
+    assert.throws(function() {
+      fs.rmdirSync('path');
+    });
+  });
+
+  it('fails if file', function() {
+    assert.throws(function() {
+      fs.rmdirSync('file.txt');
+    });
+  });
+
+});
