@@ -1,6 +1,7 @@
 var path = require('path');
 
 var Binding = require('../../lib/binding').Binding;
+var Directory = require('../../lib/directory').Directory;
 var File = require('../../lib/file').File;
 var FileSystem = require('../../lib/filesystem');
 var helper = require('../helper');
@@ -682,6 +683,43 @@ describe('Binding', function() {
       binding.rename(oldPath, newPath, function(err) {
         assert.instanceOf(err, Error);
         done();
+      });
+    });
+
+  });
+
+  describe('#mkdir()', function() {
+
+    it('creates a new directory', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('mock-dir', 'foo');
+      binding.mkdir(dirPath, 0755);
+      var dir = system.getItem(dirPath);
+      assert.instanceOf(dir, Directory);
+      assert.equal(dir.getMode(), 0755);
+    });
+
+    it('fails if parent does not exist', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('bogus', 'path');
+      assert.throws(function() {
+        binding.mkdir(dirPath, 0755);
+      });
+    });
+
+    it('fails if directory exists', function() {
+      var binding = new Binding(system);
+      var dirPath = 'mock-dir';
+      assert.throws(function() {
+        binding.mkdir(dirPath, 0755);
+      });
+    });
+
+    it('fails if file exists', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('mock-dir', 'one.txt');
+      assert.throws(function() {
+        binding.mkdir(dirPath, 0755);
       });
     });
 

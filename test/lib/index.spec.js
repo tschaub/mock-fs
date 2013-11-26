@@ -1262,3 +1262,94 @@ describe('fs.appendFileSync(filename, data, [options]', function() {
   });
 
 });
+
+describe('fs.mkdir(path, [mode], callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'parent': {}
+    });
+  });
+
+  it('creates a new directory', function(done) {
+    fs.mkdir('parent/dir', function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('parent/dir');
+      assert.isTrue(stats.isDirectory());
+      done();
+    });
+  });
+
+  it('accepts dir mode', function(done) {
+    fs.mkdir('parent/dir', 0755, function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('parent/dir');
+      assert.isTrue(stats.isDirectory());
+      assert.equal(stats.mode & 0777, 0755);
+      done();
+    });
+  });
+
+  it('fails if parent does not exist', function(done) {
+    fs.mkdir('parent/bogus/dir', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+  it('fails if directory already exists', function(done) {
+    fs.mkdir('parent', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.mkdirSync(path, [mode])', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'parent': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('creates a new directory', function() {
+    fs.mkdirSync('parent/dir');
+    var stats = fs.statSync('parent/dir');
+    assert.isTrue(stats.isDirectory());
+  });
+
+  it('accepts dir mode', function() {
+    fs.mkdirSync('parent/dir', 0755);
+    var stats = fs.statSync('parent/dir');
+    assert.isTrue(stats.isDirectory());
+    assert.equal(stats.mode & 0777, 0755);
+  });
+
+  it('fails if parent does not exist', function() {
+    assert.throws(function() {
+      fs.mkdirSync('parent/bogus/dir');
+    });
+  });
+
+  it('fails if directory already exists', function() {
+    assert.throws(function() {
+      fs.mkdirSync('parent');
+    });
+  });
+
+  it('fails if file already exists', function() {
+    assert.throws(function() {
+      fs.mkdirSync('file.txt');
+    });
+  });
+
+});
