@@ -996,8 +996,8 @@ describe('fs.readFileSync(filename, [options])', function() {
 
 });
 
-describe('fs.write(fd, buffer, offset, length, position, callback)',
-    function() {
+var fsWrite = 'fs.write(fd, buffer, offset, length, position, callback)';
+describe(fsWrite, function() {
 
   var fs;
   beforeEach(function() {
@@ -1077,8 +1077,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)',
 
 });
 
-describe('fs.writeSync(fd, buffer, offset, length, position)',
-    function() {
+describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
 
   var fs;
   beforeEach(function() {
