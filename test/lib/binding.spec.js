@@ -313,6 +313,14 @@ describe('Binding', function() {
       assert.isNumber(fd);
     });
 
+    it('does not truncate (r+)', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r+'));
+      var file = system.getItem(path.join('mock-dir', 'two.txt'));
+      assert.instanceOf(file, File);
+      assert.equal(String(file.getContent()), 'two content');
+    });
+
     it('generates error if file does not exist (r+)', function() {
       var binding = new Binding(system);
       assert.throws(function() {

@@ -110,6 +110,70 @@ describe('FileDescriptor', function() {
 
   });
 
+  describe('#isTruncate()', function() {
+
+    it('not opened for truncating (r)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('r'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (r+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('r+'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (rs)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('rs'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (rs+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('rs+'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('opened for truncating (w)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('w'));
+      assert.isTrue(fd.isTruncate());
+    });
+
+    it('opened for truncating (wx)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('wx'));
+      assert.isTrue(fd.isTruncate());
+    });
+
+    it('opened for truncating (w+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('w+'));
+      assert.isTrue(fd.isTruncate());
+    });
+
+    it('opened for truncating (wx+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('wx+'));
+      assert.isTrue(fd.isTruncate());
+    });
+
+    it('not opened for truncating (a)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('a'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (ax)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('ax'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (a+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('a+'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (ax+)', function() {
+      var fd = new FileDescriptor('foo/bar', flags('ax+'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+  });
+
   describe('#isCreate()', function() {
 
     it('not opened for creation (r)', function() {
