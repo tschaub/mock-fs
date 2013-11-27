@@ -768,4 +768,34 @@ describe('Binding', function() {
 
   });
 
+  describe('#ftruncate()', function() {
+
+    it('truncates a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r+'));
+      binding.ftruncate(fd, 3);
+      var file = system.getItem(pathname);
+      assert.equal(String(file.getContent()), 'one');
+    });
+
+    it('fails if directory', function() {
+      var binding = new Binding(system);
+      var fd = binding.open('mock-dir', flags('r'));
+      assert.throws(function() {
+        binding.ftruncate(fd, 3);
+      });
+    });
+
+    it('fails if not open for writing', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      assert.throws(function() {
+        binding.ftruncate(fd, 4);
+      });
+    });
+
+  });
+
 });

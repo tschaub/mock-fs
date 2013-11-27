@@ -40,9 +40,10 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 |------------------------|:------:|----------|
 | `fs.rename`            |   100% | Complete |
 | `fs.renameSync`        |   100% | Complete |
-| `fs.ftruncate`         |     0% | Implement `binding.ftruncate` |
-| `fs.ftruncateSync`     |     0% | Implement `binding.ftruncate` |
-| `fs.truncate`          |     0% | Implement `binding.ftruncate` |
+| `fs.ftruncate`         |   100% | Complete |
+| `fs.ftruncateSync`     |   100% | Complete |
+| `fs.truncate`          |   100% | Complete |
+| `fs.truncateSync`      |   100% | Complete |
 | `fs.chown`             |     0% | Implement `binding.chown` |
 | `fs.chownSync`         |     0% | Implement `binding.chown` |
 | `fs.fchown`            |     0% | Implement `binding.fchown` |
