@@ -136,6 +136,14 @@ describe('Item', function() {
       assert.equal(item.getMode(), 0644);
     });
 
+    it('updates the ctime', function() {
+      var item = new Item('foo');
+      var original = new Date(1);
+      item.setCTime(original);
+      item.setMode(0644);
+      assert.isTrue(item.getCTime() > original);
+    });
+
   });
 
   describe('#getUid()', function() {
