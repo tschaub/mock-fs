@@ -138,6 +138,58 @@ describe('Item', function() {
 
   });
 
+  describe('#getUid()', function() {
 
+    it('returns undefined by default', function() {
+      var item = new Item('foo');
+      assert.isUndefined(item.getUid());
+    });
+
+  });
+
+  describe('#setUid()', function() {
+
+    it('sets the uid', function() {
+      var item = new Item('foo');
+      item.setUid(42);
+      assert.equal(item.getUid(), 42);
+    });
+
+    it('updates the ctime', function() {
+      var item = new Item('foo');
+      var original = new Date(1);
+      item.setCTime(original);
+      item.setUid(42);
+      assert.isTrue(item.getCTime() > original);
+    });
+
+  });
+
+  describe('#getGid()', function() {
+
+    it('returns undefined by default', function() {
+      var item = new Item('foo');
+      assert.isUndefined(item.getGid());
+    });
+
+  });
+
+  describe('#setGid()', function() {
+
+    it('sets the gid', function() {
+      var item = new Item('foo');
+      item.setGid(42);
+      assert.equal(item.getGid(), 42);
+    });
+
+    it('updates the ctime', function() {
+      var item = new Item('foo');
+      var original = new Date(1);
+      item.setCTime(original);
+      item.setGid(42);
+      assert.isTrue(item.getCTime() > original);
+    });
+
+  });
 
 });
