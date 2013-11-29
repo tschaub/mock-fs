@@ -146,15 +146,6 @@ describe('Item', function() {
 
   });
 
-  describe('#getUid()', function() {
-
-    it('returns undefined by default', function() {
-      var item = new Item('foo');
-      assert.isUndefined(item.getUid());
-    });
-
-  });
-
   describe('#setUid()', function() {
 
     it('sets the uid', function() {
@@ -169,15 +160,6 @@ describe('Item', function() {
       item.setCTime(original);
       item.setUid(42);
       assert.isTrue(item.getCTime() > original);
-    });
-
-  });
-
-  describe('#getGid()', function() {
-
-    it('returns undefined by default', function() {
-      var item = new Item('foo');
-      assert.isUndefined(item.getGid());
     });
 
   });

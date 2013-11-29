@@ -174,6 +174,38 @@ describe('Binding', function() {
       assert.isTrue(stats.size > 0);
     });
 
+    it('includes uid for files', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'two.txt'));
+      if (process.getuid) {
+        assert.equal(stats.uid, process.getuid());
+      }
+    });
+
+    it('includes uid for directories', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'empty'));
+      if (process.getuid) {
+        assert.equal(stats.uid, process.getuid());
+      }
+    });
+
+    it('includes gid for files', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'two.txt'));
+      if (process.getgid) {
+        assert.equal(stats.gid, process.getgid());
+      }
+    });
+
+    it('includes gid for directories', function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'empty'));
+      if (process.getgid) {
+        assert.equal(stats.gid, process.getgid());
+      }
+    });
+
   });
 
   describe('#fstat()', function() {
