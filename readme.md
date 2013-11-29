@@ -44,24 +44,24 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.ftruncateSync`     |   100% | Complete |
 | `fs.truncate`          |   100% | Complete |
 | `fs.truncateSync`      |   100% | Complete |
-| `fs.chown`             |     0% | Implement `binding.chown` |
-| `fs.chownSync`         |     0% | Implement `binding.chown` |
-| `fs.fchown`            |     0% | Implement `binding.fchown` |
-| `fs.fchownSync`        |     0% | Implement `binding.fchown` |
-| `fs.lchownSync`        |     0% | Implement `binding.fchown` |
-| `fs.lchown`            |     0% | Implement `binding.fchown` |
+| `fs.chown`             |   100% | Complete |
+| `fs.chownSync`         |   100% | Complete |
+| `fs.fchown`            |   100% | Complete |
+| `fs.fchownSync`        |   100% | Complete |
+| `fs.lchown`            |   100% | Complete |
+| `fs.lchownSync`        |   100% | Complete |
 | `fs.chmod`             |     0% | Implement `binding.chmod` |
 | `fs.chmodSync`         |     0% | Implement `binding.chmod` |
 | `fs.fchmod`            |     0% | Implement `binding.fchmod` |
 | `fs.fchmodSync`        |     0% | Implement `binding.fchmod` |
 | `fs.lchmod`            |     0% | Implement `binding.fchmod` |
 | `fs.lchmodSync`        |     0% | Implement `binding.fchmod` |
-| `fs.stat`              |    90% | Provides stats object [see Stats](#Stats) |
+| `fs.stat`              |    90% | Provides a [stats object](#Stats) |
 | `fs.lstat`             |     0% | Implement `binding.lstat` |
-| `fs.fstat`             |    90% | Provides stats object [see Stats](#Stats) |
-| `fs.statSync`          |    90% | Provides stats object [see Stats](#Stats) |
+| `fs.fstat`             |    90% | Provides a [stats object](#Stats) |
+| `fs.statSync`          |    90% | Provides a [stats object](#Stats) |
 | `fs.lstatSync`         |     0% | Implement `binding.lstat` |
-| `fs.fstatSync`         |    90% | Provides stats object [see Stats](#Stats) |
+| `fs.fstatSync`         |    90% | Provides a [stats object](#Stats) |
 | `fs.link`              |     0% | Implement `binding.link` |
 | `fs.linkSync`          |     0% | Implement `binding.link` |
 | `fs.symlink`           |     0% | Implement `binding.symlink` |
@@ -103,7 +103,7 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |
 | `fs.exists`            |   100% | Complete |
 | `fs.existsSync`        |   100% | Complete |
-| `fs.Stats`             |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `isFile()`, and `isDirectory()` |
+| `fs.Stats`             |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, `isFile()`, and `isDirectory()` |
 | `fs.createReadStream`  |   100% | Complete |
 | `fs.ReadStream`        |   100% | Complete |
 | `fs.createWriteStream` |   100% | Complete |
