@@ -798,4 +798,49 @@ describe('Binding', function() {
 
   });
 
+  describe('#chown()', function() {
+
+    it('sets the uid and gid for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      binding.chown(pathname, 3, 4);
+      var file = system.getItem(pathname);
+      assert.equal(file.getUid(), 3);
+      assert.equal(file.getGid(), 4);
+    });
+
+    it('sets the uid and gid for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      binding.chown(pathname, 5, 6);
+      var dir = system.getItem(pathname);
+      assert.equal(dir.getUid(), 5);
+      assert.equal(dir.getGid(), 6);
+    });
+
+  });
+
+  describe('#fchown()', function() {
+
+    it('sets the uid and gid for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      binding.fchown(fd, 3, 4);
+      var file = system.getItem(pathname);
+      assert.equal(file.getUid(), 3);
+      assert.equal(file.getGid(), 4);
+    });
+
+    it('sets the uid and gid for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      var fd = binding.open(pathname, flags('r'));
+      binding.fchown(fd, 5, 6);
+      var dir = system.getItem(pathname);
+      assert.equal(dir.getUid(), 5);
+      assert.equal(dir.getGid(), 6);
+    });
+
+  });
 });

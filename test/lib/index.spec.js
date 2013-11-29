@@ -1415,3 +1415,82 @@ describe('fs.rmdirSync(path)', function() {
   });
 
 });
+
+describe('fs.chown(path, uid, gid, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/empty': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('changes ownership of a file', function(done) {
+    fs.chown('file.txt', 42, 43, done);
+  });
+
+  it('fails if file does not exist', function(done) {
+    fs.chown('bogus.txt', 42, 43, function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.chownSync(path, uid, gid)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/empty': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('changes ownership of a file', function() {
+    fs.chownSync('file.txt', 42, 43);
+  });
+
+  it('fails if file does not exist', function() {
+    assert.throws(function() {
+      fs.chownSync('bogus.txt', 42, 43);
+    });
+  });
+
+});
+
+describe('fs.fchown(fd, uid, gid, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/empty': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('changes ownership of a file', function(done) {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.fchown(fd, 42, 43, done);
+  });
+
+});
+
+describe('fs.fchownSync(fd, uid, gid)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/empty': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('changes ownership of a file', function() {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.fchownSync(fd, 42, 43);
+  });
+
+});
