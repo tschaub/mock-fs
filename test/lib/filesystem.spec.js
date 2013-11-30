@@ -162,6 +162,27 @@ describe('FileSystem.create', function() {
 
   });
 
+  it('accepts file factory with uid & gid', function() {
+
+    var system = FileSystem.create({
+      'path/to/file.js': FileSystem.file({
+        content: 'foo',
+        uid: 42,
+        gid: 43
+      })
+    });
+
+    assert.instanceOf(system, FileSystem);
+
+    var file = system.getItem(path.join('path', 'to', 'file.js'));
+    assert.instanceOf(file, File);
+    assert.equal(file.getName(), 'file.js');
+    assert.equal(String(file.getContent()), 'foo');
+    assert.equal(file.getUid(), 42);
+    assert.equal(file.getGid(), 43);
+
+  });
+
   it('accepts directory factory', function() {
 
     var system = FileSystem.create({
@@ -173,6 +194,25 @@ describe('FileSystem.create', function() {
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
     assert.equal(dir.getName(), 'dir');
+
+  });
+
+  it('accepts directory factory with uid & gid', function() {
+
+    var system = FileSystem.create({
+      'path/to/dir': FileSystem.directory({
+        uid: 42,
+        gid: 43
+      })
+    });
+
+    assert.instanceOf(system, FileSystem);
+
+    var dir = system.getItem(path.join('path', 'to', 'dir'));
+    assert.instanceOf(dir, Directory);
+    assert.equal(dir.getName(), 'dir');
+    assert.equal(dir.getUid(), 42);
+    assert.equal(dir.getGid(), 43);
 
   });
 
