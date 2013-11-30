@@ -216,4 +216,32 @@ describe('FileSystem.create', function() {
 
   });
 
+  it('accepts directory factory with additional items', function() {
+
+    var system = FileSystem.create({
+      'path/to/dir': FileSystem.directory({
+        mode: 0755,
+        items: {
+          'file.txt': 'file content',
+          'empty-dir': {}
+        }
+      })
+    });
+
+    assert.instanceOf(system, FileSystem);
+
+    var dir = system.getItem(path.join('path', 'to', 'dir'));
+    assert.instanceOf(dir, Directory);
+    assert.equal(dir.getName(), 'dir');
+    assert.equal(dir.getMode(), 0755);
+
+    var file = system.getItem(path.join('path', 'to', 'dir', 'file.txt'));
+    assert.instanceOf(file, File);
+    assert.equal(String(file.getContent()), 'file content');
+
+    var empty = system.getItem(path.join('path', 'to', 'dir', 'empty-dir'));
+    assert.instanceOf(empty, Directory);
+    assert.deepEqual(empty.list(), []);
+  });
+
 });
