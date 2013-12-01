@@ -109,7 +109,7 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.createWriteStream` |   100% | Complete |
 | `fs.WriteStream`       |   100% | Complete |
 | `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
-| `fs.fdatasync`         |     0% | Implement `binding.fdatasync` |
-| `fs.fdatasyncSync`     |     0% | Implement `binding.fdatasync` |
+| `fs.fdatasync`         |   100% | Complete |
+| `fs.fdatasyncSync`     |   100% | Complete |
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)

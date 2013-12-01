@@ -1020,4 +1020,25 @@ describe('Binding', function() {
 
   });
 
+  describe('#fdatasync()', function() {
+
+    it('synchronize file state (noop)', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      binding.fdatasync(fd);
+    });
+
+    it('fails for closed file descriptor', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      binding.close(fd);
+      assert.throws(function() {
+        binding.fdatasync(fd);
+      });
+    });
+
+  });
+
 });
