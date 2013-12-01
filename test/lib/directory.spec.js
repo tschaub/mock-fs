@@ -1,5 +1,5 @@
 var Item = require('../../lib/item');
-var Directory = require('../../lib/directory').Directory;
+var Directory = require('../../lib/directory');
 var File = require('../../lib/file');
 var assert = require('../helper').assert;
 

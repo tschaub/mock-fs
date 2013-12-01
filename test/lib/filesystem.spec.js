@@ -1,6 +1,6 @@
 var path = require('path');
 
-var Directory = require('../../lib/directory').Directory;
+var Directory = require('../../lib/directory');
 var File = require('../../lib/file');
 var FileSystem = require('../../lib/filesystem');
 var assert = require('../helper').assert;
