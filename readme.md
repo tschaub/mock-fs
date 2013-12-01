@@ -86,8 +86,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.utimesSync`        |   100% | Complete |
 | `fs.futimes`           |   100% | Complete |
 | `fs.futimesSync`       |   100% | Complete |
-| `fs.fsync`             |     0% | Implement `binding.fsync` |
-| `fs.fsyncSync`         |     0% | Implement `binding.fsync` |
+| `fs.fsync`             |   100% | Complete |
+| `fs.fsyncSync`         |   100% | Complete |
 | `fs.write`             |   100% | Complete |
 | `fs.writeSync`         |   100% | Complete |
 | `fs.read`              |   100% | Complete |
