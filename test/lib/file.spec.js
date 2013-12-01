@@ -1,5 +1,5 @@
 var Item = require('../../lib/item');
-var File = require('../../lib/file').File;
+var File = require('../../lib/file');
 var assert = require('../helper').assert;
 
 describe('File', function() {
