@@ -1494,3 +1494,96 @@ describe('fs.fchownSync(fd, uid, gid)', function() {
   });
 
 });
+
+describe('fs.chmod(path, mode, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': mock.file({mode: 0644})
+    });
+  });
+
+  it('changes permissions of a file', function(done) {
+    fs.chmod('file.txt', 0664, function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('file.txt');
+      assert.equal(stats.mode & 0777, 0664);
+      done();
+    });
+  });
+
+  it('fails if file does not exist', function(done) {
+    fs.chmod('bogus.txt', 0664, function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.chmodSync(path, mode)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': mock.file({mode: 0666})
+    });
+  });
+
+  it('changes permissions of a file', function() {
+    fs.chmodSync('file.txt', 0644);
+    var stats = fs.statSync('file.txt');
+    assert.equal(stats.mode & 0777, 0644);
+  });
+
+  it('fails if file does not exist', function() {
+    assert.throws(function() {
+      fs.chmodSync('bogus.txt', 0644);
+    });
+  });
+
+});
+
+describe('fs.fchmod(fd, mode, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': mock.file({mode: 0666})
+    });
+  });
+
+  it('changes permissions of a file', function(done) {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.fchmod(fd, 0644, function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('file.txt');
+      assert.equal(stats.mode & 0777, 0644);
+      done();
+    });
+  });
+
+});
+
+describe('fs.fchmodSync(fd, mode)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content'
+    });
+  });
+
+  it('changes permissions of a file', function() {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.fchmodSync(fd, 0444);
+    var stats = fs.statSync('file.txt');
+    assert.equal(stats.mode & 0777, 0444);
+  });
+
+});

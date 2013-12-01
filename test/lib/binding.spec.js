@@ -875,4 +875,47 @@ describe('Binding', function() {
     });
 
   });
+
+  describe('#chmod()', function() {
+
+    it('sets the mode for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'two.txt');
+      binding.chmod(pathname, 0644);
+      var file = system.getItem(pathname);
+      assert.equal(file.getMode(), 0644);
+    });
+
+    it('sets the mode for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      binding.chmod(pathname, 0755);
+      var dir = system.getItem(pathname);
+      assert.equal(dir.getMode(), 0755);
+    });
+
+  });
+
+  describe('#fchmod()', function() {
+
+    it('sets the mode for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      binding.fchmod(fd, 0664);
+      var file = system.getItem(pathname);
+      assert.equal(file.getMode(), 0664);
+    });
+
+    it('sets the mode for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      var fd = binding.open(pathname, flags('r'));
+      binding.fchmod(fd, 0775);
+      var dir = system.getItem(pathname);
+      assert.equal(dir.getMode(), 0775);
+    });
+
+  });
+
 });

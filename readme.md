@@ -50,12 +50,12 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.fchownSync`        |   100% | Complete |
 | `fs.lchown`            |   100% | Complete |
 | `fs.lchownSync`        |   100% | Complete |
-| `fs.chmod`             |     0% | Implement `binding.chmod` |
-| `fs.chmodSync`         |     0% | Implement `binding.chmod` |
-| `fs.fchmod`            |     0% | Implement `binding.fchmod` |
-| `fs.fchmodSync`        |     0% | Implement `binding.fchmod` |
-| `fs.lchmod`            |     0% | Implement `binding.fchmod` |
-| `fs.lchmodSync`        |     0% | Implement `binding.fchmod` |
+| `fs.chmod`             |   100% | Complete |
+| `fs.chmodSync`         |   100% | Complete |
+| `fs.fchmod`            |   100% | Complete |
+| `fs.fchmodSync`        |   100% | Complete |
+| `fs.lchmod`            |   100% | Complete |
+| `fs.lchmodSync`        |   100% | Complete |
 | `fs.stat`              |    90% | Provides a [stats object](#Stats) |
 | `fs.lstat`             |     0% | Implement `binding.lstat` |
 | `fs.fstat`             |    90% | Provides a [stats object](#Stats) |
