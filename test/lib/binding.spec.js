@@ -1,6 +1,6 @@
 var path = require('path');
 
-var Binding = require('../../lib/binding').Binding;
+var Binding = require('../../lib/binding');
 var Directory = require('../../lib/directory').Directory;
 var File = require('../../lib/file').File;
 var FileSystem = require('../../lib/filesystem');
