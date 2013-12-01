@@ -1587,3 +1587,76 @@ describe('fs.fchmodSync(fd, mode)', function() {
   });
 
 });
+
+describe('fs.unlink(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('deletes a file', function(done) {
+    fs.unlink('file.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('file.txt'));
+      done();
+    });
+  });
+
+  it('fails for a directory', function(done) {
+    fs.unlink('dir', function(err) {
+      assert.instanceOf(err, Error);
+      assert.isTrue(fs.existsSync('dir'));
+      done();
+    });
+  });
+
+  it('respects previously opened file descriptors', function(done) {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.unlink('file.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('file.txt'));
+      // but we can still use fd to read
+      var buffer = new Buffer(7);
+      var read = fs.readSync(fd, buffer, 0, 7);
+      assert.equal(read, 7);
+      assert.equal(String(buffer), 'content');
+      done();
+    });
+  });
+
+});
+
+describe('fs.unlinkSync(path)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content'
+    });
+  });
+
+  it('deletes a file', function() {
+    fs.unlinkSync('file.txt');
+    assert.isFalse(fs.existsSync('file.txt'));
+  });
+
+  it('respects previously opened file descriptors', function() {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.unlinkSync('file.txt');
+    assert.isFalse(fs.existsSync('file.txt'));
+    // but we can still use fd to read
+    var buffer = new Buffer(7);
+    var read = fs.readSync(fd, buffer, 0, 7);
+    assert.equal(read, 7);
+    assert.equal(String(buffer), 'content');
+  });
+
+});

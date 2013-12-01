@@ -918,4 +918,31 @@ describe('Binding', function() {
 
   });
 
+  describe('#unlink()', function() {
+
+    it('deletes a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      binding.unlink(pathname);
+      assert.isNull(system.getItem(pathname));
+    });
+
+    it('fails for directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      assert.throws(function() {
+        binding.unlink(pathname);
+      });
+    });
+
+    it('fails for bogus path', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'bogus.txt');
+      assert.throws(function() {
+        binding.unlink(pathname);
+      });
+    });
+
+  });
+
 });
