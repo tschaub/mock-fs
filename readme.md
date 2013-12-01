@@ -82,10 +82,10 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.closeSync`         |   100% | Complete |
 | `fs.open`              |   100% | Complete |
 | `fs.openSync`          |   100% | Complete |
-| `fs.utimes`            |     0% | Implement `binding.utimes` |
-| `fs.utimesSync`        |     0% | Implement `binding.utimes` |
-| `fs.futimes`           |     0% | Implement `binding.futimes` |
-| `fs.futimesSync`       |     0% | Implement `binding.futimes` |
+| `fs.utimes`            |   100% | Complete |
+| `fs.utimesSync`        |   100% | Complete |
+| `fs.futimes`           |   100% | Complete |
+| `fs.futimesSync`       |   100% | Complete |
 | `fs.fsync`             |     0% | Implement `binding.fsync` |
 | `fs.fsyncSync`         |     0% | Implement `binding.fsync` |
 | `fs.write`             |   100% | Complete |

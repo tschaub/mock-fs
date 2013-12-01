@@ -945,4 +945,57 @@ describe('Binding', function() {
 
   });
 
+  describe('#utimes()', function() {
+
+    it('updates atime and mtime for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      binding.utimes(pathname, 100, 200);
+      var item = system.getItem(pathname);
+      assert.equal(item.getATime().getTime(), 100 * 1000);
+      assert.equal(item.getMTime().getTime(), 200 * 1000);
+    });
+
+    it('updates atime and mtime for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      binding.utimes(pathname, 300, 400);
+      var item = system.getItem(pathname);
+      assert.equal(item.getATime().getTime(), 300 * 1000);
+      assert.equal(item.getMTime().getTime(), 400 * 1000);
+    });
+
+    it('fails for a bogus path', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'bogus.txt');
+      assert.throws(function() {
+        binding.utimes(pathname, 300, 400);
+      });
+    });
+
+  });
+
+  describe('#futimes()', function() {
+
+    it('updates atime and mtime for a file', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one.txt');
+      var fd = binding.open(pathname, flags('r'));
+      binding.futimes(fd, 100, 200);
+      var item = system.getItem(pathname);
+      assert.equal(item.getATime().getTime(), 100 * 1000);
+      assert.equal(item.getMTime().getTime(), 200 * 1000);
+    });
+
+    it('updates atime and mtime for a directory', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'empty');
+      var fd = binding.open(pathname, flags('r'));
+      binding.futimes(fd, 300, 400);
+      var item = system.getItem(pathname);
+      assert.equal(item.getATime().getTime(), 300 * 1000);
+      assert.equal(item.getMTime().getTime(), 400 * 1000);
+    });
+
+  });
 });

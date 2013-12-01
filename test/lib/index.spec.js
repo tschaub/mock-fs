@@ -1660,3 +1660,121 @@ describe('fs.unlinkSync(path)', function() {
   });
 
 });
+
+describe('fs.utimes(path, atime, mtime, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('updates timestamps for a file', function(done) {
+    fs.utimes('file.txt', new Date(100), new Date(200), function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('file.txt');
+      assert.equal(stats.atime.getTime(), 100);
+      assert.equal(stats.mtime.getTime(), 200);
+      done();
+    });
+  });
+
+  it('updates timestamps for a directory', function(done) {
+    fs.utimes('dir', new Date(300), new Date(400), function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('dir');
+      assert.equal(stats.atime.getTime(), 300);
+      assert.equal(stats.mtime.getTime(), 400);
+      done();
+    });
+  });
+
+  it('fails for a bogus path', function(done) {
+    fs.utimes('bogus.txt', new Date(100), new Date(200), function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.utimesSync(path, atime, mtime)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content'
+    });
+  });
+
+  it('updates timestamps for a file', function() {
+    fs.utimesSync('file.txt', new Date(100), new Date(200));
+    var stats = fs.statSync('file.txt');
+    assert.equal(stats.atime.getTime(), 100);
+    assert.equal(stats.mtime.getTime(), 200);
+  });
+
+});
+
+describe('fs.futimes(fd, atime, mtime, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('updates timestamps for a file', function(done) {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.futimes(fd, new Date(100), new Date(200), function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('file.txt');
+      assert.equal(stats.atime.getTime(), 100);
+      assert.equal(stats.mtime.getTime(), 200);
+      done();
+    });
+  });
+
+  it('updates timestamps for a directory', function(done) {
+    var fd = fs.openSync('dir', 'r');
+    fs.futimes(fd, new Date(300), new Date(400), function(err) {
+      if (err) {
+        return done(err);
+      }
+      var stats = fs.statSync('dir');
+      assert.equal(stats.atime.getTime(), 300);
+      assert.equal(stats.mtime.getTime(), 400);
+      done();
+    });
+  });
+
+});
+
+describe('fs.futimesSync(path, atime, mtime)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content'
+    });
+  });
+
+  it('updates timestamps for a file', function() {
+    var fd = fs.openSync('file.txt', 'r');
+    fs.futimesSync(fd, new Date(100), new Date(200));
+    var stats = fs.statSync('file.txt');
+    assert.equal(stats.atime.getTime(), 100);
+    assert.equal(stats.mtime.getTime(), 200);
+  });
+
+});
