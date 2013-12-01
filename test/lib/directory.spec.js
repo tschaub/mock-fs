@@ -80,7 +80,7 @@ describe('Directory', function() {
       var parent = new Directory('parent');
       var child = new Directory('child');
       parent.addItem(child);
-      var removed = parent.removeItem('child');
+      var removed = parent.removeItem(child);
       assert.equal(removed, child);
       assert.isNull(removed.getParent());
     });
@@ -89,17 +89,17 @@ describe('Directory', function() {
       var parent = new Directory('parent');
       var child = new File('child');
       parent.addItem(child);
-      var removed = parent.removeItem('child');
+      var removed = parent.removeItem(child);
       assert.equal(removed, child);
       assert.isNull(removed.getParent());
     });
 
-    it('throws if named item is not a child', function() {
+    it('throws if item is not a child', function() {
       var parent = new Directory('parent');
       parent.addItem(new Directory('one'));
       parent.addItem(new File('two'));
       assert.throws(function() {
-        parent.removeItem('nobody');
+        parent.removeItem(new File('two'));
       });
     });
 
