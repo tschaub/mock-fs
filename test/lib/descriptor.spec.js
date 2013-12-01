@@ -1,6 +1,6 @@
 var path = require('path');
 
-var FileDescriptor = require('../../lib/descriptor').FileDescriptor;
+var FileDescriptor = require('../../lib/descriptor');
 var helper = require('../helper');
 
 var assert = helper.assert;
