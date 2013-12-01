@@ -1,4 +1,4 @@
-var Item = require('../../lib/item').Item;
+var Item = require('../../lib/item');
 var Directory = require('../../lib/directory').Directory;
 var File = require('../../lib/file').File;
 var assert = require('../helper').assert;

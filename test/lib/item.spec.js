@@ -1,6 +1,6 @@
 var path = require('path');
 
-var Item = require('../../lib/item').Item;
+var Item = require('../../lib/item');
 var assert = require('../helper').assert;
 
 describe('Item', function() {
