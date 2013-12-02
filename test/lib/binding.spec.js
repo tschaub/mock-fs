@@ -1041,4 +1041,36 @@ describe('Binding', function() {
 
   });
 
+  describe('#link()', function() {
+
+    it('creates a link to a file', function() {
+      var binding = new Binding(system);
+      var source = path.join('mock-dir', 'one.txt');
+      var dest = path.join('mock-dir', 'link.txt');
+      binding.link(source, dest);
+      var link = system.getItem(dest);
+      assert.instanceOf(link, File);
+      assert.equal(String(link.getContent()), 'one content');
+    });
+
+    it('fails if dest exists', function() {
+      var binding = new Binding(system);
+      var source = path.join('mock-dir', 'one.txt');
+      var dest = path.join('mock-dir', 'two.txt');
+      assert.throws(function() {
+        binding.link(source, dest);
+      });
+    });
+
+    it('fails if source is directory', function() {
+      var binding = new Binding(system);
+      var source = path.join('mock-dir', 'empty');
+      var dest = path.join('mock-dir', 'link');
+      assert.throws(function() {
+        binding.link(source, dest);
+      });
+    });
+
+  });
+
 });
