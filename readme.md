@@ -68,6 +68,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.lchmodSync`        |   100% | Complete |
 | `fs.lchown`            |   100% | Complete |
 | `fs.lchownSync`        |   100% | Complete |
+| `fs.link`              |   100% | Complete |
+| `fs.linkSync`          |   100% | Complete |
 | `fs.mkdir`             |   100% | Complete |
 | `fs.mkdirSync`         |   100% | Complete |
 | `fs.open`              |   100% | Complete |
@@ -98,8 +100,6 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.stat`              |    90% | Provides a [stats object](#Stats) |
 | `fs.statSync`          |    90% | Provides a [stats object](#Stats) |
 | `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
-| `fs.link`              |     0% | Implement `binding.link` |
-| `fs.linkSync`          |     0% | Implement `binding.link` |
 | `fs.lstatSync`         |     0% | Implement `binding.lstat` |
 | `fs.lstat`             |     0% | Implement `binding.lstat` |
 | `fs.readlink`          |     0% | Implement `binding.readlink` |

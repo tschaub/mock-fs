@@ -1778,3 +1778,94 @@ describe('fs.futimesSync(path, atime, mtime)', function() {
   });
 
 });
+
+describe('fs.link(srcpath, dstpath, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('creates a link to a file', function(done) {
+    fs.link('file.txt', 'link.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(fs.statSync('link.txt').isFile());
+      assert.equal(String(fs.readFileSync('link.txt')), 'content');
+      done();
+    });
+  });
+
+  it('works if original is renamed', function(done) {
+    fs.link('file.txt', 'link.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      fs.renameSync('file.txt', 'renamed.txt');
+      assert.isTrue(fs.statSync('link.txt').isFile());
+      assert.equal(String(fs.readFileSync('link.txt')), 'content');
+      done();
+    });
+  });
+
+  it('works if original is removed', function(done) {
+    fs.link('file.txt', 'link.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      fs.unlinkSync('file.txt');
+      assert.isTrue(fs.statSync('link.txt').isFile());
+      assert.equal(String(fs.readFileSync('link.txt')), 'content');
+      done();
+    });
+  });
+
+  it('fails if original is a directory', function(done) {
+    fs.link('dir', 'link', function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.linkSync(srcpath, dstpath)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content'
+    });
+  });
+
+  it('creates a link to a file', function() {
+    fs.linkSync('file.txt', 'link.txt');
+    assert.isTrue(fs.statSync('link.txt').isFile());
+    assert.equal(String(fs.readFileSync('link.txt')), 'content');
+  });
+
+  it('works if original is renamed', function() {
+    fs.linkSync('file.txt', 'link.txt');
+    fs.renameSync('file.txt', 'renamed.txt');
+    assert.isTrue(fs.statSync('link.txt').isFile());
+    assert.equal(String(fs.readFileSync('link.txt')), 'content');
+  });
+
+  it('works if original is removed', function() {
+    fs.linkSync('file.txt', 'link.txt');
+    fs.unlinkSync('file.txt');
+    assert.isTrue(fs.statSync('link.txt').isFile());
+    assert.equal(String(fs.readFileSync('link.txt')), 'content');
+  });
+
+  it('fails if original is a directory', function() {
+    assert.throws(function() {
+      fs.linkSync('dir', 'link');
+    });
+  });
+
+});
