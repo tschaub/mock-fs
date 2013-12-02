@@ -27,7 +27,6 @@ describe('FileSystem', function() {
       var filepath = path.join('one', 'two', 'three.js');
       var item = system.getItem(filepath);
       assert.instanceOf(item, File);
-      assert.equal(item.getName(), 'three.js');
     });
 
     it('returns null if not found', function() {
@@ -54,22 +53,16 @@ describe('FileSystem.file', function() {
     var factory = FileSystem.file();
     assert.isFunction(factory);
 
-    var file = factory('foo');
+    var file = factory();
     assert.instanceOf(file, File);
-    assert.equal(file.getName(), 'foo');
-
-    var another = factory('bar');
-    assert.instanceOf(another, File);
-    assert.equal(another.getName(), 'bar');
   });
 
   it('accepts a content member', function() {
     var factory = FileSystem.file({content: 'foo'});
     assert.isFunction(factory);
 
-    var file = factory('bar');
+    var file = factory();
     assert.instanceOf(file, File);
-    assert.equal(file.getName(), 'bar');
     var content = file.getContent();
     assert.isTrue(Buffer.isBuffer(content));
     assert.equal(String(content), 'foo');
@@ -84,13 +77,8 @@ describe('FileSystem.directory', function() {
     var factory = FileSystem.directory();
     assert.isFunction(factory);
 
-    var dir = factory('foo');
+    var dir = factory();
     assert.instanceOf(dir, Directory);
-    assert.equal(dir.getName(), 'foo');
-
-    var another = factory('bar');
-    assert.instanceOf(another, Directory);
-    assert.equal(another.getName(), 'bar');
   });
 
 });
@@ -117,33 +105,31 @@ describe('FileSystem.create', function() {
     filepath = path.join('path', 'to', 'one');
     item = system.getItem(filepath);
     assert.instanceOf(item, Directory);
-    assert.equal(item.getName(), 'one');
+    assert.deepEqual(item.list().sort(), ['dir', 'file.js']);
 
     // confirm 'path/to/one/file.js' file was created
     filepath = path.join('path', 'to', 'one', 'file.js');
     item = system.getItem(filepath);
     assert.instanceOf(item, File);
-    assert.equal(item.getName(), 'file.js');
     assert.equal(String(item.getContent()), 'file.js content');
 
     // confirm 'path/to/one/dir' directory was created
     filepath = path.join('path', 'to', 'one', 'dir');
     item = system.getItem(filepath);
     assert.instanceOf(item, Directory);
-    assert.equal(item.getName(), 'dir');
+    assert.deepEqual(item.list(), []);
 
     // confirm 'path/to/two.js' file was created
     filepath = path.join('path', 'to', 'two.js');
     item = system.getItem(filepath);
     assert.instanceOf(item, File);
-    assert.equal(item.getName(), 'two.js');
     assert.equal(String(item.getContent()), 'two.js content');
 
     // confirm 'path/to/three' directory was created
     filepath = path.join('path', 'to', 'three');
     item = system.getItem(filepath);
     assert.instanceOf(item, Directory);
-    assert.equal(item.getName(), 'three');
+    assert.deepEqual(item.list(), []);
 
   });
 
@@ -157,7 +143,6 @@ describe('FileSystem.create', function() {
 
     var file = system.getItem(path.join('path', 'to', 'file.js'));
     assert.instanceOf(file, File);
-    assert.equal(file.getName(), 'file.js');
     assert.equal(String(file.getContent()), 'foo');
 
   });
@@ -176,7 +161,6 @@ describe('FileSystem.create', function() {
 
     var file = system.getItem(path.join('path', 'to', 'file.js'));
     assert.instanceOf(file, File);
-    assert.equal(file.getName(), 'file.js');
     assert.equal(String(file.getContent()), 'foo');
     assert.equal(file.getUid(), 42);
     assert.equal(file.getGid(), 43);
@@ -193,7 +177,6 @@ describe('FileSystem.create', function() {
 
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
-    assert.equal(dir.getName(), 'dir');
 
   });
 
@@ -210,7 +193,6 @@ describe('FileSystem.create', function() {
 
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
-    assert.equal(dir.getName(), 'dir');
     assert.equal(dir.getUid(), 42);
     assert.equal(dir.getGid(), 43);
 
@@ -232,7 +214,6 @@ describe('FileSystem.create', function() {
 
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
-    assert.equal(dir.getName(), 'dir');
     assert.equal(dir.getMode(), 0755);
 
     var file = system.getItem(path.join('path', 'to', 'dir', 'file.txt'));

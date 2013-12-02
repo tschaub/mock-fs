@@ -8,47 +8,8 @@ describe('Item', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var item = new Item('foo');
+      var item = new Item();
       assert.instanceOf(item, Item);
-    });
-
-  });
-
-  describe('#getName()', function() {
-
-    it('gets the name passed to the constructor', function() {
-      var item = new Item('foo');
-      assert.equal(item.getName(), 'foo');
-    });
-
-  });
-
-  describe('#setName()', function() {
-
-    it('sets the name', function() {
-      var item = new Item('foo');
-      item.setName('bar');
-      assert.equal(item.getName(), 'bar');
-    });
-
-  });
-
-  describe('#getParent()', function() {
-
-    it('returns null if no parent', function() {
-      var item = new Item('foo');
-      assert.isNull(item.getParent());
-    });
-
-  });
-
-  describe('#setParent()', function() {
-
-    it('sets the parent', function() {
-      var parent = new Item('foo');
-      var child = new Item('bar');
-      child.setParent(parent);
-      assert.equal(child.getParent(), parent);
     });
 
   });
@@ -56,7 +17,7 @@ describe('Item', function() {
   describe('#getATime()', function() {
 
     it('returns a date', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = item.getATime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
@@ -67,7 +28,7 @@ describe('Item', function() {
   describe('#setATime()', function() {
 
     it('sets the atime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = new Date();
       item.setATime(date);
       assert.equal(item.getATime(), date);
@@ -78,7 +39,7 @@ describe('Item', function() {
   describe('#getCTime()', function() {
 
     it('returns a date', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = item.getCTime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
@@ -89,7 +50,7 @@ describe('Item', function() {
   describe('#setCTime()', function() {
 
     it('sets the ctime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = new Date();
       item.setCTime(date);
       assert.equal(item.getCTime(), date);
@@ -100,7 +61,7 @@ describe('Item', function() {
   describe('#getMTime()', function() {
 
     it('returns a date', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = item.getMTime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
@@ -111,7 +72,7 @@ describe('Item', function() {
   describe('#setMTime()', function() {
 
     it('sets the mtime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var date = new Date();
       item.setMTime(date);
       assert.equal(item.getMTime(), date);
@@ -122,7 +83,7 @@ describe('Item', function() {
   describe('#getMode()', function() {
 
     it('returns a number', function() {
-      var item = new Item('foo');
+      var item = new Item();
       assert.isNumber(item.getMode());
     });
 
@@ -131,13 +92,13 @@ describe('Item', function() {
   describe('#setMode()', function() {
 
     it('sets the mode', function() {
-      var item = new Item('foo');
+      var item = new Item();
       item.setMode(0644);
       assert.equal(item.getMode(), 0644);
     });
 
     it('updates the ctime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var original = new Date(1);
       item.setCTime(original);
       item.setMode(0644);
@@ -149,13 +110,13 @@ describe('Item', function() {
   describe('#setUid()', function() {
 
     it('sets the uid', function() {
-      var item = new Item('foo');
+      var item = new Item();
       item.setUid(42);
       assert.equal(item.getUid(), 42);
     });
 
     it('updates the ctime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var original = new Date(1);
       item.setCTime(original);
       item.setUid(42);
@@ -167,13 +128,13 @@ describe('Item', function() {
   describe('#setGid()', function() {
 
     it('sets the gid', function() {
-      var item = new Item('foo');
+      var item = new Item();
       item.setGid(42);
       assert.equal(item.getGid(), 42);
     });
 
     it('updates the ctime', function() {
-      var item = new Item('foo');
+      var item = new Item();
       var original = new Date(1);
       item.setCTime(original);
       item.setGid(42);
