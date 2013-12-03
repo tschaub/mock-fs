@@ -84,6 +84,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.renameSync`        |   100% | Complete |
 | `fs.rmdir`             |   100% | Complete |
 | `fs.rmdirSync`         |   100% | Complete |
+| `fs.symlink`           |   100% | Complete |
+| `fs.symlinkSync`       |   100% | Complete |
 | `fs.truncate`          |   100% | Complete |
 | `fs.truncateSync`      |   100% | Complete |
 | `fs.unlink`            |   100% | Complete |
@@ -106,8 +108,6 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.readlinkSync`      |     0% | Implement `binding.readlink` |
 | `fs.realpath`          |     0% | Implement `binding.readlink` & `binding.lstat` |
 | `fs.realpathSync`      |     0% | Implement `binding.readlink` & `binding.lstat` |
-| `fs.symlink`           |     0% | Implement `binding.symlink` |
-| `fs.symlinkSync`       |     0% | Implement `binding.symlink` |
 | `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |
 | `fs.watchFile`         |     0% | Implement `binding.StatWatcher` |
