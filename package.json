@@ -22,6 +22,7 @@
     }
   ],
   "scripts": {
+    "debug": "node --debug-brk ./node_modules/.bin/grunt cafemocha",
     "test": "grunt --stack test",
     "start": "grunt --stack start"
   },
