@@ -1980,3 +1980,54 @@ describe('fs.symlinkSync(srcpath, dstpath, [type])', function() {
   });
 
 });
+
+describe('fs.readlink(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content',
+      'link': mock.symlink({path: './file.txt'})
+    });
+  });
+
+  it('reads a symbolic link', function(done) {
+    fs.readlink('link', function(err, srcPath) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(srcPath, './file.txt');
+      done();
+    });
+  });
+
+  it('fails for regular files', function(done) {
+    fs.readlink('file.txt', function(err, srcPath) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+});
+
+describe('fs.readlinkSync(path)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': 'content',
+      'link': mock.symlink({path: './file.txt'})
+    });
+  });
+
+  it('reads a symbolic link', function() {
+    assert.equal(fs.readlinkSync('link'), './file.txt');
+  });
+
+  it('fails for regular files', function() {
+    assert.throws(function() {
+      fs.readlinkSync('file.txt');
+    });
+  });
+
+});

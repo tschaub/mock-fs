@@ -1117,4 +1117,35 @@ describe('Binding', function() {
 
   });
 
+  describe('#readlink()', function() {
+
+    it('reads the symbolic link', function() {
+      var binding = new Binding(system);
+      var srcPath = binding.readlink(path.join('mock-dir', 'one-link.txt'));
+      assert.equal(srcPath, './one.txt');
+    });
+
+    it('fails for regular files', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.readlink(path.join('mock-dir', 'one.txt'));
+      });
+    });
+
+    it('fails for directories', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.readlink(path.join('mock-dir', 'empty'));
+      });
+    });
+
+    it('fails for bogus paths', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.readlink(path.join('mock-dir', 'bogus'));
+      });
+    });
+
+  });
+
 });
