@@ -58,6 +58,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.fchownSync`        |   100% | Complete |
 | `fs.fdatasync`         |   100% | Complete |
 | `fs.fdatasyncSync`     |   100% | Complete |
+| `fs.fstat`             |   100% | Provides a [stats object](#Stats) |
+| `fs.fstatSync`         |   100% | Provides a [stats object](#Stats) |
 | `fs.fsync`             |   100% | Complete |
 | `fs.fsyncSync`         |   100% | Complete |
 | `fs.ftruncate`         |   100% | Complete |
@@ -70,6 +72,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.lchownSync`        |   100% | Complete |
 | `fs.link`              |   100% | Complete |
 | `fs.linkSync`          |   100% | Complete |
+| `fs.lstatSync`         |   100% | Complete |
+| `fs.lstat`             |   100% | Complete |
 | `fs.mkdir`             |   100% | Complete |
 | `fs.mkdirSync`         |   100% | Complete |
 | `fs.open`              |   100% | Complete |
@@ -82,10 +86,14 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.readdirSync`       |   100% | Complete |
 | `fs.readlink`          |   100% | Complete |
 | `fs.readlinkSync`      |   100% | Complete |
+| `fs.realpath`          |   100% | Complete |
+| `fs.realpathSync`      |   100% | Complete |
 | `fs.rename`            |   100% | Complete |
 | `fs.renameSync`        |   100% | Complete |
 | `fs.rmdir`             |   100% | Complete |
 | `fs.rmdirSync`         |   100% | Complete |
+| `fs.stat`              |   100% | Provides a [stats object](#Stats) |
+| `fs.statSync`          |   100% | Provides a [stats object](#Stats) |
 | `fs.symlink`           |   100% | Complete |
 | `fs.symlinkSync`       |   100% | Complete |
 | `fs.truncate`          |   100% | Complete |
@@ -98,16 +106,8 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.writeSync`         |   100% | Complete |
 | `fs.writeFile`         |   100% | Complete |
 | `fs.writeFileSync`     |   100% | Complete |
-| `fs.Stats`             |    90% | <a name='Stats'></a>Incudes `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, `isFile()`, and `isDirectory()` |
-| `fs.fstat`             |    90% | Provides a [stats object](#Stats) |
-| `fs.fstatSync`         |    90% | Provides a [stats object](#Stats) |
-| `fs.stat`              |    90% | Provides a [stats object](#Stats) |
-| `fs.statSync`          |    90% | Provides a [stats object](#Stats) |
+| `fs.Stats`             |    95% | <a name='Stats'></a>Incudes `dev`, `ino`, `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, `isFile()`, `isSymbolicLink()`, and `isDirectory()` (no `nlink`) |
 | `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
-| `fs.lstatSync`         |     0% | Implement `binding.lstat` |
-| `fs.lstat`             |     0% | Implement `binding.lstat` |
-| `fs.realpath`          |     0% | Implement `binding.lstat` |
-| `fs.realpathSync`      |     0% | Implement `binding.lstat` |
 | `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |
 | `fs.watchFile`         |     0% | Implement `binding.StatWatcher` |
