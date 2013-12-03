@@ -1869,3 +1869,78 @@ describe('fs.linkSync(srcpath, dstpath)', function() {
   });
 
 });
+
+describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('creates a symbolic link to a file', function(done) {
+    fs.symlink('../file.txt', 'dir/link.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(fs.statSync('dir/link.txt').isFile());
+      assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+      done();
+    });
+  });
+
+  it('breaks if original is renamed', function(done) {
+    fs.symlink('file.txt', 'link.txt', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(fs.existsSync('link.txt'));
+      fs.renameSync('file.txt', 'renamed.txt');
+      assert.isFalse(fs.existsSync('link.txt'));
+      done();
+    });
+  });
+
+  it('works if original is a directory', function(done) {
+    fs.symlink('dir', 'link', function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(fs.statSync('link').isDirectory());
+      done();
+    });
+  });
+
+});
+
+describe('fs.symlinkSync(srcpath, dstpath, [type])', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir': {},
+      'file.txt': 'content'
+    });
+  });
+
+  it('creates a symbolic link to a file', function() {
+    fs.symlinkSync('../file.txt', 'dir/link.txt');
+    assert.isTrue(fs.statSync('dir/link.txt').isFile());
+    assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+  });
+
+  it('breaks if original is renamed', function() {
+    fs.symlinkSync('file.txt', 'link.txt');
+    assert.isTrue(fs.existsSync('link.txt'));
+    fs.renameSync('file.txt', 'renamed.txt');
+    assert.isFalse(fs.existsSync('link.txt'));
+  });
+
+  it('works if original is a directory', function() {
+    fs.symlinkSync('dir', 'link');
+    assert.isTrue(fs.statSync('link').isDirectory());
+  });
+
+});

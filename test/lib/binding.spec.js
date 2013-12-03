@@ -2,6 +2,7 @@ var path = require('path');
 
 var Binding = require('../../lib/binding');
 var Directory = require('../../lib/directory');
+var SymbolicLink = require('../../lib/symlink');
 var File = require('../../lib/file');
 var FileSystem = require('../../lib/filesystem');
 var helper = require('../helper');
@@ -25,6 +26,7 @@ describe('Binding', function() {
           ctime: new Date(2),
           mtime: new Date(3)
         }),
+        'one-link.txt': FileSystem.symlink({path: './one.txt'}),
         'three.bin': new Buffer([1, 2, 3]),
         'empty': {}
       }
@@ -290,8 +292,8 @@ describe('Binding', function() {
       binding.readdir('mock-dir', function(err, items) {
         assert.isNull(err);
         assert.isArray(items);
-        assert.deepEqual(
-            items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+        assert.deepEqual(items.sort(),
+            ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
         done();
       });
     });
@@ -300,8 +302,8 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var items = binding.readdir('mock-dir');
       assert.isArray(items);
-      assert.deepEqual(
-          items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+      assert.deepEqual(items.sort(),
+          ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
     });
 
     it('calls callback with error for bogus dir', function(done) {
@@ -562,6 +564,15 @@ describe('Binding', function() {
 
     });
 
+    it('reads from a symbolic link', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one-link.txt'), flags('r'));
+      var buffer = new Buffer(11);
+      var read = binding.read(fd, buffer, 0, 11, 0);
+      assert.equal(read, 11);
+      assert.equal(String(buffer), 'one content');
+    });
+
     it('throws if not open for reading', function() {
       var binding = new Binding(system);
       var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'));
@@ -692,8 +703,8 @@ describe('Binding', function() {
       assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
       var items = binding.readdir(newPath);
       assert.isArray(items);
-      assert.deepEqual(
-          items.sort(), ['empty', 'one.txt', 'three.bin', 'two.txt']);
+      assert.deepEqual(items.sort(),
+          ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
     });
 
     it('calls callback with error for bogus old path', function(done) {
@@ -1069,6 +1080,39 @@ describe('Binding', function() {
       assert.throws(function() {
         binding.link(source, dest);
       });
+    });
+
+  });
+
+  describe('#symlink()', function() {
+
+    it('creates a symbolic link to a file', function() {
+      var binding = new Binding(system);
+      var source = path.join('.', 'one.txt');
+      var dest = path.join('mock-dir', 'link.txt');
+      binding.symlink(source, dest);
+      var link = system.getItem(dest);
+      assert.instanceOf(link, SymbolicLink);
+      assert.equal(link.getPath(), source);
+    });
+
+    it('fails if dest exists', function() {
+      var binding = new Binding(system);
+      var source = path.join('.', 'one.txt');
+      var dest = path.join('mock-dir', 'two.txt');
+      assert.throws(function() {
+        binding.symlink(source, dest);
+      });
+    });
+
+    it('works if source is directory', function() {
+      var binding = new Binding(system);
+      var source = path.join('mock-dir', 'empty');
+      var dest = path.join('mock-dir', 'link');
+      binding.symlink(source, dest);
+      var link = system.getItem(dest);
+      assert.instanceOf(link, SymbolicLink);
+      assert.equal(link.getPath(), source);
     });
 
   });
