@@ -1148,4 +1148,17 @@ describe('Binding', function() {
 
   });
 
+  describe('#lstat()', function() {
+
+    it('stats symbolic links', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one-link.txt');
+      var stats = binding.lstat(pathname);
+      assert.isTrue(stats.isSymbolicLink());
+      assert.isFalse(stats.isFile());
+      assert.equal(stats.size, binding.readlink(pathname).length);
+    });
+
+  });
+
 });

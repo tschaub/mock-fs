@@ -2031,3 +2031,77 @@ describe('fs.readlinkSync(path)', function() {
   });
 
 });
+
+describe('fs.lstat(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': mock.file({
+        content: 'content',
+        mtime: new Date(1)
+      }),
+      'link': mock.symlink({
+        path: './file.txt',
+        mtime: new Date(2)
+      })
+    });
+  });
+
+  it('stats a symbolic link', function(done) {
+    fs.lstat('link', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isSymbolicLink());
+      assert.isFalse(stats.isFile());
+      assert.equal(stats.mtime.getTime(), 2);
+      done();
+    });
+  });
+
+  it('stats a regular file', function(done) {
+    fs.lstat('file.txt', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isFile());
+      assert.isFalse(stats.isSymbolicLink());
+      assert.equal(stats.mtime.getTime(), 1);
+      done();
+    });
+  });
+
+});
+
+describe('fs.lstatSync(path)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'file.txt': mock.file({
+        content: 'content',
+        mtime: new Date(1)
+      }),
+      'link': mock.symlink({
+        path: './file.txt',
+        mtime: new Date(2)
+      })
+    });
+  });
+
+  it('stats a symbolic link', function() {
+    var stats = fs.lstatSync('link');
+    assert.isTrue(stats.isSymbolicLink());
+    assert.isFalse(stats.isFile());
+    assert.equal(stats.mtime.getTime(), 2);
+  });
+
+  it('stats a regular file', function() {
+    var stats = fs.lstatSync('file.txt');
+    assert.isTrue(stats.isFile());
+    assert.isFalse(stats.isSymbolicLink());
+    assert.equal(stats.mtime.getTime(), 1);
+  });
+
+});
