@@ -260,6 +260,91 @@ describe('fs.renameSync(oldPath, newPath)', function() {
 
 });
 
+describe('fs.stat(path, callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      '/path/to/file.txt': mock.file({
+        ctime: new Date(1),
+        mtime: new Date(2),
+        atime: new Date(3),
+        uid: 42,
+        gid: 43
+      }),
+      '/dir/symlink': mock.symlink({path: '/path/to/file.txt'}),
+      '/empty': {}
+    });
+  });
+
+  it('creates an instance of fs.Stats', function(done) {
+
+    fs.stat('/path/to/file.txt', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.instanceOf(stats, fs.Stats);
+      done();
+    });
+
+  });
+
+  it('identifies files', function(done) {
+
+    fs.stat('/path/to/file.txt', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isFile());
+      assert.isFalse(stats.isDirectory());
+      done();
+    });
+
+  });
+
+  it('identifies directories', function(done) {
+
+    fs.stat('/empty', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isDirectory());
+      assert.isFalse(stats.isFile());
+      done();
+    });
+
+  });
+
+  it('provides file stats', function(done) {
+    fs.stat('/path/to/file.txt', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(stats.ctime.getTime(), 1);
+      assert.equal(stats.mtime.getTime(), 2);
+      assert.equal(stats.atime.getTime(), 3);
+      assert.equal(stats.uid, 42);
+      assert.equal(stats.gid, 43);
+      done();
+    });
+  });
+
+  it('provides directory stats', function(done) {
+    fs.stat('/path', function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.instanceOf(stats.ctime, Date);
+      assert.instanceOf(stats.mtime, Date);
+      assert.instanceOf(stats.atime, Date);
+      assert.isNumber(stats.uid);
+      assert.isNumber(stats.gid);
+      done();
+    });
+  });
+
+});
+
 describe('fs.fstat(fd, callback)', function() {
   var fs;
   beforeEach(function() {
