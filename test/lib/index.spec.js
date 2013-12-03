@@ -2105,3 +2105,41 @@ describe('fs.lstatSync(path)', function() {
   });
 
 });
+
+describe('fs.realpath(path, [cache], callback)', function() {
+
+  // based on binding.lstat and binding.readlink so tested elsewhere as well
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'dir/file.txt': 'content',
+      'link': mock.symlink({path: './dir/file.txt'})
+    });
+  });
+
+  it('resolves the real path for a symbolic link', function(done) {
+
+    fs.realpath('link', function(err, resolved) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(resolved, path.resolve('dir/file.txt'));
+      done();
+    });
+
+  });
+
+  it('resolves the real path regular file', function(done) {
+
+    fs.realpath('dir/file.txt', function(err, resolved) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(resolved, path.resolve('dir/file.txt'));
+      done();
+    });
+
+  });
+
+});
