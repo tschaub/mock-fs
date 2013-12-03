@@ -113,6 +113,23 @@ describe('The API', function() {
 
   });
 
+  describe('symlink()', function() {
+
+    it('lets you create symbolic links', function() {
+
+      var fs = mock.fs({
+        'path/to/file': 'content',
+        'path/to/link': mock.symlink({path: './file'})
+      });
+
+      var stats = fs.statSync('path/to/link');
+      assert.isTrue(stats.isFile());
+      assert.equal(String(fs.readFileSync('path/to/link')), 'content');
+
+    });
+
+  });
+
 });
 
 describe('fs.rename(oldPath, newPath, callback)', function() {
@@ -185,7 +202,8 @@ describe('fs.renameSync(oldPath, newPath)', function() {
         'dir': {
           'file.txt': ''
         }
-      }
+      },
+      'link': mock.symlink({path: './path/to/a.bin'})
     });
   });
 
@@ -213,6 +231,13 @@ describe('fs.renameSync(oldPath, newPath)', function() {
     assert.isFalse(fs.existsSync('path/to'));
     assert.isTrue(fs.existsSync('empty'));
     assert.deepEqual(fs.readdirSync('empty'), ['a.bin']);
+  });
+
+  it('renames symbolic links', function() {
+    fs.renameSync('link', 'renamed');
+    assert.isTrue(fs.existsSync('renamed'));
+    assert.isFalse(fs.existsSync('link'));
+    assert.isTrue(fs.existsSync('path/to/a.bin'));
   });
 
   it('throws if old path does not exist', function() {
@@ -1192,7 +1217,8 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
   var fs;
   beforeEach(function() {
     fs = mock.fs({
-      'dir/file.txt': 'file content'
+      'dir/file.txt': 'file content',
+      'link.txt': mock.symlink({path: 'dir/file.txt'})
     });
   });
 
@@ -1218,6 +1244,16 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
 
   it('appends a buffer to a file', function(done) {
     fs.appendFile('dir/file.txt', new Buffer(' bar'), function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
+      done();
+    });
+  });
+
+  it('appends via a symbolic link file', function(done) {
+    fs.appendFile('link.txt', ' bar', function(err) {
       if (err) {
         return done(err);
       }
