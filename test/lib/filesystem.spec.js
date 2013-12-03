@@ -225,4 +225,56 @@ describe('FileSystem.create', function() {
     assert.deepEqual(empty.list(), []);
   });
 
+  it('correctly generates link counts', function() {
+
+    var system = FileSystem.create({
+      '/dir-a.0': {
+        'dir-b.0': {
+          'dir-c.0': {},
+          'dir-c.1': {},
+          'file-c.0': 'content',
+          'file-c.1': 'content',
+          'symlink-c.0': FileSystem.symlink({path: 'file-c.0'})
+        }
+      }
+    });
+
+    /**
+     * 3 links: /dir-a.0, /dir-a.0/., and /dir-a.0/dir-b.0/..
+     */
+    assert.equal(system.getItem('/dir-a.0').links, 3);
+
+    /**
+     * 4 links: /dir-a.0/dir-b.0, /dir-a.0/dir-b.0/.,
+     * /dir-a.0/dir-b.0/dir-c.0/.., and /dir-a.0/dir-b.0/dir-c.1/..
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0').links, 4);
+
+    /**
+     * 2 links: /dir-a.0/dir-b.0/dir-c.0 and /dir-a.0/dir-b.0/dir-c.0/.
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0/dir-c.0').links, 2);
+
+    /**
+     * 2 links: /dir-a.0/dir-b.0/dir-c.0 and /dir-a.0/dir-b.0/dir-c.0/.
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0/dir-c.0').links, 2);
+
+    /**
+     * 1 link: /dir-a.0/dir-b.0/file-c.0
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0/file-c.0').links, 1);
+
+    /**
+     * 1 link: /dir-a.0/dir-b.0/file-c.1
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0/file-c.1').links, 1);
+
+    /**
+     * 1 link: /dir-a.0/dir-b.0/symlink-c.0
+     */
+    assert.equal(system.getItem('/dir-a.0/dir-b.0/symlink-c.0').links, 1);
+
+  });
+
 });

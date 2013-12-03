@@ -106,7 +106,7 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.writeSync`         |   100% | Complete |
 | `fs.writeFile`         |   100% | Complete |
 | `fs.writeFileSync`     |   100% | Complete |
-| `fs.Stats`             |    95% | <a name='Stats'></a>Incudes `dev`, `ino`, `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, `isFile()`, `isSymbolicLink()`, and `isDirectory()` (no `nlink`) |
+| `fs.Stats`             |    95% | <a name='Stats'></a>Incudes `dev`, `ino`, `nlink`, `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, and `is*()` methods (no `rdev`, `blksize`, or `blocks`) |
 | `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
 | `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |

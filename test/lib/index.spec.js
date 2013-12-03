@@ -325,6 +325,7 @@ describe('fs.stat(path, callback)', function() {
       assert.equal(stats.atime.getTime(), 3);
       assert.equal(stats.uid, 42);
       assert.equal(stats.gid, 43);
+      assert.equal(stats.nlink, 1);
       done();
     });
   });
@@ -339,6 +340,7 @@ describe('fs.stat(path, callback)', function() {
       assert.instanceOf(stats.atime, Date);
       assert.isNumber(stats.uid);
       assert.isNumber(stats.gid);
+      assert.equal(stats.nlink, 3);
       done();
     });
   });
@@ -1484,11 +1486,14 @@ describe('fs.rmdir(path, callback)', function() {
   });
 
   it('removes an empty directory', function(done) {
+    assert.equal(fs.statSync('path/to').nlink, 3);
+
     fs.rmdir('path/to/empty', function(err) {
       if (err) {
         return done(err);
       }
       assert.isFalse(fs.existsSync('path/to/empty'));
+      assert.equal(fs.statSync('path/to').nlink, 2);
       done();
     });
   });
@@ -1911,11 +1916,15 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
   });
 
   it('creates a link to a file', function(done) {
+    assert.equal(fs.statSync('file.txt').nlink, 1);
+
     fs.link('file.txt', 'link.txt', function(err) {
       if (err) {
         return done(err);
       }
       assert.isTrue(fs.statSync('link.txt').isFile());
+      assert.equal(fs.statSync('link.txt').nlink, 2);
+      assert.equal(fs.statSync('file.txt').nlink, 2);
       assert.equal(String(fs.readFileSync('link.txt')), 'content');
       done();
     });
@@ -1934,12 +1943,17 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
   });
 
   it('works if original is removed', function(done) {
+    assert.equal(fs.statSync('file.txt').nlink, 1);
+
     fs.link('file.txt', 'link.txt', function(err) {
       if (err) {
         return done(err);
       }
+      assert.equal(fs.statSync('link.txt').nlink, 2);
+      assert.equal(fs.statSync('file.txt').nlink, 2);
       fs.unlinkSync('file.txt');
       assert.isTrue(fs.statSync('link.txt').isFile());
+      assert.equal(fs.statSync('link.txt').nlink, 1);
       assert.equal(String(fs.readFileSync('link.txt')), 'content');
       done();
     });
