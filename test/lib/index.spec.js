@@ -326,6 +326,9 @@ describe('fs.stat(path, callback)', function() {
       assert.equal(stats.uid, 42);
       assert.equal(stats.gid, 43);
       assert.equal(stats.nlink, 1);
+      assert.isNumber(stats.blocks);
+      assert.isNumber(stats.blksize);
+      assert.isNumber(stats.rdev);
       done();
     });
   });
@@ -341,6 +344,9 @@ describe('fs.stat(path, callback)', function() {
       assert.isNumber(stats.uid);
       assert.isNumber(stats.gid);
       assert.equal(stats.nlink, 3);
+      assert.isNumber(stats.blocks);
+      assert.isNumber(stats.blksize);
+      assert.isNumber(stats.rdev);
       done();
     });
   });

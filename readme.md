@@ -39,6 +39,7 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | function               | status | notes    |
 |------------------------|:------:|----------|
 | `fs.ReadStream`        |   100% | Complete |
+| `fs.Stats`             |   100% | <a name='Stats'></a>Incudes `dev`, `ino`, `nlink`, `mode`, `size`, `rdev`, `blksize`, `blocks`, `atime`, `ctime`, `mtime`, `uid`, `gid`, and `is*()` methods |
 | `fs.WriteStream`       |   100% | Complete |
 | `fs.appendFile`        |   100% | Complete |
 | `fs.appendFileSync`    |   100% | Complete |
@@ -106,7 +107,6 @@ The table below shows what is covered by the mock `fs`.  Tests are currently run
 | `fs.writeSync`         |   100% | Complete |
 | `fs.writeFile`         |   100% | Complete |
 | `fs.writeFileSync`     |   100% | Complete |
-| `fs.Stats`             |    95% | <a name='Stats'></a>Incudes `dev`, `ino`, `nlink`, `mode`, `size`, `atime`, `ctime`, `mtime`, `uid`, `gid`, and `is*()` methods (no `rdev`, `blksize`, or `blocks`) |
 | `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
 | `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
 | `fs.watch`             |     0% | Implement `fs.FSWatcher` |
