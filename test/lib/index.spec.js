@@ -38,7 +38,7 @@ describe('The API', function() {
 
     });
 
-    describe('_reconfigure()', function() {
+    describe('init()', function() {
 
       it('provides a method to reconfigure the mock file system', function() {
 
@@ -47,12 +47,28 @@ describe('The API', function() {
         });
         assert.isTrue(fs.existsSync('first-file.txt'));
 
-        fs._reconfigure({
+        mock.init(fs, {
           'second-file.txt': 'new content'
         });
 
         assert.isFalse(fs.existsSync('first-file.txt'));
         assert.isTrue(fs.existsSync('second-file.txt'));
+
+      });
+
+      it('uses initial config if called with no args', function() {
+
+        var fs = mock.fs({
+          'first-file.txt': 'file content'
+        });
+        assert.isTrue(fs.existsSync('first-file.txt'));
+
+        fs.unlinkSync('first-file.txt');
+        assert.isFalse(fs.existsSync('first-file.txt'));
+
+        // restore initial configuration
+        mock.init(fs);
+        assert.isTrue(fs.existsSync('first-file.txt'));
 
       });
 
