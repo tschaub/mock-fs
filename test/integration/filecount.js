@@ -1,6 +1,12 @@
 var fs = require('fs');
 var path = require('path');
 
+
+/**
+ * Count the number of files in a directory.
+ * @param {string} dir Path to directory.
+ * @param {function(Error, number)} callback Callback.
+ */
 module.exports = exports = function(dir, callback) {
   fs.readdir(dir, function(err, items) {
     if (err) {

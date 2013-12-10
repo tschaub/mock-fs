@@ -46,7 +46,7 @@ describe('count(dir, callback)', function() {
     });
 
   });
-  
+
   it('counts files in an empty directory', function(done) {
 
     count('path/to/dir/empty-dir', function(err, num) {
