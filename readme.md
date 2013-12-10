@@ -34,7 +34,7 @@ moduleToTest.__set__('fs', fs);
 
 ## Status
 
-The table below shows what is covered by the mock `fs`.  Tests are currently run on Node 0.8 and 0.10.  Eventually more versions will be supported.
+The table below shows what is covered by the mock `fs`.  Tests are run on Node 0.8, 0.10, and 0.11.
 
 | function               | status | notes    |
 |------------------------|:------:|----------|
