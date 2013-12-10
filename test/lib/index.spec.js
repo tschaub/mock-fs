@@ -1256,6 +1256,100 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
 
 });
 
+describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('writes a string to a file', function(done) {
+    fs.open('path/new-file.txt', 'w', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var string = 'new file';
+      fs.write(fd, string, null, 'utf-8', function(err, written, str) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(written, 8);
+        assert.equal(str, string);
+        assert.equal(fs.readFileSync('path/new-file.txt'), 'new file');
+        done();
+      });
+    });
+
+  });
+
+  it('can append to a file', function(done) {
+    fs.open('path/to/file.txt', 'a', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      var string = ' more';
+      fs.write(fd, string, null, 'utf-8', function(err, written, str) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(written, 5);
+        assert.equal(str, string);
+        assert.equal(fs.readFileSync('path/to/file.txt'), 'file content more');
+        done();
+      });
+    });
+  });
+
+  it('fails if file not open for writing', function(done) {
+    fs.open('path/to/file.txt', 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      fs.write(fd, 'oops', null, 'utf-8', function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+  });
+
+});
+
+describe('fs.writeSync(fd, data[, position[, encoding]])', function() {
+
+  var fs;
+  beforeEach(function() {
+    fs = mock.fs({
+      'path/to/file.txt': 'file content'
+    });
+  });
+
+  it('writes a string to a file', function() {
+    var fd = fs.openSync('path/new-file.txt', 'w');
+    var string = 'new file';
+    var written = fs.writeSync(fd, string, null, 'utf-8');
+    assert.equal(written, 8);
+    assert.equal(fs.readFileSync('path/new-file.txt'), 'new file');
+  });
+
+  it('can append to a file', function() {
+    var fd = fs.openSync('path/to/file.txt', 'a');
+    var string = ' more';
+    var written = fs.writeSync(fd, string, null, 'utf-8');
+    assert.equal(written, 5);
+    assert.equal(fs.readFileSync('path/to/file.txt'), 'file content more');
+  });
+
+  it('fails if file not open for writing', function() {
+    var fd = fs.openSync('path/to/file.txt', 'r');
+    assert.throws(function() {
+      fs.writeSync(fd, 'oops', null, 'utf-8');
+    });
+  });
+
+});
+
 describe('fs.writeFile(filename, data, [options], callback)', function() {
 
   var fs;
