@@ -4,12 +4,12 @@ A configurable mock file system.  You know, for testing.
 
 ## Example
 
-The code below creates a mock `fs` module that is configured to work with a few mock files and directories.
+The code below makes it so the `fs` module is temporarily backed by a mock file system with a few files and directories.
 
 ```js
 var mock = require('mock-fs');
 
-var fs = mock.fs({
+var restore = mock({
   'path/to/fake/dir': {
     'some-file.txt': 'file content here',
     'empty-dir': {/** empty directory */}
@@ -19,17 +19,11 @@ var fs = mock.fs({
 });
 ```
 
-If you are testing a module that `require`s the real `fs` module, you can use [`rewire`](https://npmjs.org/package/rewire) to inject a mock `fs` module for testing.
+Note that the `mock` function returns a `restore` function.  When you are ready to restore the `fs` module (so that it is backed by your real file system), call `restore()`.
 
 ```js
-var rewire = require("rewire");
-var moduleToTest = rewire('./path/to/module');
-
-// inject the mock fs created above
-moduleToTest.__set__('fs', fs);
-
-// now functions in moduleToTest will use
-// your mock fs instead of the real one
+/// after a test runs
+restore();
 ```
 
 ## Status
