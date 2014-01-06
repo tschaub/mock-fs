@@ -1,17 +1,13 @@
-var rewire = require('rewire');
-
 var mock = require('../../lib/index');
 var assert = require('../helper').assert;
 
-var count = rewire('./filecount');
-
-var fs = mock.fs();
-count.__set__('fs', fs);
+var count = require('./filecount');
 
 describe('count(dir, callback)', function() {
 
+  var restore;
   beforeEach(function() {
-    mock.init(fs, {
+    restore = mock({
       'path/to/dir': {
         'one.txt': 'first file',
         'two.txt': 'second file',
@@ -21,6 +17,9 @@ describe('count(dir, callback)', function() {
         }
       }
     });
+  });
+  afterEach(function() {
+    restore();
   });
 
   it('counts files in a directory', function(done) {
