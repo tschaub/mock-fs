@@ -26,84 +26,14 @@ Note that the `mock` function returns a `restore` function.  When you are ready 
 restore();
 ```
 
-## Status
+## Caveats and limitations
 
-The table below shows what is covered by the mock `fs`.  Tests are run on Node 0.8, 0.10, and 0.11.
+When you require `mock-fs`, Node's own `fs` module is patched to allow the binding to the underlying file system to be swapped out.  If you require `mock-fs` *before* any other modules that modify `fs` (e.g. `graceful-fs`), the mock should behave as expected.
 
-| function               | status | notes    |
-|------------------------|:------:|----------|
-| `fs.ReadStream`        |   100% | Complete |
-| `fs.Stats`             |   100% | <a name='Stats'></a>Incudes `dev`, `ino`, `nlink`, `mode`, `size`, `rdev`, `blksize`, `blocks`, `atime`, `ctime`, `mtime`, `uid`, `gid`, and `is*()` methods |
-| `fs.WriteStream`       |   100% | Complete |
-| `fs.appendFile`        |   100% | Complete |
-| `fs.appendFileSync`    |   100% | Complete |
-| `fs.chmod`             |   100% | Complete |
-| `fs.chmodSync`         |   100% | Complete |
-| `fs.chown`             |   100% | Complete |
-| `fs.chownSync`         |   100% | Complete |
-| `fs.close`             |   100% | Complete |
-| `fs.closeSync`         |   100% | Complete |
-| `fs.createReadStream`  |   100% | Complete |
-| `fs.createWriteStream` |   100% | Complete |
-| `fs.exists`            |   100% | Complete |
-| `fs.existsSync`        |   100% | Complete |
-| `fs.fchmod`            |   100% | Complete |
-| `fs.fchmodSync`        |   100% | Complete |
-| `fs.fchown`            |   100% | Complete |
-| `fs.fchownSync`        |   100% | Complete |
-| `fs.fdatasync`         |   100% | Complete |
-| `fs.fdatasyncSync`     |   100% | Complete |
-| `fs.fstat`             |   100% | Provides a [stats object](#Stats) |
-| `fs.fstatSync`         |   100% | Provides a [stats object](#Stats) |
-| `fs.fsync`             |   100% | Complete |
-| `fs.fsyncSync`         |   100% | Complete |
-| `fs.ftruncate`         |   100% | Complete |
-| `fs.ftruncateSync`     |   100% | Complete |
-| `fs.futimes`           |   100% | Complete |
-| `fs.futimesSync`       |   100% | Complete |
-| `fs.lchmod`            |   100% | Complete |
-| `fs.lchmodSync`        |   100% | Complete |
-| `fs.lchown`            |   100% | Complete |
-| `fs.lchownSync`        |   100% | Complete |
-| `fs.link`              |   100% | Complete |
-| `fs.linkSync`          |   100% | Complete |
-| `fs.lstatSync`         |   100% | Complete |
-| `fs.lstat`             |   100% | Complete |
-| `fs.mkdir`             |   100% | Complete |
-| `fs.mkdirSync`         |   100% | Complete |
-| `fs.open`              |   100% | Complete |
-| `fs.openSync`          |   100% | Complete |
-| `fs.read`              |   100% | Complete |
-| `fs.readSync`          |   100% | Complete |
-| `fs.readFile`          |   100% | Complete |
-| `fs.readFileSync`      |   100% | Complete |
-| `fs.readdir`           |   100% | Complete |
-| `fs.readdirSync`       |   100% | Complete |
-| `fs.readlink`          |   100% | Complete |
-| `fs.readlinkSync`      |   100% | Complete |
-| `fs.realpath`          |   100% | Complete |
-| `fs.realpathSync`      |   100% | Complete |
-| `fs.rename`            |   100% | Complete |
-| `fs.renameSync`        |   100% | Complete |
-| `fs.rmdir`             |   100% | Complete |
-| `fs.rmdirSync`         |   100% | Complete |
-| `fs.stat`              |   100% | Provides a [stats object](#Stats) |
-| `fs.statSync`          |   100% | Provides a [stats object](#Stats) |
-| `fs.symlink`           |   100% | Complete |
-| `fs.symlinkSync`       |   100% | Complete |
-| `fs.truncate`          |   100% | Complete |
-| `fs.truncateSync`      |   100% | Complete |
-| `fs.unlink`            |   100% | Complete |
-| `fs.unlinkSync`        |   100% | Complete |
-| `fs.utimes`            |   100% | Complete |
-| `fs.utimesSync`        |   100% | Complete |
-| `fs.write`             |   100% | Complete |
-| `fs.writeSync`         |   100% | Complete |
-| `fs.writeFile`         |   100% | Complete |
-| `fs.writeFileSync`     |   100% | Complete |
-| `fs.FSWatcher`         |     0% | Implement `fs.FSWatcher` |
-| `fs.unwatchFile`       |     0% | Implement `binding.StatWatcher` |
-| `fs.watch`             |     0% | Implement `fs.FSWatcher` |
-| `fs.watchFile`         |     0% | Implement `binding.StatWatcher` |
+The following `fs` functions are overridden: `fs.ReadStream`, `fs.Stats`, `fs.WriteStream`, `fs.appendFile`, `fs.appendFileSync`, `fs.chmod`, `fs.chmodSync`, `fs.chown`, `fs.chownSync`, `fs.close`, `fs.closeSync`, `fs.createReadStream`, `fs.createWriteStream`, `fs.exists`, `fs.existsSync`, `fs.fchmod`, `fs.fchmodSync`, `fs.fchown`, `fs.fchownSync`, `fs.fdatasync`, `fs.fdatasyncSync`, `fs.fstat`, `fs.fstatSync`, `fs.fsync`, `fs.fsyncSync`, `fs.ftruncate`, `fs.ftruncateSync`, `fs.futimes`, `fs.futimesSync`, `fs.lchmod`, `fs.lchmodSync`, `fs.lchown`, `fs.lchownSync`, `fs.link`, `fs.linkSync`, `fs.lstatSync`, `fs.lstat`, `fs.mkdir`, `fs.mkdirSync`, `fs.open`, `fs.openSync`, `fs.read`, `fs.readSync`, `fs.readFile`, `fs.readFileSync`, `fs.readdir`, `fs.readdirSync`, `fs.readlink`, `fs.readlinkSync`, `fs.realpath`, `fs.realpathSync`, `fs.rename`, `fs.renameSync`, `fs.rmdir`, `fs.rmdirSync`, `fs.stat`, `fs.statSync`, `fs.symlink`, `fs.symlinkSync`, `fs.truncate`, `fs.truncateSync`, `fs.unlink`, `fs.unlinkSync`, `fs.utimes`, `fs.utimesSync`, `fs.write`, `fs.writeSync`, `fs.writeFile`, and `fs.writeFileSync`.
+
+Mock `fs.Stats` objects have the following properties: `dev`, `ino`, `nlink`, `mode`, `size`, `rdev`, `blksize`, `blocks`, `atime`, `ctime`, `mtime`, `uid`, and `gid`.  In addition, all of the `is*()` method are provided (e.g. `isDirectory()`, `isFile()`, et al.).
+
+The following `fs` functions are *not* currently mocked (if your tests use these, they will work against the real file system): `fs.FSWatcher`, `fs.unwatchFile`, `fs.watch`, and `fs.watchFile`.  Pull requests welcome.
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
