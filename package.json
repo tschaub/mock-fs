@@ -8,6 +8,12 @@
     "name": "Tim Schaub",
     "url": "http://tschaub.net/"
   },
+  "keywords": [
+    "mock",
+    "fs",
+    "test",
+    "fixtures"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/tschaub/mock-fs.git"
