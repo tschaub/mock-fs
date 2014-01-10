@@ -1,8 +1,8 @@
-# Mock FS
+# `mock-fs`
 
 A configurable mock file system.  You know, for testing.
 
-## Example
+## example
 
 The code below makes it so the `fs` module is temporarily backed by a mock file system with a few files and directories.
 
@@ -22,11 +22,93 @@ var restore = mock({
 Note that the `mock` function returns a `restore` function.  When you are ready to restore the `fs` module (so that it is backed by your real file system), call `restore()`.
 
 ```js
-/// after a test runs
+// after a test runs
 restore();
 ```
 
-## Caveats and limitations
+## docs
+
+### `mock.file(properties)`
+
+Create a factory for new files.  Supported properties:
+
+ * **content** - `string|Buffer` File contents.
+ * **mode** - `number` File mode (permission and sticky bits).  Defaults to `0666`.
+ * **uid** - `number` The user id.  Defaults to `process.getuid()`.
+ * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **atime** - `Date` The last file access time.
+ * **ctime** - `Date` The last file change time.
+ * **mtime** - `Date` The last file modification time.
+
+To create a mock filesystem with a very old file named `foo`, you could do something like this:
+```js
+mock({
+  foo: mock.file({
+    content: 'file content here',
+    ctime: new Date(1),
+    mtime: new Date(1)
+  })
+});
+```
+
+### `mock.directory(properties)`
+
+Create a factory for new directories.  Supported properties:
+
+ * **mode** - `number` Directory mode (permission and sticky bits).  Defaults to `0777`.
+ * **uid** - `number` The user id.  Defaults to `process.getuid()`.
+ * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **atime** - `Date` The last directory access time.
+ * **ctime** - `Date` The last directory change time.
+ * **mtime** - `Date` The last directory modification time.
+ * **items** - `Object` Directory contents.  Members will generate additional files, directories, or symlinks.
+
+To create a mock filesystem with a directory with the relative path `some/dir` that has a mode of `0755` and a couple child files, you could do something like this:
+```js
+mock({
+  'some/dir': mock.directory({
+    mode: 0755,
+    items: {
+      file1: 'file one content',
+      file2: new Buffer([8, 6, 7, 5, 3, 0, 9])
+    }
+  })
+});
+```
+
+### `mock.symlink(properties)`
+
+Create a factory for new symlinks.  Supported properties:
+
+ * **path** - `string` Path to the source (required).
+ * **mode** - `number` Symlink mode (permission and sticky bits).  Defaults to `0666`.
+ * **uid** - `number` The user id.  Defaults to `process.getuid()`.
+ * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **atime** - `Date` The last symlink access time.
+ * **ctime** - `Date` The last symlink change time.
+ * **mtime** - `Date` The last symlink modification time.
+
+To create a mock filesystem with a file and a symlink, you could do something like this:
+```js
+mock({
+  'some/dir': {
+    'regular-file': 'file contents',
+    'a-symlink': mock.symlink({
+      path: 'regular-file'
+    })
+  }
+});
+```
+
+## install
+
+Using `npm`:
+
+```
+npm install mock-fs --save-dev
+```
+
+## caveats
 
 When you require `mock-fs`, Node's own `fs` module is patched to allow the binding to the underlying file system to be swapped out.  If you require `mock-fs` *before* any other modules that modify `fs` (e.g. `graceful-fs`), the mock should behave as expected.
 
