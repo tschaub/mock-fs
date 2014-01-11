@@ -9,23 +9,27 @@ describe('The API', function() {
   describe('mock()', function() {
 
     it('configures the real fs module with a mock file system', function() {
-      var restore = mock({
+      mock({
         'fake-file-for-testing-only': 'file content'
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
 
-      restore();
+      mock.restore();
     });
 
-    it('returns a function for restoring the real fs', function() {
-      var restore = mock({
+  });
+
+  describe('mock.restore()', function() {
+
+    it('restores bindings for the real file system', function() {
+      mock({
         'fake-file-for-testing-only': 'file content'
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
 
-      restore();
+      mock.restore();
       assert.isFalse(fs.existsSync('fake-file-for-testing-only'));
     });
 
@@ -33,14 +37,11 @@ describe('The API', function() {
 
   describe('mock.file()', function() {
 
-    var restore;
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lets you create files with additional properties', function(done) {
 
-      restore = mock({
+      mock({
         'path/to/file.txt': mock.file({
           content: 'file content',
           mtime: new Date(8675309),
@@ -65,14 +66,11 @@ describe('The API', function() {
 
   describe('mock.directory()', function() {
 
-    var restore;
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lets you create directories with more properties', function(done) {
 
-      restore = mock({
+      mock({
         'path/to/dir': mock.directory({
           mtime: new Date(8675309),
           mode: 0644
@@ -96,14 +94,11 @@ describe('The API', function() {
 
   describe('mock.symlink()', function() {
 
-    var restore;
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lets you create symbolic links', function() {
 
-      restore = mock({
+      mock({
         'path/to/file': 'content',
         'path/to/link': mock.symlink({path: './file'})
       });
@@ -151,52 +146,14 @@ describe('The API', function() {
 
   });
 
-  describe('mock.init()', function() {
-
-    it('provides a method to reconfigure the mock file system', function() {
-
-      var mockFs = mock.fs({
-        'first-file.txt': 'file content'
-      });
-      assert.isTrue(mockFs.existsSync('first-file.txt'));
-
-      mock.init(mockFs, {
-        'second-file.txt': 'new content'
-      });
-
-      assert.isFalse(mockFs.existsSync('first-file.txt'));
-      assert.isTrue(mockFs.existsSync('second-file.txt'));
-
-    });
-
-    it('uses initial config if called with no args', function() {
-
-      var mockFs = mock.fs({
-        'first-file.txt': 'file content'
-      });
-      assert.isTrue(mockFs.existsSync('first-file.txt'));
-
-      mockFs.unlinkSync('first-file.txt');
-      assert.isFalse(mockFs.existsSync('first-file.txt'));
-
-      // restore initial configuration
-      mock.init(mockFs);
-      assert.isTrue(mockFs.existsSync('first-file.txt'));
-
-    });
-
-  });
-
 });
-
 
 describe('Mocking the file system', function() {
 
   describe('fs.rename(oldPath, newPath, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/a.bin': new Buffer([1, 2, 3]),
         'empty': {},
         'nested': {
@@ -206,9 +163,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows files to be renamed', function(done) {
       fs.rename('path/to/a.bin', 'path/to/b.bin', function(err) {
@@ -256,9 +211,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.renameSync(oldPath, newPath)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/a.bin': new Buffer([1, 2, 3]),
         'empty': {},
         'nested': {
@@ -269,9 +223,7 @@ describe('Mocking the file system', function() {
         'link': mock.symlink({path: './path/to/a.bin'})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows files to be renamed', function() {
       fs.renameSync('path/to/a.bin', 'path/to/b.bin');
@@ -328,9 +280,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.stat(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         '/path/to/file.txt': mock.file({
           ctime: new Date(1),
           mtime: new Date(2),
@@ -342,9 +293,7 @@ describe('Mocking the file system', function() {
         '/empty': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates an instance of fs.Stats', function(done) {
 
@@ -424,16 +373,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.fstat(fd, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'empty': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('accepts a file descriptor for a file (r)', function(done) {
 
@@ -478,16 +424,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.fstatSync(fd)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'empty': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('accepts a file descriptor for a file (r)', function() {
 
@@ -521,9 +464,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.exists(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/a.bin': new Buffer([1, 2, 3]),
         'empty': {},
         'nested': {
@@ -533,9 +475,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('calls with true if file exists', function(done) {
       fs.exists(path.join('path', 'to', 'a.bin'), function(exists) {
@@ -598,9 +538,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.existsSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/a.bin': new Buffer([1, 2, 3]),
         'empty': {},
         'nested': {
@@ -610,9 +549,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('returns true if file exists', function() {
       assert.isTrue(fs.existsSync(path.join('path', 'to', 'a.bin')));
@@ -650,9 +587,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.readdirSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'nested': {
           'sub': {
@@ -665,9 +601,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lists directory contents', function() {
       var items = fs.readdirSync(path.join('path', 'to'));
@@ -692,9 +626,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.readdir(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'nested': {
           'sub': {
@@ -707,9 +640,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lists directory contents', function(done) {
       fs.readdir(path.join('path', 'to'), function(err, items) {
@@ -741,9 +672,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.readdirSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'nested': {
           'sub': {
@@ -756,9 +686,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('lists directory contents', function() {
       var items = fs.readdirSync(path.join('path', 'to'));
@@ -782,9 +710,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.open(path, flags, [mode], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'nested': {
           'sub': {
@@ -797,9 +724,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('opens an existing file for reading (r)', function(done) {
       fs.open('nested/sub/dir/one.txt', 'r', function(err, fd) {
@@ -853,9 +778,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.openSync(path, flags, [mode])', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content',
         'nested': {
           'sub': {
@@ -868,9 +792,7 @@ describe('Mocking the file system', function() {
         }
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('opens an existing file for reading (r)', function() {
       var fd = fs.openSync('path/to/file.txt', 'r');
@@ -904,13 +826,10 @@ describe('Mocking the file system', function() {
 
   describe('fs.close(fd, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({'dir': {}});
+      mock({'dir': {}});
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('closes a file descriptor', function(done) {
       var fd = fs.openSync('dir/file.txt', 'w');
@@ -936,13 +855,10 @@ describe('Mocking the file system', function() {
 
   describe('fs.closeSync(fd)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({'dir': {}});
+      mock({'dir': {}});
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('closes a file descriptor', function() {
       var fd = fs.openSync('dir/file.txt', 'w');
@@ -962,15 +878,12 @@ describe('Mocking the file system', function() {
   var readSig = 'fs.read(fd, buffer, offset, length, position, callback)';
   describe(readSig, function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows file contents to be read', function(done) {
       fs.open('path/to/file.txt', 'r', function(err, fd) {
@@ -1103,15 +1016,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.readSync(fd, buffer, offset, length, position)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows a file to be read synchronously', function() {
 
@@ -1159,15 +1069,12 @@ describe('Mocking the file system', function() {
     // this is provided by fs.open, fs.fstat, and fs.read
     // so more heavily tested elsewhere
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows a file to be read asynchronously', function(done) {
       fs.readFile('path/to/file.txt', function(err, data) {
@@ -1201,15 +1108,12 @@ describe('Mocking the file system', function() {
     // this is provided by fs.openSync, fs.fstatSync, and fs.readSync
     // so more heavily tested elsewhere
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('allows a file to be read synchronously', function() {
       var data = fs.readFileSync('path/to/file.txt');
@@ -1234,15 +1138,12 @@ describe('Mocking the file system', function() {
   var fsWrite = 'fs.write(fd, buffer, offset, length, position, callback)';
   describe(fsWrite, function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a buffer to a file', function(done) {
       var fd = fs.openSync('path/new-file.txt', 'w');
@@ -1313,15 +1214,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a buffer to a file', function() {
       var buffer = new Buffer('new file');
@@ -1361,15 +1259,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a file', function(done) {
       fs.open('path/new-file.txt', 'w', function(err, fd) {
@@ -1425,15 +1320,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.writeSync(fd, data[, position[, encoding]])', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file.txt': 'file content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a file', function() {
       var fd = fs.openSync('path/new-file.txt', 'w');
@@ -1462,15 +1354,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.writeFile(filename, data, [options], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         '.': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a file', function(done) {
       fs.writeFile('foo', 'bar', function(err) {
@@ -1503,15 +1392,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.writeFileSync(filename, data, [options]', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         '.': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a file', function() {
       fs.writeFileSync('foo', 'bar');
@@ -1533,16 +1419,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.appendFile(filename, data, [options], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir/file.txt': 'file content',
         'link.txt': mock.symlink({path: 'dir/file.txt'})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a new file', function(done) {
       fs.appendFile('foo', 'bar', function(err) {
@@ -1598,15 +1481,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.appendFileSync(filename, data, [options]', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/file': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('writes a string to a new file', function() {
       fs.appendFileSync('foo', 'bar');
@@ -1628,15 +1508,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.mkdir(path, [mode], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'parent': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a new directory', function(done) {
       fs.mkdir('parent/dir', function(err) {
@@ -1679,16 +1556,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.mkdirSync(path, [mode])', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'parent': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a new directory', function() {
       fs.mkdirSync('parent/dir');
@@ -1725,15 +1599,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.rmdir(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/to/empty': {}
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('removes an empty directory', function(done) {
       assert.equal(fs.statSync('path/to').nlink, 3);
@@ -1759,16 +1630,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.rmdirSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/empty': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('removes an empty directory', function() {
       fs.rmdirSync('path/empty');
@@ -1797,16 +1665,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.chown(path, uid, gid, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/empty': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes ownership of a file', function(done) {
       fs.chown('file.txt', 42, 43, done);
@@ -1823,16 +1688,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.chownSync(path, uid, gid)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/empty': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes ownership of a file', function() {
       fs.chownSync('file.txt', 42, 43);
@@ -1848,16 +1710,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.fchown(fd, uid, gid, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/empty': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes ownership of a file', function(done) {
       var fd = fs.openSync('file.txt', 'r');
@@ -1868,16 +1727,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.fchownSync(fd, uid, gid)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'path/empty': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes ownership of a file', function() {
       var fd = fs.openSync('file.txt', 'r');
@@ -1888,15 +1744,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.chmod(path, mode, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': mock.file({mode: 0644})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes permissions of a file', function(done) {
       fs.chmod('file.txt', 0664, function(err) {
@@ -1920,15 +1773,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.chmodSync(path, mode)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': mock.file({mode: 0666})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes permissions of a file', function() {
       fs.chmodSync('file.txt', 0644);
@@ -1946,15 +1796,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.fchmod(fd, mode, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': mock.file({mode: 0666})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes permissions of a file', function(done) {
       var fd = fs.openSync('file.txt', 'r');
@@ -1972,15 +1819,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.fchmodSync(fd, mode)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('changes permissions of a file', function() {
       var fd = fs.openSync('file.txt', 'r');
@@ -1993,16 +1837,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.unlink(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('deletes a file', function(done) {
       fs.unlink('file.txt', function(err) {
@@ -2042,15 +1883,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.unlinkSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('deletes a file', function() {
       fs.unlinkSync('file.txt');
@@ -2072,16 +1910,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.utimes(path, atime, mtime, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('updates timestamps for a file', function(done) {
       fs.utimes('file.txt', new Date(100), new Date(200), function(err) {
@@ -2118,15 +1953,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.utimesSync(path, atime, mtime)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('updates timestamps for a file', function() {
       fs.utimesSync('file.txt', new Date(100), new Date(200));
@@ -2139,16 +1971,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.futimes(fd, atime, mtime, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('updates timestamps for a file', function(done) {
       var fd = fs.openSync('file.txt', 'r');
@@ -2180,15 +2009,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.futimesSync(path, atime, mtime)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('updates timestamps for a file', function() {
       var fd = fs.openSync('file.txt', 'r');
@@ -2202,16 +2028,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.link(srcpath, dstpath, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a link to a file', function(done) {
       assert.equal(fs.statSync('file.txt').nlink, 1);
@@ -2268,15 +2091,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.linkSync(srcpath, dstpath)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a link to a file', function() {
       fs.linkSync('file.txt', 'link.txt');
@@ -2308,16 +2128,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a symbolic link to a file', function(done) {
       fs.symlink('../file.txt', 'dir/link.txt', function(err) {
@@ -2356,16 +2173,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.symlinkSync(srcpath, dstpath, [type])', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir': {},
         'file.txt': 'content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a symbolic link to a file', function() {
       fs.symlinkSync('../file.txt', 'dir/link.txt');
@@ -2389,16 +2203,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.readlink(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content',
         'link': mock.symlink({path: './file.txt'})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('reads a symbolic link', function(done) {
       fs.readlink('link', function(err, srcPath) {
@@ -2421,16 +2232,13 @@ describe('Mocking the file system', function() {
 
   describe('fs.readlinkSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': 'content',
         'link': mock.symlink({path: './file.txt'})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('reads a symbolic link', function() {
       assert.equal(fs.readlinkSync('link'), './file.txt');
@@ -2446,9 +2254,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.lstat(path, callback)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': mock.file({
           content: 'content',
           mtime: new Date(1)
@@ -2459,9 +2266,7 @@ describe('Mocking the file system', function() {
         })
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('stats a symbolic link', function(done) {
       fs.lstat('link', function(err, stats) {
@@ -2491,9 +2296,8 @@ describe('Mocking the file system', function() {
 
   describe('fs.lstatSync(path)', function() {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'file.txt': mock.file({
           content: 'content',
           mtime: new Date(1)
@@ -2504,9 +2308,7 @@ describe('Mocking the file system', function() {
         })
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('stats a symbolic link', function() {
       var stats = fs.lstatSync('link');
@@ -2528,16 +2330,13 @@ describe('Mocking the file system', function() {
 
     // based on binding.lstat and binding.readlink so tested elsewhere as well
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir/file.txt': 'content',
         'link': mock.symlink({path: './dir/file.txt'})
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('resolves the real path for a symbolic link', function(done) {
 
@@ -2567,15 +2366,12 @@ describe('Mocking the file system', function() {
 
   describe('fs.createReadStream(path, [options])', function(done) {
 
-    var restore;
     beforeEach(function() {
-      restore = mock({
+      mock({
         'dir/source': 'source content'
       });
     });
-    afterEach(function() {
-      restore();
-    });
+    afterEach(mock.restore);
 
     it('creates a readable stream', function() {
 

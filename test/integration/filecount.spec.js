@@ -5,9 +5,8 @@ var count = require('./filecount');
 
 describe('count(dir, callback)', function() {
 
-  var restore;
   beforeEach(function() {
-    restore = mock({
+    mock({
       'path/to/dir': {
         'one.txt': 'first file',
         'two.txt': 'second file',
@@ -18,9 +17,7 @@ describe('count(dir, callback)', function() {
       }
     });
   });
-  afterEach(function() {
-    restore();
-  });
+  afterEach(mock.restore);
 
   it('counts files in a directory', function(done) {
 
