@@ -1,7 +1,7 @@
 {
   "name": "mock-fs",
-  "description": "Mock fs implementation for testing",
-  "version": "1.3.1",
+  "description": "A configurable mock file system.  You know, for testing.",
+  "version": "2.0.0-rc.1",
   "main": "lib/index.js",
   "homepage": "https://github.com/tschaub/mock-fs",
   "author": {
@@ -12,7 +12,9 @@
     "mock",
     "fs",
     "test",
-    "fixtures"
+    "fixtures",
+    "file system",
+    "memory"
   ],
   "repository": {
     "type": "git",
