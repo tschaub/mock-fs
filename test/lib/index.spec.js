@@ -157,9 +157,10 @@ describe('Mocking the file system', function() {
         'path/to/a.bin': new Buffer([1, 2, 3]),
         'empty': {},
         'nested': {
-          'dir': {
-            'file.txt': ''
-          }
+          'dir': mock.directory({
+            mtime: new Date(1),
+            items: {'file.txt': ''}
+          })
         }
       });
     });
@@ -170,6 +171,18 @@ describe('Mocking the file system', function() {
         assert.isTrue(!err);
         assert.isFalse(fs.existsSync('path/to/a.bin'));
         assert.isTrue(fs.existsSync('path/to/b.bin'));
+        done();
+      });
+    });
+
+    it('updates mtime of parent directory', function(done) {
+      var oldTime = fs.statSync('nested/dir').mtime;
+      fs.rename('nested/dir/file.txt', 'nested/dir/renamed.txt', function(err) {
+        assert.isTrue(!err);
+        assert.isFalse(fs.existsSync('nested/dir/file.txt'));
+        assert.isTrue(fs.existsSync('nested/dir/renamed.txt'));
+        var newTime = fs.statSync('nested/dir').mtime;
+        assert.isTrue(newTime > oldTime);
         done();
       });
     });
@@ -1356,27 +1369,41 @@ describe('Mocking the file system', function() {
 
     beforeEach(function() {
       mock({
-        '.': {}
+        dir: mock.directory({
+          mtime: new Date(1)
+        })
       });
     });
     afterEach(mock.restore);
 
     it('writes a string to a file', function(done) {
-      fs.writeFile('foo', 'bar', function(err) {
+      fs.writeFile('dir/foo', 'bar', function(err) {
         if (err) {
           return done(err);
         }
-        assert.equal(String(fs.readFileSync('foo')), 'bar');
+        assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
+        done();
+      });
+    });
+
+    it('updates mtime of parent directory', function(done) {
+      var oldTime = fs.statSync('dir').mtime;
+      fs.writeFile('dir/foo', 'bar', function(err) {
+        if (err) {
+          return done(err);
+        }
+        var newTime = fs.statSync('dir').mtime;
+        assert.isTrue(newTime > oldTime);
         done();
       });
     });
 
     it('writes a buffer to a file', function(done) {
-      fs.writeFile('foo', new Buffer('bar'), function(err) {
+      fs.writeFile('dir/foo', new Buffer('bar'), function(err) {
         if (err) {
           return done(err);
         }
-        assert.equal(String(fs.readFileSync('foo')), 'bar');
+        assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
         done();
       });
     });
@@ -1840,6 +1867,10 @@ describe('Mocking the file system', function() {
     beforeEach(function() {
       mock({
         'dir': {},
+        'dir2': mock.directory({
+          mtime: new Date(1),
+          items: {file: 'content here'}
+        }),
         'file.txt': 'content'
       });
     });
@@ -1851,6 +1882,19 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         assert.isFalse(fs.existsSync('file.txt'));
+        done();
+      });
+    });
+
+    it('updates mtime of parent', function(done) {
+      var oldTime = fs.statSync('dir2').mtime;
+      fs.unlink('dir2/file', function(err) {
+        if (err) {
+          return done(err);
+        }
+        assert.isFalse(fs.existsSync('dir2/file'));
+        var newTime = fs.statSync('dir2').mtime;
+        assert.isTrue(newTime > oldTime);
         done();
       });
     });
