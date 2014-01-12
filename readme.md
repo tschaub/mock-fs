@@ -57,9 +57,9 @@ Create a factory for new files.  Supported properties:
  * **mode** - `number` File mode (permission and sticky bits).  Defaults to `0666`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
  * **git** - `number` The group id.  Defaults to `process.getgid()`.
- * **atime** - `Date` The last file access time.  Defaults to `Date.now()`.  Updated when file contents are accessed.
- * **ctime** - `Date` The last file change time.  Defaults to `Date.now()`.  Updated when file owner or permissions change.
- * **mtime** - `Date` The last file modification time.  Defaults to `Date.now()`.  Updated when file contents change.
+ * **atime** - `Date` The last file access time.  Defaults to `new Date()`.  Updated when file contents are accessed.
+ * **ctime** - `Date` The last file change time.  Defaults to `new Date()`.  Updated when file owner or permissions change.
+ * **mtime** - `Date` The last file modification time.  Defaults to `new Date()`.  Updated when file contents change.
 
 To create a mock filesystem with a very old file named `foo`, you could do something like this:
 ```js
@@ -101,9 +101,9 @@ Create a factory for new directories.  Supported properties:
  * **mode** - `number` Directory mode (permission and sticky bits).  Defaults to `0777`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
  * **git** - `number` The group id.  Defaults to `process.getgid()`.
- * **atime** - `Date` The last directory access time.  Defaults to `Date.now()`.
- * **ctime** - `Date` The last directory change time.  Defaults to `Date.now()`.  Updated when owner or permissions change.
- * **mtime** - `Date` The last directory modification time.  Defaults to `Date.now()`.
+ * **atime** - `Date` The last directory access time.  Defaults to `new Date()`.
+ * **ctime** - `Date` The last directory change time.  Defaults to `new Date()`.  Updated when owner or permissions change.
+ * **mtime** - `Date` The last directory modification time.  Defaults to `new Date()`.  Updated when an item is added, removed, or renamed.
  * **items** - `Object` Directory contents.  Members will generate additional files, directories, or symlinks.
 
 To create a mock filesystem with a directory with the relative path `some/dir` that has a mode of `0755` and a couple child files, you could do something like this:
@@ -133,9 +133,9 @@ Create a factory for new symlinks.  Supported properties:
  * **mode** - `number` Symlink mode (permission and sticky bits).  Defaults to `0666`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
  * **git** - `number` The group id.  Defaults to `process.getgid()`.
- * **atime** - `Date` The last symlink access time.  Defaults to `Date.now()`.
- * **ctime** - `Date` The last symlink change time.  Defaults to `Date.now()`.
- * **mtime** - `Date` The last symlink modification time.  Defaults to `Date.now()`.
+ * **atime** - `Date` The last symlink access time.  Defaults to `new Date()`.
+ * **ctime** - `Date` The last symlink change time.  Defaults to `new Date()`.
+ * **mtime** - `Date` The last symlink modification time.  Defaults to `new Date()`.
 
 To create a mock filesystem with a file and a symlink, you could do something like this:
 ```js
