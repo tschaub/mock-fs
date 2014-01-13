@@ -372,8 +372,16 @@ describe('Mocking the file system', function() {
         assert.instanceOf(stats.ctime, Date);
         assert.instanceOf(stats.mtime, Date);
         assert.instanceOf(stats.atime, Date);
-        assert.isNumber(stats.uid);
-        assert.isNumber(stats.gid);
+        if (process.getuid) {
+          assert.isNumber(stats.uid);
+        } else {
+          assert.isUndefined(stats.uid);
+        }
+        if (process.getgid) {
+          assert.isNumber(stats.gid);
+        } else {
+          assert.isUndefined(stats.gid);
+        }
         assert.equal(stats.nlink, 3);
         assert.isNumber(stats.blocks);
         assert.isNumber(stats.blksize);
