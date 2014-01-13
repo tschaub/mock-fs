@@ -1,4 +1,5 @@
 var fs = require('fs');
+var os = require('os');
 var path = require('path');
 
 var mock = require('../../lib/index');
@@ -14,6 +15,27 @@ describe('The API', function() {
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
+
+      mock.restore();
+    });
+
+  });
+
+  describe('mock()', function() {
+
+    it('creates process.cwd() and os.tmpdir() by default', function() {
+      mock();
+
+      assert.isTrue(fs.statSync(process.cwd()).isDirectory());
+      var tmp;
+      if (os.tmpdir) {
+        tmp = os.tmpdir();
+      } else if (os.tmpDir) {
+        tmp = os.tmpDir();
+      }
+      if (tmp) {
+        assert.isTrue(fs.statSync(tmp).isDirectory());
+      }
 
       mock.restore();
     });
