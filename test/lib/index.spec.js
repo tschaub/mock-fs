@@ -90,6 +90,34 @@ describe('The API', function() {
 
     });
 
+    it('works with a trailing slash', function() {
+
+      mock({
+        'path/to/dir/': mock.directory({
+          mtime: new Date(8675309),
+          mode: 0644
+        })
+      });
+
+      assert.isTrue(fs.statSync('path/to/dir').isDirectory());
+      assert.isTrue(fs.statSync('path/to/dir/').isDirectory());
+
+    });
+
+    it('works without a trailing slash', function() {
+
+      mock({
+        'path/to/dir': mock.directory({
+          mtime: new Date(8675309),
+          mode: 0644
+        })
+      });
+
+      assert.isTrue(fs.statSync('path/to/dir').isDirectory());
+      assert.isTrue(fs.statSync('path/to/dir/').isDirectory());
+
+    });
+
   });
 
   describe('mock.symlink()', function() {
