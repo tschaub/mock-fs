@@ -1,4 +1,5 @@
 var fs = require('fs');
+var os = require('os');
 var path = require('path');
 
 var mock = require('../../lib/index');
@@ -14,6 +15,27 @@ describe('The API', function() {
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
+
+      mock.restore();
+    });
+
+  });
+
+  describe('mock()', function() {
+
+    it('creates process.cwd() and os.tmpdir() by default', function() {
+      mock();
+
+      assert.isTrue(fs.statSync(process.cwd()).isDirectory());
+      var tmp;
+      if (os.tmpdir) {
+        tmp = os.tmpdir();
+      } else if (os.tmpDir) {
+        tmp = os.tmpDir();
+      }
+      if (tmp) {
+        assert.isTrue(fs.statSync(tmp).isDirectory());
+      }
 
       mock.restore();
     });
@@ -87,6 +109,34 @@ describe('The API', function() {
         assert.equal(stats.mode & 0777, 0644);
         done();
       });
+
+    });
+
+    it('works with a trailing slash', function() {
+
+      mock({
+        'path/to/dir/': mock.directory({
+          mtime: new Date(8675309),
+          mode: 0644
+        })
+      });
+
+      assert.isTrue(fs.statSync('path/to/dir').isDirectory());
+      assert.isTrue(fs.statSync('path/to/dir/').isDirectory());
+
+    });
+
+    it('works without a trailing slash', function() {
+
+      mock({
+        'path/to/dir': mock.directory({
+          mtime: new Date(8675309),
+          mode: 0644
+        })
+      });
+
+      assert.isTrue(fs.statSync('path/to/dir').isDirectory());
+      assert.isTrue(fs.statSync('path/to/dir/').isDirectory());
 
     });
 
@@ -372,8 +422,16 @@ describe('Mocking the file system', function() {
         assert.instanceOf(stats.ctime, Date);
         assert.instanceOf(stats.mtime, Date);
         assert.instanceOf(stats.atime, Date);
-        assert.isNumber(stats.uid);
-        assert.isNumber(stats.gid);
+        if (process.getuid) {
+          assert.isNumber(stats.uid);
+        } else {
+          assert.isUndefined(stats.uid);
+        }
+        if (process.getgid) {
+          assert.isNumber(stats.gid);
+        } else {
+          assert.isUndefined(stats.gid);
+        }
         assert.equal(stats.nlink, 3);
         assert.isNumber(stats.blocks);
         assert.isNumber(stats.blksize);
