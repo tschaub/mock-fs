@@ -1,21 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 
-
-/**
- * Count the number of files in a directory.
- * @param {string} dir Path to directory.
- * @param {function(Error, number)} callback Callback.
- */
-module.exports = exports = function(dir, callback) {
-  fs.readdir(dir, function(err, items) {
-    if (err) {
-      return callback(err);
-    }
-    numFiles(dir, items, callback);
-  });
-};
-
 function numFiles(dir, items, callback) {
   var total = items.length,
       files = 0,
@@ -36,3 +21,18 @@ function numFiles(dir, items, callback) {
     });
   });
 }
+
+
+/**
+ * Count the number of files in a directory.
+ * @param {string} dir Path to directory.
+ * @param {function(Error, number)} callback Callback.
+ */
+module.exports = exports = function(dir, callback) {
+  fs.readdir(dir, function(err, items) {
+    if (err) {
+      return callback(err);
+    }
+    numFiles(dir, items, callback);
+  });
+};
