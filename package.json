@@ -31,13 +31,15 @@
   ],
   "scripts": {
     "debug": "node --debug-brk ./tasks.js test",
-    "test": "node ./tasks.js lint test"
+    "test": "node ./tasks.js lint test",
+    "bench": "node benchmarks/run.js"
   },
   "devDependencies": {
     "chai": "~1.8.1",
     "jshint": "~2.4.1",
     "mocha": "~1.17.0",
-    "glob": "~3.2.8"
+    "glob": "~3.2.8",
+    "rimraf": "~2.2.6"
   },
   "dependencies": {
     "rewire": "~2.0.0"
