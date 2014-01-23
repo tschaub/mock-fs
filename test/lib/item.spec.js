@@ -143,4 +143,247 @@ describe('Item', function() {
 
   });
 
+  if (process.getgid && process.getuid) {
+
+    var uid = process.getuid();
+    var gid = process.getgid();
+
+    var item;
+    beforeEach(function() {
+      item = new Item();
+    });
+
+    describe('#canRead()', function() {
+
+      it('returns true if owner and 0700', function() {
+        item.setMode(0700);
+        assert.isTrue(item.canRead());
+      });
+
+      it('returns true if owner and 0600', function() {
+        item.setMode(0600);
+        assert.isTrue(item.canRead());
+      });
+
+      it('returns true if owner and 0500', function() {
+        item.setMode(0500);
+        assert.isTrue(item.canRead());
+      });
+
+      it('returns true if owner and 0400', function() {
+        item.setMode(0400);
+        assert.isTrue(item.canRead());
+      });
+
+      it('returns false if owner and 0300', function() {
+        item.setMode(0300);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns false if owner and 0200', function() {
+        item.setMode(0200);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns false if owner and 0100', function() {
+        item.setMode(0100);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns false if not owner and 0700 (different user)', function() {
+        item.setUid(uid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns false if not owner and 0700 (different group)', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns false if owner and 0170', function() {
+        item.setMode(0170);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns true if in group and 0170', function() {
+        item.setUid(uid + 1);
+        item.setMode(0170);
+        assert.isTrue(item.canRead());
+      });
+
+      it('returns false if not in group and 0770', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0770);
+        assert.isFalse(item.canRead());
+      });
+
+      it('returns true if not in group and 0777', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0777);
+        assert.isTrue(item.canRead());
+      });
+
+    });
+
+    describe('#canWrite()', function() {
+
+      it('returns true if owner and 0700', function() {
+        item.setMode(0700);
+        assert.isTrue(item.canWrite());
+      });
+
+      it('returns true if owner and 0600', function() {
+        item.setMode(0600);
+        assert.isTrue(item.canWrite());
+      });
+
+      it('returns false if owner and 0500', function() {
+        item.setMode(0500);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns false if owner and 0400', function() {
+        item.setMode(0400);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns true if owner and 0300', function() {
+        item.setMode(0300);
+        assert.isTrue(item.canWrite());
+      });
+
+      it('returns true if owner and 0200', function() {
+        item.setMode(0200);
+        assert.isTrue(item.canWrite());
+      });
+
+      it('returns false if owner and 0100', function() {
+        item.setMode(0100);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns false if not owner and 0700 (different user)', function() {
+        item.setUid(uid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns false if not owner and 0700 (different group)', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns false if owner and 0170', function() {
+        item.setMode(0170);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns true if in group and 0170', function() {
+        item.setUid(uid + 1);
+        item.setMode(0170);
+        assert.isTrue(item.canWrite());
+      });
+
+      it('returns false if not in group and 0770', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0770);
+        assert.isFalse(item.canWrite());
+      });
+
+      it('returns true if not in group and 0777', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0777);
+        assert.isTrue(item.canWrite());
+      });
+
+    });
+
+    describe('#canExecute()', function() {
+
+      it('returns true if owner and 0700', function() {
+        item.setMode(0700);
+        assert.isTrue(item.canExecute());
+      });
+
+      it('returns false if owner and 0600', function() {
+        item.setMode(0600);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns true if owner and 0500', function() {
+        item.setMode(0500);
+        assert.isTrue(item.canExecute());
+      });
+
+      it('returns false if owner and 0400', function() {
+        item.setMode(0400);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns true if owner and 0300', function() {
+        item.setMode(0300);
+        assert.isTrue(item.canExecute());
+      });
+
+      it('returns false if owner and 0200', function() {
+        item.setMode(0200);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns true if owner and 0100', function() {
+        item.setMode(0100);
+        assert.isTrue(item.canExecute());
+      });
+
+      it('returns false if not owner and 0700 (different user)', function() {
+        item.setUid(uid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns false if not owner and 0700 (different group)', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0700);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns false if owner and 0270', function() {
+        item.setMode(0270);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns true if in group and 0270', function() {
+        item.setUid(uid + 1);
+        item.setMode(0270);
+        assert.isTrue(item.canExecute());
+      });
+
+      it('returns false if not in group and 0770', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0770);
+        assert.isFalse(item.canExecute());
+      });
+
+      it('returns true if not in group and 0777', function() {
+        item.setUid(uid + 1);
+        item.setGid(gid + 1);
+        item.setMode(0777);
+        assert.isTrue(item.canExecute());
+      });
+
+    });
+
+  }
+
 });
