@@ -6,13 +6,11 @@ var mock = require('..');
 
 /**
  * Test setup.  Not timed.
- * @param {function(Error)} done Callback.
  */
-exports.beforeEach = function(done) {
+exports.beforeEach = function() {
   mock({
     'foo-mock.txt': 'foo'
   });
-  done();
 };
 
 
@@ -31,9 +29,7 @@ exports.test = function(done) {
 
 /**
  * Test teardown.  Not timed.
- * @param {function(Error)} done Callback.
  */
-exports.afterEach = function(done) {
+exports.afterEach = function() {
   mock.restore();
-  done();
 };
