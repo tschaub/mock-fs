@@ -1,7 +1,7 @@
 var assert = require('assert');
 var fs = require('fs');
 
-var mock = require('../..');
+var mock = require('..');
 
 
 /**
