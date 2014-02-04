@@ -2557,6 +2557,28 @@ describe('Mocking the file system', function() {
 
       });
 
+      it('denies file read without read on file', function() {
+
+        mock({
+          insecure: ({
+            'write-only': mock.file({
+              mode: 0222,
+              content: 'write only'
+            })
+          })
+        });
+
+        var err;
+        try {
+          fs.readFileSync('insecure/write-only');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
     });
 
   }
