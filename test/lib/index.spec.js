@@ -2503,4 +2503,106 @@ describe('Mocking the file system', function() {
 
   });
 
+  if (process.getuid && process.getgid) {
+
+    describe('security', function() {
+
+      afterEach(mock.restore);
+
+      it('denies dir listing without execute on parent', function() {
+
+        mock({
+          secure: mock.directory({
+            mode: 0666,
+            items: {
+              insecure: ({
+                file: 'file content'
+              })
+            }
+          })
+        });
+
+        var err;
+        try {
+          fs.readdirSync('secure/insecure');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+      it('denies file read without execute on parent', function() {
+
+        mock({
+          secure: mock.directory({
+            mode: 0666,
+            items: {
+              insecure: ({
+                file: 'file content'
+              })
+            }
+          })
+        });
+
+        var err;
+        try {
+          fs.readFileSync('secure/insecure/file');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+      it('denies file read without read on file', function() {
+
+        mock({
+          insecure: ({
+            'write-only': mock.file({
+              mode: 0222,
+              content: 'write only'
+            })
+          })
+        });
+
+        var err;
+        try {
+          fs.readFileSync('insecure/write-only');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+      it('denies file write without write on file', function() {
+
+        mock({
+          insecure: ({
+            'read-only': mock.file({
+              mode: 0444,
+              content: 'read only'
+            })
+          })
+        });
+
+        var err;
+        try {
+          fs.writeFileSync('insecure/read-only', 'denied');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+    });
+
+  }
+
 });

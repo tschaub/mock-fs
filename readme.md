@@ -186,6 +186,8 @@ The following [`fs` functions](http://nodejs.org/api/fs.html) are overridden: `f
 
 Mock `fs.Stats` objects have the following properties: `dev`, `ino`, `nlink`, `mode`, `size`, `rdev`, `blksize`, `blocks`, `atime`, `ctime`, `mtime`, `uid`, and `gid`.  In addition, all of the `is*()` method are provided (e.g. `isDirectory()`, `isFile()`, et al.).
 
+Mock file access is controlled based on file mode where `process.getuid()` and `process.getgid()` are available (POSIX systems).  On other systems (e.g. Windows) the file mode has no effect.
+
 The following `fs` functions are *not* currently mocked (if your tests use these, they will work against the real file system): `fs.FSWatcher`, `fs.unwatchFile`, `fs.watch`, and `fs.watchFile`.  Pull requests welcome.
 
 Tested on Linux, OSX, and Windows using Node 0.8, 0.9, 0.10, and 0.11.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
