@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.1.2
+
+ * Added more complete license text.
+ * Test on Node 0.9 and 0.11 in addition to 0.8 and 0.10.
+
 ## 2.1.1
 
  * Added this changelog.
