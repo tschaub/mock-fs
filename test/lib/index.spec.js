@@ -2503,4 +2503,62 @@ describe('Mocking the file system', function() {
 
   });
 
+  if (process.getuid && process.getgid) {
+
+    describe('security', function() {
+
+      afterEach(mock.restore);
+
+      it('denies dir listing without execute on parent', function() {
+
+        mock({
+          secure: mock.directory({
+            mode: 0666,
+            items: {
+              insecure: ({
+                file: 'file content'
+              })
+            }
+          })
+        });
+
+        var err;
+        try {
+          fs.readdirSync('secure/insecure');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+      it('denies file read without execute on parent', function() {
+
+        mock({
+          secure: mock.directory({
+            mode: 0666,
+            items: {
+              insecure: ({
+                file: 'file content'
+              })
+            }
+          })
+        });
+
+        var err;
+        try {
+          fs.readFileSync('secure/insecure/file');
+        } catch (e) {
+          err = e;
+        }
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
+
+      });
+
+    });
+
+  }
+
 });
