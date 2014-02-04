@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.2.0
+
+ * Respect file mode on POSIX-compliant systems (see #7).
+ * Add benchmarks comparing mock-fs and fs modules.
+
 ## 2.1.2
 
  * Added more complete license text.
