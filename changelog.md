@@ -2,8 +2,8 @@
 
 ## 2.2.0
 
- * Respect file mode on POSIX-compliant systems (see #7).
- * Add benchmarks comparing mock-fs and fs modules.
+ * Respect file mode on POSIX-compliant systems (see [#7][#7]).
+ * Add benchmarks comparing mock-fs and fs modules (see [#6][#6]).
 
 ## 2.1.2
 
@@ -17,10 +17,19 @@
 
 ## 2.1.0
 
- * Directory mtime is now updated when items are added, removed, or modified (#2).
- * Fixed several issues on Windows (see #3).  One issue remains on Windows with Node 0.8 (see #4).
- * Swapped out Grunt with a single script to run tasks (see #5).
+ * Directory mtime is now updated when items are added, removed, or modified ([#2][#2]).
+ * Fixed several issues on Windows (see [#3][#3]).  One issue remains on Windows with Node 0.8 (see [#4][#4]).
+ * Swapped out Grunt with a single script to run tasks (see [#5][#5]).
 
 ## 2.0.0
 
- * Simplified API (see #1).
+ * Simplified API (see [#1][#1]).
+
+
+[#1]: https://github.com/tschaub/mock-fs/pull/1
+[#2]: https://github.com/tschaub/mock-fs/pull/2
+[#3]: https://github.com/tschaub/mock-fs/pull/3
+[#4]: https://github.com/tschaub/mock-fs/issues/4
+[#5]: https://github.com/tschaub/mock-fs/pull/5
+[#6]: https://github.com/tschaub/mock-fs/pull/6
+[#7]: https://github.com/tschaub/mock-fs/pull/7
