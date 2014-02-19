@@ -1131,6 +1131,7 @@ function inStatWatchers(filename) {
 
 fs.watchFile = function(filename) {
   nullCheck(filename);
+  filename = pathModule.resolve(filename);
   var stat;
   var listener;
 
@@ -1165,6 +1166,7 @@ fs.watchFile = function(filename) {
 
 fs.unwatchFile = function(filename, listener) {
   nullCheck(filename);
+  filename = pathModule.resolve(filename);
   if (!inStatWatchers(filename)) return;
 
   var stat = statWatchers[filename];
@@ -1695,12 +1697,16 @@ WriteStream.prototype.destroySoon = WriteStream.prototype.end;
 
 // SyncWriteStream is internal. DO NOT USE.
 // Temporary hack for process.stdout and process.stderr when piped to files.
-function SyncWriteStream(fd) {
+function SyncWriteStream(fd, options) {
   Stream.call(this);
+
+  options = options || {};
 
   this.fd = fd;
   this.writable = true;
   this.readable = false;
+  this.autoClose = options.hasOwnProperty('autoClose') ?
+      options.autoClose : true;
 }
 
 util.inherits(SyncWriteStream, Stream);
@@ -1750,7 +1756,8 @@ SyncWriteStream.prototype.end = function(data, arg1, arg2) {
 
 
 SyncWriteStream.prototype.destroy = function() {
-  fs.closeSync(this.fd);
+  if (this.autoClose)
+    fs.closeSync(this.fd);
   this.fd = null;
   this.emit('close');
   return true;
