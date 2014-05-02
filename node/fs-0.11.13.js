@@ -117,7 +117,44 @@ function nullCheck(path, callback) {
   return true;
 }
 
-fs.Stats = binding.Stats;
+// Static method to set the stats properties on a Stats object.
+fs.Stats = function(
+    dev,
+    mode,
+    nlink,
+    uid,
+    gid,
+    rdev,
+    blksize,
+    ino,
+    size,
+    blocks,
+    atim_msec,
+    mtim_msec,
+    ctim_msec,
+    birthtim_msec) {
+  this.dev = dev;
+  this.mode = mode;
+  this.nlink = nlink;
+  this.uid = uid;
+  this.gid = gid;
+  this.rdev = rdev;
+  this.blksize = blksize;
+  this.ino = ino;
+  this.size = size;
+  this.blocks = blocks;
+  this.atime = new Date(atim_msec);
+  this.mtime = new Date(mtim_msec);
+  this.ctime = new Date(ctim_msec);
+  this.birthtime = new Date(birthtim_msec);
+};
+
+// Create a C++ binding to the function which creates a Stats object.
+if (binding.FSInitialize) {
+  binding.FSInitialize(fs.Stats);
+} else if (binding.Stats) {
+  fs.Stats = binding.Stats;
+}
 
 fs.Stats.prototype._checkModeProperty = function(property) {
   return ((this.mode & constants.S_IFMT) === property);
