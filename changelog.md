@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.0
+
+ * Fixes for Node 0.11.13 (see [#9][#9]).
+
 ## 2.2.0
 
  * Respect file mode on POSIX-compliant systems (see [#7][#7]).
@@ -33,3 +37,4 @@
 [#5]: https://github.com/tschaub/mock-fs/pull/5
 [#6]: https://github.com/tschaub/mock-fs/pull/6
 [#7]: https://github.com/tschaub/mock-fs/pull/7
+[#7]: https://github.com/tschaub/mock-fs/issues/9
