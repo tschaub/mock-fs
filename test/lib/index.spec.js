@@ -1637,6 +1637,20 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('calls callback with a single argument on success', function(done) {
+      fs.mkdir('parent/arity', function(err) {
+        assert.equal(arguments.length, 1);
+        done();
+      });
+    });
+
+    it('calls callback with a single argument on failure', function(done) {
+      fs.mkdir('parent', function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+
   });
 
   describe('fs.mkdirSync(path, [mode])', function() {
