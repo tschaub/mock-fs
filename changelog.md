@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.1
+
+ * Preserve arity of callbacks (see [#11][#11]).
+
 ## 2.3.0
 
  * Fixes for Node 0.11.13 (see [#9][#9]).
@@ -37,4 +41,5 @@
 [#5]: https://github.com/tschaub/mock-fs/pull/5
 [#6]: https://github.com/tschaub/mock-fs/pull/6
 [#7]: https://github.com/tschaub/mock-fs/pull/7
-[#7]: https://github.com/tschaub/mock-fs/issues/9
+[#9]: https://github.com/tschaub/mock-fs/issues/9
+[#11]: https://github.com/tschaub/mock-fs/pull/11
