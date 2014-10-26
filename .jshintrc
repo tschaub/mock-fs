@@ -1,4 +1,5 @@
 {
+  "node": true,
   "curly": true,
   "eqeqeq": true,
   "indent": 2,
@@ -8,13 +9,5 @@
   "quotmark": "single",
   "undef": true,
   "trailing": true,
-  "maxlen": 80,
-  "globals": {
-    "Buffer": false,
-    "exports": true,
-    "module": false,
-    "process": false,
-    "require": false,
-    "__dirname": false
-  }
+  "maxlen": 80
 }

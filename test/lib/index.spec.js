@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
@@ -67,7 +69,7 @@ describe('The API', function() {
         'path/to/file.txt': mock.file({
           content: 'file content',
           mtime: new Date(8675309),
-          mode: 0644
+          mode: parseInt('0644', 8)
         })
       });
 
@@ -78,7 +80,7 @@ describe('The API', function() {
         assert.isTrue(stats.isFile());
         assert.isFalse(stats.isDirectory());
         assert.equal(stats.mtime.getTime(), 8675309);
-        assert.equal(stats.mode & 0777, 0644);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
       });
 
@@ -95,7 +97,7 @@ describe('The API', function() {
       mock({
         'path/to/dir': mock.directory({
           mtime: new Date(8675309),
-          mode: 0644
+          mode: parseInt('0644', 8)
         })
       });
 
@@ -106,7 +108,7 @@ describe('The API', function() {
         assert.isFalse(stats.isFile());
         assert.isTrue(stats.isDirectory());
         assert.equal(stats.mtime.getTime(), 8675309);
-        assert.equal(stats.mode & 0777, 0644);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
       });
 
@@ -117,7 +119,7 @@ describe('The API', function() {
       mock({
         'path/to/dir/': mock.directory({
           mtime: new Date(8675309),
-          mode: 0644
+          mode: parseInt('0644', 8)
         })
       });
 
@@ -131,7 +133,7 @@ describe('The API', function() {
       mock({
         'path/to/dir': mock.directory({
           mtime: new Date(8675309),
-          mode: 0644
+          mode: parseInt('0644', 8)
         })
       });
 
@@ -815,7 +817,7 @@ describe('Mocking the file system', function() {
     });
 
     it('creates a new file for writing (w)', function(done) {
-      fs.open('path/to/new.txt', 'w', 0666, function(err, fd) {
+      fs.open('path/to/new.txt', 'w', parseInt('0666', 8), function(err, fd) {
         if (err) {
           return done(err);
         }
@@ -826,7 +828,7 @@ describe('Mocking the file system', function() {
     });
 
     it('opens an existing file for writing (w)', function(done) {
-      fs.open('path/to/one.txt', 'w', 0666, function(err, fd) {
+      fs.open('path/to/one.txt', 'w', parseInt('0666', 8), function(err, fd) {
         if (err) {
           return done(err);
         }
@@ -836,7 +838,7 @@ describe('Mocking the file system', function() {
     });
 
     it('fails if file exists (wx)', function(done) {
-      fs.open('path/to/one.txt', 'wx', 0666, function(err, fd) {
+      fs.open('path/to/one.txt', 'wx', parseInt('0666', 8), function(err, fd) {
         if (err) {
           return done(err);
         }
@@ -877,19 +879,19 @@ describe('Mocking the file system', function() {
     });
 
     it('creates a new file for writing (w)', function() {
-      var fd = fs.openSync('nested/sub/new.txt', 'w', 0666);
+      var fd = fs.openSync('nested/sub/new.txt', 'w', parseInt('0666', 8));
       assert.isNumber(fd);
       assert.isTrue(fs.existsSync('nested/sub/new.txt'));
     });
 
     it('opens an existing file for writing (w)', function() {
-      var fd = fs.openSync('path/to/one.txt', 'w', 0666);
+      var fd = fs.openSync('path/to/one.txt', 'w', parseInt('0666', 8));
       assert.isNumber(fd);
     });
 
     it('fails if file exists (wx)', function() {
       assert.throws(function() {
-        fs.openSync('path/to/file.txt', 'wx', 0666);
+        fs.openSync('path/to/file.txt', 'wx', parseInt('0666', 8));
       });
     });
 
@@ -1612,13 +1614,13 @@ describe('Mocking the file system', function() {
     });
 
     it('accepts dir mode', function(done) {
-      fs.mkdir('parent/dir', 0755, function(err) {
+      fs.mkdir('parent/dir', parseInt('0755', 8), function(err) {
         if (err) {
           return done(err);
         }
         var stats = fs.statSync('parent/dir');
         assert.isTrue(stats.isDirectory());
-        assert.equal(stats.mode & 0777, 0755);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
         done();
       });
     });
@@ -1670,10 +1672,10 @@ describe('Mocking the file system', function() {
     });
 
     it('accepts dir mode', function() {
-      fs.mkdirSync('parent/dir', 0755);
+      fs.mkdirSync('parent/dir', parseInt('0755', 8));
       var stats = fs.statSync('parent/dir');
       assert.isTrue(stats.isDirectory());
-      assert.equal(stats.mode & 0777, 0755);
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
     });
 
     it('fails if parent does not exist', function() {
@@ -1845,24 +1847,24 @@ describe('Mocking the file system', function() {
 
     beforeEach(function() {
       mock({
-        'file.txt': mock.file({mode: 0644})
+        'file.txt': mock.file({mode: parseInt('0644', 8)})
       });
     });
     afterEach(mock.restore);
 
     it('changes permissions of a file', function(done) {
-      fs.chmod('file.txt', 0664, function(err) {
+      fs.chmod('file.txt', parseInt('0664', 8), function(err) {
         if (err) {
           return done(err);
         }
         var stats = fs.statSync('file.txt');
-        assert.equal(stats.mode & 0777, 0664);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
         done();
       });
     });
 
     it('fails if file does not exist', function(done) {
-      fs.chmod('bogus.txt', 0664, function(err) {
+      fs.chmod('bogus.txt', parseInt('0664', 8), function(err) {
         assert.instanceOf(err, Error);
         done();
       });
@@ -1874,20 +1876,20 @@ describe('Mocking the file system', function() {
 
     beforeEach(function() {
       mock({
-        'file.txt': mock.file({mode: 0666})
+        'file.txt': mock.file({mode: parseInt('0666', 8)})
       });
     });
     afterEach(mock.restore);
 
     it('changes permissions of a file', function() {
-      fs.chmodSync('file.txt', 0644);
+      fs.chmodSync('file.txt', parseInt('0644', 8));
       var stats = fs.statSync('file.txt');
-      assert.equal(stats.mode & 0777, 0644);
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
     });
 
     it('fails if file does not exist', function() {
       assert.throws(function() {
-        fs.chmodSync('bogus.txt', 0644);
+        fs.chmodSync('bogus.txt', parseInt('0644', 8));
       });
     });
 
@@ -1897,19 +1899,19 @@ describe('Mocking the file system', function() {
 
     beforeEach(function() {
       mock({
-        'file.txt': mock.file({mode: 0666})
+        'file.txt': mock.file({mode: parseInt('0666', 8)})
       });
     });
     afterEach(mock.restore);
 
     it('changes permissions of a file', function(done) {
       var fd = fs.openSync('file.txt', 'r');
-      fs.fchmod(fd, 0644, function(err) {
+      fs.fchmod(fd, parseInt('0644', 8), function(err) {
         if (err) {
           return done(err);
         }
         var stats = fs.statSync('file.txt');
-        assert.equal(stats.mode & 0777, 0644);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
       });
     });
@@ -1927,9 +1929,9 @@ describe('Mocking the file system', function() {
 
     it('changes permissions of a file', function() {
       var fd = fs.openSync('file.txt', 'r');
-      fs.fchmodSync(fd, 0444);
+      fs.fchmodSync(fd, parseInt('0444', 8));
       var stats = fs.statSync('file.txt');
-      assert.equal(stats.mode & 0777, 0444);
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0444', 8));
     });
 
   });
@@ -2527,7 +2529,7 @@ describe('Mocking the file system', function() {
 
         mock({
           secure: mock.directory({
-            mode: 0666,
+            mode: parseInt('0666', 8),
             items: {
               insecure: ({
                 file: 'file content'
@@ -2551,7 +2553,7 @@ describe('Mocking the file system', function() {
 
         mock({
           secure: mock.directory({
-            mode: 0666,
+            mode: parseInt('0666', 8),
             items: {
               insecure: ({
                 file: 'file content'
@@ -2576,7 +2578,7 @@ describe('Mocking the file system', function() {
         mock({
           insecure: ({
             'write-only': mock.file({
-              mode: 0222,
+              mode: parseInt('0222', 8),
               content: 'write only'
             })
           })
@@ -2598,7 +2600,7 @@ describe('Mocking the file system', function() {
         mock({
           insecure: ({
             'read-only': mock.file({
-              mode: 0444,
+              mode: parseInt('0444', 8),
               content: 'read only'
             })
           })

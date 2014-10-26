@@ -1,3 +1,5 @@
+'use strict';
+
 var mock = require('../../lib/index');
 var assert = require('../helper').assert;
 

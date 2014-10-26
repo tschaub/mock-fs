@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 
 var Directory = require('../../lib/directory');
@@ -202,7 +204,7 @@ describe('FileSystem.create', function() {
 
     var system = FileSystem.create({
       'path/to/dir': FileSystem.directory({
-        mode: 0755,
+        mode: parseInt('0755', 8),
         items: {
           'file.txt': 'file content',
           'empty-dir': {}
@@ -214,7 +216,7 @@ describe('FileSystem.create', function() {
 
     var dir = system.getItem(path.join('path', 'to', 'dir'));
     assert.instanceOf(dir, Directory);
-    assert.equal(dir.getMode(), 0755);
+    assert.equal(dir.getMode(), parseInt('0755', 8));
 
     var file = system.getItem(path.join('path', 'to', 'dir', 'file.txt'));
     assert.instanceOf(file, File);

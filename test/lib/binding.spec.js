@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 
 var Binding = require('../../lib/binding');
@@ -21,7 +23,7 @@ describe('Binding', function() {
         'one.txt': 'one content',
         'two.txt': FileSystem.file({
           content: 'two content',
-          mode: 0644,
+          mode: parseInt('0644', 8),
           atime: new Date(1),
           ctime: new Date(2),
           mtime: new Date(3)
@@ -136,7 +138,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(stats.mode & 0777, 0666);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0666', 8));
         done();
       });
     });
@@ -147,7 +149,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(stats.mode & 0777, 0644);
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
       });
     });
@@ -390,15 +392,16 @@ describe('Binding', function() {
 
     it('opens a new file for writing (w)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w'), 0644);
+      var fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0644);
+      assert.equal(file.getMode(), parseInt('0644', 8));
     });
 
     it('truncates an existing file for writing (w)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'), 0666);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'),
+          parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), '');
@@ -413,17 +416,17 @@ describe('Binding', function() {
 
     it('opens a new file for reading and writing (w+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w+'), 0644);
+      var fd = binding.open('new.txt', flags('w+'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0644);
+      assert.equal(file.getMode(), parseInt('0644', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('truncates an existing file for writing (w+)', function() {
       var binding = new Binding(system);
       var fd = binding.open(
-          path.join('mock-dir', 'one.txt'), flags('w+'), 0666);
+          path.join('mock-dir', 'one.txt'), flags('w+'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), '');
@@ -431,33 +434,34 @@ describe('Binding', function() {
 
     it('opens a new file for reading and writing (wx+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('wx+'), 0644);
+      var fd = binding.open('new.txt', flags('wx+'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0644);
+      assert.equal(file.getMode(), parseInt('0644', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('generates error if file exists (wx+)', function() {
       var binding = new Binding(system);
       assert.throws(function() {
-        binding.open(path.join('mock-dir', 'one.txt'), flags('wx+'), 0666);
+        binding.open(path.join('mock-dir', 'one.txt'), flags('wx+'),
+            parseInt('0666', 8));
       });
     });
 
     it('opens a new file for appending (a)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('a'), 0666);
+      var fd = binding.open('new.txt', flags('a'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0666);
+      assert.equal(file.getMode(), parseInt('0666', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('opens an existing file for appending (a)', function() {
       var binding = new Binding(system);
       var fd = binding.open(
-          path.join('mock-dir', 'one.txt'), flags('a'), 0666);
+          path.join('mock-dir', 'one.txt'), flags('a'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), 'one content');
@@ -465,33 +469,34 @@ describe('Binding', function() {
 
     it('opens a new file for appending (ax)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('ax'), 0664);
+      var fd = binding.open('new.txt', flags('ax'), parseInt('0664', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0664);
+      assert.equal(file.getMode(), parseInt('0664', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('generates error if file exists (ax)', function() {
       var binding = new Binding(system);
       assert.throws(function() {
-        binding.open(path.join('mock-dir', 'one.txt'), flags('ax'), 0666);
+        binding.open(path.join('mock-dir', 'one.txt'), flags('ax'),
+            parseInt('0666', 8));
       });
     });
 
     it('opens a new file for appending and reading (a+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('a+'), 0666);
+      var fd = binding.open('new.txt', flags('a+'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0666);
+      assert.equal(file.getMode(), parseInt('0666', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('opens an existing file for appending and reading (a+)', function() {
       var binding = new Binding(system);
       var fd = binding.open(
-          path.join('mock-dir', 'one.txt'), flags('a+'), 0666);
+          path.join('mock-dir', 'one.txt'), flags('a+'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), 'two content');
@@ -499,17 +504,18 @@ describe('Binding', function() {
 
     it('opens a new file for appending and reading (ax+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('ax+'), 0666);
+      var fd = binding.open('new.txt', flags('ax+'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
-      assert.equal(file.getMode(), 0666);
+      assert.equal(file.getMode(), parseInt('0666', 8));
       assert.equal(String(file.getContent()), '');
     });
 
     it('opens an existing file for appending and reading (ax+)', function() {
       var binding = new Binding(system);
       assert.throws(function() {
-        binding.open(path.join('mock-dir', 'two.txt'), flags('ax+'), 0666);
+        binding.open(path.join('mock-dir', 'two.txt'), flags('ax+'),
+            parseInt('0666', 8));
       });
     });
 
@@ -519,13 +525,13 @@ describe('Binding', function() {
 
     it('closes an existing file descriptor', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w'), 0644);
+      var fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
       binding.close(fd);
     });
 
     it('fails for closed file descriptor', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w'), 0644);
+      var fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
       binding.close(fd);
       assert.throws(function() {
         binding.close(fd);
@@ -744,17 +750,17 @@ describe('Binding', function() {
     it('creates a new directory', function() {
       var binding = new Binding(system);
       var dirPath = path.join('mock-dir', 'foo');
-      binding.mkdir(dirPath, 0755);
+      binding.mkdir(dirPath, parseInt('0755', 8));
       var dir = system.getItem(dirPath);
       assert.instanceOf(dir, Directory);
-      assert.equal(dir.getMode(), 0755);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
     });
 
     it('fails if parent does not exist', function() {
       var binding = new Binding(system);
       var dirPath = path.join('bogus', 'path');
       assert.throws(function() {
-        binding.mkdir(dirPath, 0755);
+        binding.mkdir(dirPath, parseInt('0755', 8));
       });
     });
 
@@ -762,7 +768,7 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var dirPath = 'mock-dir';
       assert.throws(function() {
-        binding.mkdir(dirPath, 0755);
+        binding.mkdir(dirPath, parseInt('0755', 8));
       });
     });
 
@@ -770,7 +776,7 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var dirPath = path.join('mock-dir', 'one.txt');
       assert.throws(function() {
-        binding.mkdir(dirPath, 0755);
+        binding.mkdir(dirPath, parseInt('0755', 8));
       });
     });
 
@@ -892,17 +898,17 @@ describe('Binding', function() {
     it('sets the mode for a file', function() {
       var binding = new Binding(system);
       var pathname = path.join('mock-dir', 'two.txt');
-      binding.chmod(pathname, 0644);
+      binding.chmod(pathname, parseInt('0644', 8));
       var file = system.getItem(pathname);
-      assert.equal(file.getMode(), 0644);
+      assert.equal(file.getMode(), parseInt('0644', 8));
     });
 
     it('sets the mode for a directory', function() {
       var binding = new Binding(system);
       var pathname = path.join('mock-dir', 'empty');
-      binding.chmod(pathname, 0755);
+      binding.chmod(pathname, parseInt('0755', 8));
       var dir = system.getItem(pathname);
-      assert.equal(dir.getMode(), 0755);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
     });
 
   });
@@ -913,18 +919,18 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var pathname = path.join('mock-dir', 'one.txt');
       var fd = binding.open(pathname, flags('r'));
-      binding.fchmod(fd, 0664);
+      binding.fchmod(fd, parseInt('0664', 8));
       var file = system.getItem(pathname);
-      assert.equal(file.getMode(), 0664);
+      assert.equal(file.getMode(), parseInt('0664', 8));
     });
 
     it('sets the mode for a directory', function() {
       var binding = new Binding(system);
       var pathname = path.join('mock-dir', 'empty');
       var fd = binding.open(pathname, flags('r'));
-      binding.fchmod(fd, 0775);
+      binding.fchmod(fd, parseInt('0775', 8));
       var dir = system.getItem(pathname);
-      assert.equal(dir.getMode(), 0775);
+      assert.equal(dir.getMode(), parseInt('0775', 8));
     });
 
   });
