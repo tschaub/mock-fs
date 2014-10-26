@@ -1,3 +1,5 @@
+'use strict';
+
 var Item = require('../../lib/item');
 var Directory = require('../../lib/directory');
 var File = require('../../lib/file');

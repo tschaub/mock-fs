@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 
 var FileDescriptor = require('../../lib/descriptor');

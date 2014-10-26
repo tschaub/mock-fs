@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 
 var Item = require('../../lib/item');
@@ -93,15 +95,15 @@ describe('Item', function() {
 
     it('sets the mode', function() {
       var item = new Item();
-      item.setMode(0644);
-      assert.equal(item.getMode(), 0644);
+      item.setMode(parseInt('0644', 8));
+      assert.equal(item.getMode(), parseInt('0644', 8));
     });
 
     it('updates the ctime', function() {
       var item = new Item();
       var original = new Date(1);
       item.setCTime(original);
-      item.setMode(0644);
+      item.setMode(parseInt('0644', 8));
       assert.isTrue(item.getCTime() > original);
     });
 
@@ -156,75 +158,75 @@ describe('Item', function() {
     describe('#canRead()', function() {
 
       it('returns true if owner and 0700', function() {
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canRead());
       });
 
       it('returns true if owner and 0600', function() {
-        item.setMode(0600);
+        item.setMode(parseInt('0600', 8));
         assert.isTrue(item.canRead());
       });
 
       it('returns true if owner and 0500', function() {
-        item.setMode(0500);
+        item.setMode(parseInt('0500', 8));
         assert.isTrue(item.canRead());
       });
 
       it('returns true if owner and 0400', function() {
-        item.setMode(0400);
+        item.setMode(parseInt('0400', 8));
         assert.isTrue(item.canRead());
       });
 
       it('returns false if owner and 0300', function() {
-        item.setMode(0300);
+        item.setMode(parseInt('0300', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns false if owner and 0200', function() {
-        item.setMode(0200);
+        item.setMode(parseInt('0200', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns false if owner and 0100', function() {
-        item.setMode(0100);
+        item.setMode(parseInt('0100', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns false if not owner and 0700 (different user)', function() {
         item.setUid(uid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns false if not owner and 0700 (different group)', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns false if owner and 0170', function() {
-        item.setMode(0170);
+        item.setMode(parseInt('0170', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns true if in group and 0170', function() {
         item.setUid(uid + 1);
-        item.setMode(0170);
+        item.setMode(parseInt('0170', 8));
         assert.isTrue(item.canRead());
       });
 
       it('returns false if not in group and 0770', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0770);
+        item.setMode(parseInt('0770', 8));
         assert.isFalse(item.canRead());
       });
 
       it('returns true if not in group and 0777', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0777);
+        item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canRead());
       });
 
@@ -233,75 +235,75 @@ describe('Item', function() {
     describe('#canWrite()', function() {
 
       it('returns true if owner and 0700', function() {
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canWrite());
       });
 
       it('returns true if owner and 0600', function() {
-        item.setMode(0600);
+        item.setMode(parseInt('0600', 8));
         assert.isTrue(item.canWrite());
       });
 
       it('returns false if owner and 0500', function() {
-        item.setMode(0500);
+        item.setMode(parseInt('0500', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns false if owner and 0400', function() {
-        item.setMode(0400);
+        item.setMode(parseInt('0400', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns true if owner and 0300', function() {
-        item.setMode(0300);
+        item.setMode(parseInt('0300', 8));
         assert.isTrue(item.canWrite());
       });
 
       it('returns true if owner and 0200', function() {
-        item.setMode(0200);
+        item.setMode(parseInt('0200', 8));
         assert.isTrue(item.canWrite());
       });
 
       it('returns false if owner and 0100', function() {
-        item.setMode(0100);
+        item.setMode(parseInt('0100', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns false if not owner and 0700 (different user)', function() {
         item.setUid(uid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns false if not owner and 0700 (different group)', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns false if owner and 0170', function() {
-        item.setMode(0170);
+        item.setMode(parseInt('0170', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns true if in group and 0170', function() {
         item.setUid(uid + 1);
-        item.setMode(0170);
+        item.setMode(parseInt('0170', 8));
         assert.isTrue(item.canWrite());
       });
 
       it('returns false if not in group and 0770', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0770);
+        item.setMode(parseInt('0770', 8));
         assert.isFalse(item.canWrite());
       });
 
       it('returns true if not in group and 0777', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0777);
+        item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canWrite());
       });
 
@@ -310,75 +312,75 @@ describe('Item', function() {
     describe('#canExecute()', function() {
 
       it('returns true if owner and 0700', function() {
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canExecute());
       });
 
       it('returns false if owner and 0600', function() {
-        item.setMode(0600);
+        item.setMode(parseInt('0600', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns true if owner and 0500', function() {
-        item.setMode(0500);
+        item.setMode(parseInt('0500', 8));
         assert.isTrue(item.canExecute());
       });
 
       it('returns false if owner and 0400', function() {
-        item.setMode(0400);
+        item.setMode(parseInt('0400', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns true if owner and 0300', function() {
-        item.setMode(0300);
+        item.setMode(parseInt('0300', 8));
         assert.isTrue(item.canExecute());
       });
 
       it('returns false if owner and 0200', function() {
-        item.setMode(0200);
+        item.setMode(parseInt('0200', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns true if owner and 0100', function() {
-        item.setMode(0100);
+        item.setMode(parseInt('0100', 8));
         assert.isTrue(item.canExecute());
       });
 
       it('returns false if not owner and 0700 (different user)', function() {
         item.setUid(uid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns false if not owner and 0700 (different group)', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0700);
+        item.setMode(parseInt('0700', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns false if owner and 0270', function() {
-        item.setMode(0270);
+        item.setMode(parseInt('0270', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns true if in group and 0270', function() {
         item.setUid(uid + 1);
-        item.setMode(0270);
+        item.setMode(parseInt('0270', 8));
         assert.isTrue(item.canExecute());
       });
 
       it('returns false if not in group and 0770', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0770);
+        item.setMode(parseInt('0770', 8));
         assert.isFalse(item.canExecute());
       });
 
       it('returns true if not in group and 0777', function() {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
-        item.setMode(0777);
+        item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canExecute());
       });
 

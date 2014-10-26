@@ -1,4 +1,5 @@
 {
+  "node": true,
   "curly": true,
   "eqeqeq": true,
   "indent": 2,
@@ -10,17 +11,11 @@
   "trailing": true,
   "maxlen": 80,
   "globals": {
-    "Buffer": false,
-    "exports": true,
     "before": false,
     "beforeEach": false,
     "after": false,
     "afterEach": false,
     "describe": false,
-    "it": false,
-    "module": false,
-    "process": false,
-    "require": false,
-    "__dirname": false
+    "it": false
   }
 }
