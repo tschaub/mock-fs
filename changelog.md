@@ -1,8 +1,14 @@
 # Change Log
 
+## 2.5.0
+
+ * Support for io.js 1.1 (thanks @andrewblond, see [#21][#21]).
+ * Testing on Windows with AppVeyor (thanks @andrewblond, see [#22][#22]).
+
+
 ## 2.4.0
 
- * Support for Node 0.12 (thanks @mlegenhausen see [#18][#18]).
+ * Support for Node 0.12 (thanks @mlegenhausen, see [#18][#18]).
 
 ## 2.3.1
 
@@ -48,3 +54,5 @@
 [#9]: https://github.com/tschaub/mock-fs/issues/9
 [#11]: https://github.com/tschaub/mock-fs/pull/11
 [#18]: https://github.com/tschaub/mock-fs/pull/18
+[#21]: https://github.com/tschaub/mock-fs/pull/21
+[#22]: https://github.com/tschaub/mock-fs/pull/22
