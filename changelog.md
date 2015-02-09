@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.4.0
+
+ * Support for Node 0.12 (thanks @mlegenhausen see [#18][#18]).
+
 ## 2.3.1
 
  * Preserve arity of callbacks (see [#11][#11]).
@@ -43,3 +47,4 @@
 [#7]: https://github.com/tschaub/mock-fs/pull/7
 [#9]: https://github.com/tschaub/mock-fs/issues/9
 [#11]: https://github.com/tschaub/mock-fs/pull/11
+[#18]: https://github.com/tschaub/mock-fs/pull/18
