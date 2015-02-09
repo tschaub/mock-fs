@@ -43,6 +43,7 @@
     "bench-it": "~0.1.0"
   },
   "dependencies": {
-    "rewire": "~2.0.0"
+    "rewire": "~2.0.0",
+    "semver": "^4.2.0"
   }
 }
