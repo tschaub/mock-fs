@@ -56,7 +56,7 @@ Create a factory for new files.  Supported properties:
  * **content** - `string|Buffer` File contents.
  * **mode** - `number` File mode (permission and sticky bits).  Defaults to `0666`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
- * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **gid** - `number` The group id.  Defaults to `process.getgid()`.
  * **atime** - `Date` The last file access time.  Defaults to `new Date()`.  Updated when file contents are accessed.
  * **ctime** - `Date` The last file change time.  Defaults to `new Date()`.  Updated when file owner or permissions change.
  * **mtime** - `Date` The last file modification time.  Defaults to `new Date()`.  Updated when file contents change.
