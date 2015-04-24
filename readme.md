@@ -100,7 +100,7 @@ Create a factory for new directories.  Supported properties:
 
  * **mode** - `number` Directory mode (permission and sticky bits).  Defaults to `0777`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
- * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **gid** - `number` The group id.  Defaults to `process.getgid()`.
  * **atime** - `Date` The last directory access time.  Defaults to `new Date()`.
  * **ctime** - `Date` The last directory change time.  Defaults to `new Date()`.  Updated when owner or permissions change.
  * **mtime** - `Date` The last directory modification time.  Defaults to `new Date()`.  Updated when an item is added, removed, or renamed.
@@ -132,7 +132,7 @@ Create a factory for new symlinks.  Supported properties:
  * **path** - `string` Path to the source (required).
  * **mode** - `number` Symlink mode (permission and sticky bits).  Defaults to `0666`.
  * **uid** - `number` The user id.  Defaults to `process.getuid()`.
- * **git** - `number` The group id.  Defaults to `process.getgid()`.
+ * **gid** - `number` The group id.  Defaults to `process.getgid()`.
  * **atime** - `Date` The last symlink access time.  Defaults to `new Date()`.
  * **ctime** - `Date` The last symlink change time.  Defaults to `new Date()`.
  * **mtime** - `Date` The last symlink modification time.  Defaults to `new Date()`.
