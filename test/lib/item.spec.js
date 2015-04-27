@@ -60,6 +60,28 @@ describe('Item', function() {
 
   });
 
+  describe('#getBirthtime()', function() {
+
+    it('returns a date', function() {
+      var item = new Item();
+      var date = item.getBirthtime();
+      assert.instanceOf(date, Date);
+      assert.isTrue(date <= new Date());
+    });
+
+  });
+
+  describe('#setBirthtime()', function() {
+
+    it('sets the birthtime', function() {
+      var item = new Item();
+      var date = new Date();
+      item.setBirthtime(date);
+      assert.equal(item.getBirthtime(), date);
+    });
+
+  });
+
   describe('#getMTime()', function() {
 
     it('returns a date', function() {

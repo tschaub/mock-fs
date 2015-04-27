@@ -26,7 +26,8 @@ describe('Binding', function() {
           mode: parseInt('0644', 8),
           atime: new Date(1),
           ctime: new Date(2),
-          mtime: new Date(3)
+          mtime: new Date(3),
+          birthtime: new Date(4)
         }),
         'one-link.txt': FileSystem.symlink({path: './one.txt'}),
         'three.bin': new Buffer([1, 2, 3]),
@@ -119,7 +120,7 @@ describe('Binding', function() {
       assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
     });
 
-    it('includes atime, ctime, and mtime', function(done) {
+    it('includes atime, ctime, mtime and birthtime', function(done) {
       var binding = new Binding(system);
       binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
         if (err) {
@@ -128,6 +129,7 @@ describe('Binding', function() {
         assert.equal(stats.atime.getTime(), new Date(1).getTime());
         assert.equal(stats.ctime.getTime(), new Date(2).getTime());
         assert.equal(stats.mtime.getTime(), new Date(3).getTime());
+        assert.equal(stats.birthtime.getTime(), new Date(4).getTime());
         done();
       });
     });
