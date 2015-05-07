@@ -1,10 +1,17 @@
 # Change Log
 
+## 2.7.0
+
+ * Support for io.js 2.0 (thanks @jwilsson, see [#38][#38]).
+
+## 2.6.0
+
+ * Add `birthtime` to `Stats` objects (thanks @meandmycode, see [#33][#33]).
+
 ## 2.5.0
 
  * Support for io.js 1.1 (thanks @andrewblond, see [#21][#21]).
  * Testing on Windows with AppVeyor (thanks @andrewblond, see [#22][#22]).
-
 
 ## 2.4.0
 
@@ -56,3 +63,5 @@
 [#18]: https://github.com/tschaub/mock-fs/pull/18
 [#21]: https://github.com/tschaub/mock-fs/pull/21
 [#22]: https://github.com/tschaub/mock-fs/pull/22
+[#33]: https://github.com/tschaub/mock-fs/pull/33
+[#38]: https://github.com/tschaub/mock-fs/pull/38
