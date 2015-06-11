@@ -23,12 +23,7 @@
   "bugs": {
     "url": "https://github.com/tschaub/mock-fs/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://tschaub.mit-license.org/"
-    }
-  ],
+  "license": "MIT",
   "scripts": {
     "debug": "node --debug-brk ./tasks.js test",
     "test": "node ./tasks.js lint test",
