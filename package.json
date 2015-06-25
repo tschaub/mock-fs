@@ -25,17 +25,18 @@
   },
   "license": "MIT",
   "scripts": {
-    "debug": "node --debug-brk ./tasks.js test",
-    "test": "node ./tasks.js lint test",
+    "pretest": "eslint benchmarks lib test",
+    "test": "mocha --recursive test",
     "bench": "bench benchmarks"
   },
   "devDependencies": {
-    "chai": "~1.8.1",
-    "jshint": "~2.4.1",
-    "mocha": "~1.17.0",
+    "bench-it": "^0.3.0",
+    "chai": "^3.0.0",
+    "eslint": "^0.23.0",
+    "eslint-config-tschaub": "^1.0.0",
     "glob": "~3.2.8",
-    "rimraf": "~2.2.6",
-    "bench-it": "~0.1.0"
+    "mocha": "^2.2.5",
+    "rimraf": "~2.2.6"
   },
   "dependencies": {
     "rewire": "~2.0.0",

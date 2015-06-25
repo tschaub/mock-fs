@@ -1,6 +1,5 @@
+/* eslint-env mocha */
 'use strict';
-
-var path = require('path');
 
 var Item = require('../../lib/item');
 var assert = require('../helper').assert;

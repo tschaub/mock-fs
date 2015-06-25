@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 'use strict';
 
 var fs = require('fs');
@@ -917,8 +918,8 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        fs.close(fd, function(err) {
-          assert.instanceOf(err, Error);
+        fs.close(fd, function(err2) {
+          assert.instanceOf(err2, Error);
           done();
         });
       });
@@ -964,9 +965,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(12);
-        fs.read(fd, buffer, 0, 12, 0, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 0, 12, 0, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 12);
           assert.equal(buf, buffer);
@@ -982,9 +983,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(12);
-        fs.read(fd, buffer, 5, 12, 0, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 5, 12, 0, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 7);
           assert.equal(buf, buffer);
@@ -1000,9 +1001,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(12);
-        fs.read(fd, buffer, 0, 4, 0, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 0, 4, 0, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 4);
           assert.equal(buf, buffer);
@@ -1018,9 +1019,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(12);
-        fs.read(fd, buffer, 2, 4, 0, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 2, 4, 0, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 4);
           assert.equal(buf, buffer);
@@ -1036,9 +1037,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(7);
-        fs.read(fd, buffer, 0, 7, 5, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 0, 7, 5, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 7);
           assert.equal(buf, buffer);
@@ -1054,9 +1055,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(12);
-        fs.read(fd, buffer, 2, 7, 5, function(err, bytesRead, buf) {
-          if (err) {
-            return done(err);
+        fs.read(fd, buffer, 2, 7, 5, function(err2, bytesRead, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(bytesRead, 7);
           assert.equal(buf, buffer);
@@ -1239,9 +1240,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer('new file');
-        fs.write(fd, buffer, 1, 5, null, function(err, written, buf) {
-          if (err) {
-            return done(err);
+        fs.write(fd, buffer, 1, 5, null, function(err2, written, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(written, 5);
           assert.equal(buf, buffer);
@@ -1258,9 +1259,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var buffer = new Buffer(' more');
-        fs.write(fd, buffer, 0, 5, null, function(err, written, buf) {
-          if (err) {
-            return done(err);
+        fs.write(fd, buffer, 0, 5, null, function(err2, written, buf) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(written, 5);
           assert.equal(buf, buffer);
@@ -1276,8 +1277,8 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        fs.write(fd, new Buffer('oops'), 0, 4, null, function(err) {
-          assert.instanceOf(err, Error);
+        fs.write(fd, new Buffer('oops'), 0, 4, null, function(err2) {
+          assert.instanceOf(err2, Error);
           done();
         });
       });
@@ -1345,9 +1346,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var string = 'new file';
-        fs.write(fd, string, null, 'utf-8', function(err, written, str) {
-          if (err) {
-            return done(err);
+        fs.write(fd, string, null, 'utf-8', function(err2, written, str) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(written, 8);
           assert.equal(str, string);
@@ -1364,9 +1365,9 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         var string = ' more';
-        fs.write(fd, string, null, 'utf-8', function(err, written, str) {
-          if (err) {
-            return done(err);
+        fs.write(fd, string, null, 'utf-8', function(err2, written, str) {
+          if (err2) {
+            return done(err2);
           }
           assert.equal(written, 5);
           assert.equal(str, string);
@@ -1382,8 +1383,8 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        fs.write(fd, 'oops', null, 'utf-8', function(err) {
-          assert.instanceOf(err, Error);
+        fs.write(fd, 'oops', null, 'utf-8', function(err2) {
+          assert.instanceOf(err2, Error);
           done();
         });
       });
@@ -1640,7 +1641,7 @@ describe('Mocking the file system', function() {
     });
 
     it('calls callback with a single argument on success', function(done) {
-      fs.mkdir('parent/arity', function(err) {
+      fs.mkdir('parent/arity', function(_) {
         assert.equal(arguments.length, 1);
         done();
       });
@@ -2482,7 +2483,7 @@ describe('Mocking the file system', function() {
 
   });
 
-  describe('fs.createReadStream(path, [options])', function(done) {
+  describe('fs.createReadStream(path, [options])', function() {
 
     beforeEach(function() {
       mock({
@@ -2543,12 +2544,11 @@ describe('Mocking the file system', function() {
       process.chdir('dir');
       var cwd = process.cwd();
       assert.equal(cwd, path.join(originalCwd, 'dir'));
- 
+
     });
 
     it('prevents changing directory to non-existent path', function() {
 
-      var originalCwd = process.cwd();
       mock();
 
       var err;
@@ -2564,7 +2564,6 @@ describe('Mocking the file system', function() {
 
     it('prevents changing directory to non-directory path', function() {
 
-      var originalCwd = process.cwd();
       mock({
         'file': ''
       });

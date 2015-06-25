@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 'use strict';
 
 var path = require('path');
@@ -353,7 +354,7 @@ describe('Binding', function() {
 
     it('does not truncate (r+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r+'));
+      binding.open(path.join('mock-dir', 'two.txt'), flags('r+'));
       var file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), 'two content');
@@ -394,7 +395,7 @@ describe('Binding', function() {
 
     it('opens a new file for writing (w)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
+      binding.open('new.txt', flags('w'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0644', 8));
@@ -402,7 +403,7 @@ describe('Binding', function() {
 
     it('truncates an existing file for writing (w)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'),
+      binding.open(path.join('mock-dir', 'two.txt'), flags('w'),
           parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
@@ -418,7 +419,7 @@ describe('Binding', function() {
 
     it('opens a new file for reading and writing (w+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('w+'), parseInt('0644', 8));
+      binding.open('new.txt', flags('w+'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0644', 8));
@@ -427,7 +428,7 @@ describe('Binding', function() {
 
     it('truncates an existing file for writing (w+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(
+      binding.open(
           path.join('mock-dir', 'one.txt'), flags('w+'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
@@ -436,7 +437,7 @@ describe('Binding', function() {
 
     it('opens a new file for reading and writing (wx+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('wx+'), parseInt('0644', 8));
+      binding.open('new.txt', flags('wx+'), parseInt('0644', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0644', 8));
@@ -453,7 +454,7 @@ describe('Binding', function() {
 
     it('opens a new file for appending (a)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('a'), parseInt('0666', 8));
+      binding.open('new.txt', flags('a'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0666', 8));
@@ -462,7 +463,7 @@ describe('Binding', function() {
 
     it('opens an existing file for appending (a)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(
+      binding.open(
           path.join('mock-dir', 'one.txt'), flags('a'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
@@ -471,7 +472,7 @@ describe('Binding', function() {
 
     it('opens a new file for appending (ax)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('ax'), parseInt('0664', 8));
+      binding.open('new.txt', flags('ax'), parseInt('0664', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0664', 8));
@@ -488,7 +489,7 @@ describe('Binding', function() {
 
     it('opens a new file for appending and reading (a+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('a+'), parseInt('0666', 8));
+      binding.open('new.txt', flags('a+'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0666', 8));
@@ -497,7 +498,7 @@ describe('Binding', function() {
 
     it('opens an existing file for appending and reading (a+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open(
+      binding.open(
           path.join('mock-dir', 'one.txt'), flags('a+'), parseInt('0666', 8));
       var file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
@@ -506,7 +507,7 @@ describe('Binding', function() {
 
     it('opens a new file for appending and reading (ax+)', function() {
       var binding = new Binding(system);
-      var fd = binding.open('new.txt', flags('ax+'), parseInt('0666', 8));
+      binding.open('new.txt', flags('ax+'), parseInt('0666', 8));
       var file = system.getItem('new.txt');
       assert.instanceOf(file, File);
       assert.equal(file.getMode(), parseInt('0666', 8));
@@ -663,7 +664,7 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var oldPath = path.join('mock-dir', 'one.txt');
       var newPath = path.join('mock-dir', 'empty', 'new.txt');
-      binding.rename(oldPath, newPath, function(err) {
+      binding.rename(oldPath, newPath, function(_) {
         var stats = binding.stat(newPath);
         assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
         assert.equal(stats.size, 11);
@@ -695,7 +696,7 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var oldPath = path.join('mock-dir', 'empty');
       var newPath = path.join('mock-dir', 'new');
-      binding.rename(oldPath, newPath, function(err) {
+      binding.rename(oldPath, newPath, function(_) {
         var stats = binding.stat(newPath);
         assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
         done();

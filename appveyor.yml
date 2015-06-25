@@ -1,6 +1,5 @@
 environment:
   matrix:
-    - nodejs_version: "0.8"
     - nodejs_version: "0.10"
     - nodejs_version: "1.0"
 
@@ -13,7 +12,7 @@ test_script:
   - set PATH=%APPDATA%\npm;%PATH%
   - npm --version
   - npm install
-  - node ./tasks.js test
+  - npm test
 
 build: "off"
 
