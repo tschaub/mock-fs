@@ -108,7 +108,7 @@ Create a factory for new directories.  Supported properties:
  * **birthtime** - `Date` The time of directory creation.  Defaults to `new Date()`.
  * **items** - `Object` Directory contents.  Members will generate additional files, directories, or symlinks.
 
-To create a mock filesystem with a directory with the relative path `some/dir` that has a mode of `0755` and a couple child files, you could do something like this:
+To create a mock filesystem with a directory with the relative path `some/dir` that has a mode of `0755` and two child files, you could do something like this:
 ```js
 mock({
   'some/dir': mock.directory({
