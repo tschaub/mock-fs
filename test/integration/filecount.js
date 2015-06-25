@@ -13,6 +13,9 @@ function numFiles(dir, items, callback) {
   }
   items.forEach(function(item) {
     fs.stat(path.join(dir, item), function(err, stats) {
+      if (err) {
+        return callback(err);
+      }
       if (stats && stats.isFile()) {
         ++files;
       }

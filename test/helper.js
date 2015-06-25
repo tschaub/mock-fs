@@ -4,7 +4,7 @@ var chai = require('chai');
 
 
 /** @type {boolean} */
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 
 
 /**
@@ -60,5 +60,7 @@ exports.flags = function(str) {
     case 'xa+':
       return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR |
           constants.O_EXCL;
+    default:
+      throw new Error('Unsupported flag: ' + str);
   }
 };
