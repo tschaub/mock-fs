@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.0.0
+
+ * Override `process.cwd()` and `process.chdir()` to work with mocked filesystem (thanks @timkendrick, see [#41][#41]).
+ * Add note about known incompatibilities (thanks @psalaets, see [#45][#45]).
+
 ## 2.7.0
 
  * Support for io.js 2.0 (thanks @jwilsson, see [#38][#38]).
@@ -65,3 +70,5 @@
 [#22]: https://github.com/tschaub/mock-fs/pull/22
 [#33]: https://github.com/tschaub/mock-fs/pull/33
 [#38]: https://github.com/tschaub/mock-fs/pull/38
+[#41]: https://github.com/tschaub/mock-fs/pull/41
+[#45]: https://github.com/tschaub/mock-fs/pull/45
