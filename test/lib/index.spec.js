@@ -2519,6 +2519,96 @@ describe('Mocking the file system', function() {
 
   });
 
+  describe('process.cwd()', function() {
+
+    afterEach(mock.restore);
+
+    it('maintains current working directory', function() {
+
+      var originalCwd = process.cwd();
+      mock();
+
+      var cwd = process.cwd();
+      assert.equal(cwd, originalCwd);
+
+    });
+
+    it('allows changing directory', function() {
+
+      var originalCwd = process.cwd();
+      mock({
+        'dir': {}
+      });
+
+      process.chdir('dir');
+      var cwd = process.cwd();
+      assert.equal(cwd, path.join(originalCwd, 'dir'));
+ 
+    });
+
+    it('prevents changing directory to non-existent path', function() {
+
+      var originalCwd = process.cwd();
+      mock();
+
+      var err;
+      try {
+        process.chdir('dir');
+      } catch (e) {
+        err = e;
+      }
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'ENOENT');
+
+    });
+
+    it('prevents changing directory to non-directory path', function() {
+
+      var originalCwd = process.cwd();
+      mock({
+        'file': ''
+      });
+
+      var err;
+      try {
+        process.chdir('file');
+      } catch (e) {
+        err = e;
+      }
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'ENOTDIR');
+
+    });
+
+    it('restores original methods on restore', function() {
+
+      var originalCwd = process.cwd;
+      var originalChdir = process.chdir;
+      mock();
+
+      mock.restore();
+      assert.equal(process.cwd, originalCwd);
+      assert.equal(process.chdir, originalChdir);
+
+    });
+
+    it('restores original working directory on restore', function() {
+
+      var originalCwd = process.cwd();
+      mock({
+        'dir': {}
+      });
+
+      process.chdir('dir');
+      mock.restore();
+
+      var cwd = process.cwd();
+      assert.equal(cwd, originalCwd);
+
+    });
+
+  });
+
   if (process.getuid && process.getgid) {
 
     describe('security', function() {
