@@ -187,7 +187,7 @@ npm install mock-fs --save-dev
 
 When you require `mock-fs`, Node's own `fs` module is patched to allow the binding to the underlying file system to be swapped out.  If you require `mock-fs` *before* any other modules that modify `fs` (e.g. `graceful-fs`), the mock should behave as expected.
 
-**Note** `mock-fs` is not compatible with `graceful-fs >= 3.0.0` and therefore not compatible with `gulp >= 3.7.0`. 
+**Note** `mock-fs` is not compatible with `graceful-fs ~3.0.0` and therefore not compatible with `gulp >= 3.7.0`. 
 
 ### `fs` overrides
 
