@@ -32,7 +32,20 @@ describe('Binding', function() {
         }),
         'one-link.txt': FileSystem.symlink({path: './one.txt'}),
         'three.bin': new Buffer([1, 2, 3]),
-        'empty': {}
+        'empty': {},
+        'non-empty': {
+          'a.txt': FileSystem.file({
+            content: 'a  content',
+            mode: parseInt('0644', 8),
+            atime: new Date(1),
+            ctime: new Date(2),
+            mtime: new Date(3),
+            birthtime: new Date(4)
+          }),
+          'b.txt': 'b content'
+        },
+        'dir-link': FileSystem.symlink({path: './non-empty'}),
+        'dead-link': FileSystem.symlink({path: './non-a-real-file'})
       }
     });
   });
@@ -213,6 +226,20 @@ describe('Binding', function() {
       }
     });
 
+    it('retrieves stats of files relative to symbolic linked directories',
+        function() {
+      var binding = new Binding(system);
+      var stats = binding.stat(path.join('mock-dir', 'dir-link', 'a.txt'));
+      assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
+      assert.equal(stats.mode & 0x1FF, parseInt('0644', 8));
+      if (process.getuid) {
+        assert.equal(stats.uid, process.getuid());
+      }
+      if (process.getgid) {
+        assert.equal(stats.gid, process.getgid());
+      }
+    });
+
   });
 
   describe('#fstat()', function() {
@@ -298,7 +325,8 @@ describe('Binding', function() {
         assert.isNull(err);
         assert.isArray(items);
         assert.deepEqual(items.sort(),
-            ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
+            ['dead-link', 'dir-link', 'empty', 'non-empty', 'one-link.txt',
+                'one.txt', 'three.bin', 'two.txt']);
         done();
       });
     });
@@ -308,7 +336,26 @@ describe('Binding', function() {
       var items = binding.readdir('mock-dir');
       assert.isArray(items);
       assert.deepEqual(items.sort(),
-          ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
+          ['dead-link', 'dir-link', 'empty', 'non-empty', 'one-link.txt',
+              'one.txt', 'three.bin', 'two.txt']);
+    });
+
+    it('calls callback with file list for symbolic linked dir', function(done) {
+      var binding = new Binding(system);
+      binding.readdir(path.join('mock-dir', 'dir-link'), function(err, items) {
+        assert.isNull(err);
+        assert.isArray(items);
+        assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
+        done();
+      });
+    });
+
+    it('calls callback with file list for symbolic linked dir (sync)',
+        function() {
+      var binding = new Binding(system);
+      var items = binding.readdir(path.join('mock-dir', 'dir-link'));
+      assert.isArray(items);
+      assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
     });
 
     it('calls callback with error for bogus dir', function(done) {
@@ -323,6 +370,25 @@ describe('Binding', function() {
     it('calls callback with error for file path', function(done) {
       var binding = new Binding(system);
       binding.readdir(path.join('mock-dir', 'one.txt'), function(err, items) {
+        assert.instanceOf(err, Error);
+        assert.isUndefined(items);
+        done();
+      });
+    });
+
+    it('calls callback with error for dead symbolic link', function(done) {
+      var binding = new Binding(system);
+      binding.readdir(path.join('mock-dir', 'dead-link'), function(err, items) {
+        assert.instanceOf(err, Error);
+        assert.isUndefined(items);
+        done();
+      });
+    });
+
+    it('calls callback with error for symbolic link to file', function(done) {
+      var binding = new Binding(system);
+      binding.readdir(path.join('mock-dir', 'one-link.txt'),
+          function(err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
@@ -713,7 +779,8 @@ describe('Binding', function() {
       var items = binding.readdir(newPath);
       assert.isArray(items);
       assert.deepEqual(items.sort(),
-          ['empty', 'one-link.txt', 'one.txt', 'three.bin', 'two.txt']);
+          ['dead-link', 'dir-link', 'empty', 'non-empty', 'one-link.txt',
+              'one.txt', 'three.bin', 'two.txt']);
     });
 
     it('calls callback with error for bogus old path', function(done) {
