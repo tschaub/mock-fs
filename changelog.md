@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.1.0
+
+ * Follow symlinks in `readdir()` and `readdirSync()` (thanks @caitp, see [#56][#56]).
+
 ## 3.0.0
 
  * Override `process.cwd()` and `process.chdir()` to work with mocked filesystem (thanks @timkendrick, see [#41][#41]).
@@ -72,3 +76,4 @@
 [#38]: https://github.com/tschaub/mock-fs/pull/38
 [#41]: https://github.com/tschaub/mock-fs/pull/41
 [#45]: https://github.com/tschaub/mock-fs/pull/45
+[#56]: https://github.com/tschaub/mock-fs/pull/56
