@@ -30,16 +30,16 @@
     "bench": "bench benchmarks"
   },
   "devDependencies": {
-    "bench-it": "^0.3.0",
-    "chai": "^3.0.0",
-    "eslint": "^0.23.0",
-    "eslint-config-tschaub": "^1.0.0",
-    "glob": "~3.2.8",
-    "mocha": "^2.2.5",
-    "rimraf": "~2.2.6"
+    "bench-it": "^0.4.0",
+    "chai": "^3.3.0",
+    "eslint": "^1.6.0",
+    "eslint-config-tschaub": "^2.0.0",
+    "glob": "^5.0.15",
+    "mocha": "^2.3.3",
+    "rimraf": "^2.4.3"
   },
   "dependencies": {
-    "rewire": "~2.3.4",
-    "semver": "^4.2.0"
+    "rewire": "^2.3.4",
+    "semver": "^5.0.3"
   }
 }
