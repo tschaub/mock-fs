@@ -5,6 +5,7 @@ node_js:
   - "0.8"
   - iojs-v1
   - iojs-v2
+  - iojs-v3
 
 before_install:
   - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
