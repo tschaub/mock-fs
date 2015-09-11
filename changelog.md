@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.2.0
+
+ * Support for io.js 3.0 (thanks @JustBlackBird, see [#61][#61]).
+
 ## 3.1.0
 
  * Follow symlinks in `readdir()` and `readdirSync()` (thanks @caitp, see [#56][#56]).
@@ -77,3 +81,4 @@
 [#41]: https://github.com/tschaub/mock-fs/pull/41
 [#45]: https://github.com/tschaub/mock-fs/pull/45
 [#56]: https://github.com/tschaub/mock-fs/pull/56
+[#61]: https://github.com/tschaub/mock-fs/pull/61
