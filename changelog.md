@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.0
+
+ * Traverse symlinks recursively (thanks @caitp, see[#57][#57]).
+ * Upgrade to rewire@2.3.4 (thanks @mbarlock, see [#60][#60]).
+
 ## 3.2.0
 
  * Support for io.js 3.0 (thanks @JustBlackBird, see [#61][#61]).
@@ -82,3 +87,5 @@
 [#45]: https://github.com/tschaub/mock-fs/pull/45
 [#56]: https://github.com/tschaub/mock-fs/pull/56
 [#61]: https://github.com/tschaub/mock-fs/pull/61
+[#60]: https://github.com/tschaub/mock-fs/pull/60
+[#57]: https://github.com/tschaub/mock-fs/pull/57
