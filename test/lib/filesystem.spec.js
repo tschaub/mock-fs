@@ -46,6 +46,30 @@ describe('FileSystem', function() {
 
     });
 
+    it('gets an item traversing links to symbolic links', function() {
+      var system = FileSystem.create({
+        'dir-link': FileSystem.symlink({path: './b/dir-link2'}),
+        'b': {
+          'dir-link2': FileSystem.symlink({path: './c/dir'}),
+          'c': {
+            dir: {
+              'a': 'file a',
+              'b': {
+                'c': 'file c',
+                'd': 'file d'
+              }
+            }
+          }
+        }
+      });
+      var file = system.getItem(path.join('dir-link', 'a'));
+      assert.instanceOf(file, File);
+
+      var dir = system.getItem(path.join('dir-link', 'b'));
+      assert.instanceOf(dir, Directory);
+      assert.deepEqual(dir.list().sort(), ['c', 'd']);
+    });
+
   });
 
 });
