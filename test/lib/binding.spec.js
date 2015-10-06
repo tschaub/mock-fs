@@ -228,8 +228,7 @@ describe('Binding', function() {
       }
     });
 
-    it('retrieves stats of files relative to symbolic linked directories',
-        function() {
+    it('retrieves stats of files relative to symbolic linked directories', function() {
       var binding = new Binding(system);
       var stats = binding.stat(path.join('mock-dir', 'dir-link', 'a.txt'));
       assert.equal(stats.mode & constants.S_IFMT, constants.S_IFREG);
@@ -354,8 +353,7 @@ describe('Binding', function() {
       });
     });
 
-    it('calls callback with file list for link to symbolic linked dir',
-        function(done) {
+    it('calls callback with file list for link to symbolic linked dir', function(done) {
       var binding = new Binding(system);
       binding.readdir(path.join('mock-dir', 'dir-link2'), function(err, items) {
         assert.isNull(err);
@@ -365,8 +363,7 @@ describe('Binding', function() {
       });
     });
 
-    it('calls callback with file list for symbolic linked dir (sync)',
-        function() {
+    it('calls callback with file list for symbolic linked dir (sync)', function() {
       var binding = new Binding(system);
       var items = binding.readdir(path.join('mock-dir', 'dir-link'));
       assert.isArray(items);
@@ -402,19 +399,16 @@ describe('Binding', function() {
 
     it('calls callback with error for symbolic link to file', function(done) {
       var binding = new Binding(system);
-      binding.readdir(path.join('mock-dir', 'one-link.txt'),
-          function(err, items) {
+      binding.readdir(path.join('mock-dir', 'one-link.txt'), function(err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
       });
     });
 
-    it('calls callback with error for link to symbolic link to file',
-        function(done) {
+    it('calls callback with error for link to symbolic link to file', function(done) {
       var binding = new Binding(system);
-      binding.readdir(path.join('mock-dir', 'one-link2.txt'),
-          function(err, items) {
+      binding.readdir(path.join('mock-dir', 'one-link2.txt'), function(err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
