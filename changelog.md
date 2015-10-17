@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.4.0
+
+ * Support for Node 4.x (thanks @AlexMeah, see[#65][#65]).
+
 ## 3.3.0
 
  * Traverse symlinks recursively (thanks @caitp, see[#57][#57]).
@@ -89,3 +93,4 @@
 [#61]: https://github.com/tschaub/mock-fs/pull/61
 [#60]: https://github.com/tschaub/mock-fs/pull/60
 [#57]: https://github.com/tschaub/mock-fs/pull/57
+[#65]: https://github.com/tschaub/mock-fs/pull/65
