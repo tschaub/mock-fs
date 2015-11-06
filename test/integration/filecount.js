@@ -4,9 +4,9 @@ var fs = require('fs');
 var path = require('path');
 
 function numFiles(dir, items, callback) {
-  var total = items.length,
-      files = 0,
-      completed = 0;
+  var total = items.length;
+  var files = 0;
+  var completed = 0;
 
   if (total === 0) {
     callback(null, 0);
