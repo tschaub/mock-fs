@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.5.0
+
+ * Support for Node 5.x (thanks @tmcw, see[#69][#69]).
+
 ## 3.4.0
 
  * Support for Node 4.x (thanks @AlexMeah, see[#65][#65]).
@@ -94,3 +98,4 @@
 [#60]: https://github.com/tschaub/mock-fs/pull/60
 [#57]: https://github.com/tschaub/mock-fs/pull/57
 [#65]: https://github.com/tschaub/mock-fs/pull/65
+[#69]: https://github.com/tschaub/mock-fs/pull/69

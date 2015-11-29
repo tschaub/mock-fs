@@ -199,6 +199,6 @@ Mock file access is controlled based on file mode where `process.getuid()` and `
 
 The following `fs` functions are *not* currently mocked (if your tests use these, they will work against the real file system): `fs.FSWatcher`, `fs.unwatchFile`, `fs.watch`, and `fs.watchFile`.  Pull requests welcome.
 
-Tested on Linux, OSX, and Windows using Node 0.8, 0.9, 0.10, 0.11, & 0.12 and io.js 1.1, 2.0 & 3.0.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
+Tested on Linux, OSX, and Windows using Node 0.8 through 5.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
