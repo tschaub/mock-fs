@@ -1,16 +1,22 @@
 # Change Log
 
+## 3.6.0
+
+ * Add `createCwd` and `createTmp` options to control the creation of `process.cwd()` and `os.tmpdir()` directories in the mocked filesystem (see [#72][#72]).
+ * Update Travis and AppVeyor configurations (see [#73][#73])
+ * Remove unused dev dependency (see [#75][#75])
+
 ## 3.5.0
 
- * Support for Node 5.x (thanks @tmcw, see[#69][#69]).
+ * Support for Node 5.x (thanks @tmcw, see [#69][#69]).
 
 ## 3.4.0
 
- * Support for Node 4.x (thanks @AlexMeah, see[#65][#65]).
+ * Support for Node 4.x (thanks @AlexMeah, see [#65][#65]).
 
 ## 3.3.0
 
- * Traverse symlinks recursively (thanks @caitp, see[#57][#57]).
+ * Traverse symlinks recursively (thanks @caitp, see [#57][#57]).
  * Upgrade to rewire@2.3.4 (thanks @mbarlock, see [#60][#60]).
 
 ## 3.2.0
@@ -99,3 +105,6 @@
 [#57]: https://github.com/tschaub/mock-fs/pull/57
 [#65]: https://github.com/tschaub/mock-fs/pull/65
 [#69]: https://github.com/tschaub/mock-fs/pull/69
+[#72]: https://github.com/tschaub/mock-fs/pull/72
+[#73]: https://github.com/tschaub/mock-fs/pull/73
+[#75]: https://github.com/tschaub/mock-fs/pull/75
