@@ -22,10 +22,6 @@ describe('The API', function() {
       mock.restore();
     });
 
-  });
-
-  describe('mock()', function() {
-
     it('creates process.cwd() and os.tmpdir() by default', function() {
       mock();
 
@@ -38,6 +34,30 @@ describe('The API', function() {
       }
       if (tmp) {
         assert.isTrue(fs.statSync(tmp).isDirectory());
+      }
+
+      mock.restore();
+    });
+
+    it('passes the createCwd option to the FileSystem constructor', function() {
+      mock({}, {createCwd: false});
+
+      assert.isFalse(fs.existsSync(process.cwd()));
+
+      mock.restore();
+    });
+
+    it('passes the createTmp option to the FileSystem constructor', function() {
+      mock({}, {createTmp: false});
+
+      var tmp;
+      if (os.tmpdir) {
+        tmp = os.tmpdir();
+      } else if (os.tmpDir) {
+        tmp = os.tmpDir();
+      }
+      if (tmp) {
+        assert.isFalse(fs.existsSync(tmp));
       }
 
       mock.restore();
@@ -176,6 +196,20 @@ describe('The API', function() {
         assert.isTrue(exists);
         done();
       });
+
+    });
+
+    it('passes options to the FileSystem constructor', function() {
+
+      var mockFs = mock.fs({
+        '/path/to/file.txt': 'file content'
+      }, {
+        createCwd: false,
+        createTmp: false
+      });
+
+      assert.isTrue(mockFs.existsSync('/path/to/file.txt'));
+      assert.deepEqual(mockFs.readdirSync('/'), ['path']);
 
     });
 
