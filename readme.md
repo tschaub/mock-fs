@@ -28,15 +28,22 @@ mock.restore();
 
 ## Docs
 
-### <a id='mockconfig'>`mock(config)`</a>
+### <a id='mockconfigoptions'>`mock(config, options)`</a>
 
 Configure the `fs` module so it is backed by an in-memory file system.
 
-Calling `mock` sets up a mock file system with at least two directories: `process.cwd()` and `os.tmpdir()` (or `os.tmpDir()` for older Node).  When called with no arguments, just these two directories are created.  When called with a `config` object, additional files, directories, and symlinks are created.
+Calling `mock` sets up a mock file system with two directories by default: `process.cwd()` and `os.tmpdir()` (or `os.tmpDir()` for older Node).  When called with no arguments, just these two directories are created.  When called with a `config` object, additional files, directories, and symlinks are created.  To avoid creating a directory for `process.cwd()` and `os.tmpdir()`, see the [`options`](#options) below.
 
 Property names of the `config` object are interpreted as relative paths to resources (relative from `process.cwd()`).  Property values of the `config` object are interpreted as content or configuration for the generated resources.
 
 *Note that paths should always use forward slashes (`/`) - even on Windows.*
+
+### <a id='options'>`options`</a>
+
+The second (optional) argument may include the properties below.
+
+ * `createCwd` - `boolean` Create a directory for `process.cwd()`.  This is `true` by default.
+ * `createTmp` - `boolean` Create a directory for `os.tmpdir()`.  This is `true` by default.
 
 ### Creating files
 
@@ -169,9 +176,9 @@ afterEach(mock.restore);
 
 ### Creating a new `fs` module instead of modifying the original
 
-### <a id='mockfsconfig'>`mock.fs(config)`</a>
+### <a id='mockfsconfigoptions'>`mock.fs(config, options)`</a>
 
-Calling `mock()` modifies Node's built-in `fs` module.  This is useful when you want to test with a mock file system.  If for some reason you want to work with the real file system and an in-memory version at the same time, you can call the `mock.fs()` function.  This takes the same `config` object [described above](#mockconfig) and sets up a in-memory file system.  Instead of modifying the binding for the built-in `fs` module (as is done when calling `mock(config)`), the `mock.fs(config)` function returns an object with the same interface as the `fs` module, but backed by your mock file system.
+Calling `mock()` modifies Node's built-in `fs` module.  This is useful when you want to test with a mock file system.  If for some reason you want to work with the real file system and an in-memory version at the same time, you can call the `mock.fs()` function.  This takes the same `config` and `options` objects [described above](#mockconfigoptions) and sets up a in-memory file system.  Instead of modifying the binding for the built-in `fs` module (as is done when calling `mock(config)`), the `mock.fs(config)` function returns an object with the same interface as the `fs` module, but backed by your mock file system.
 
 ## Install
 
