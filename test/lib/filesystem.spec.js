@@ -179,6 +179,22 @@ describe('FileSystem.create', function() {
 
   });
 
+  it('passes options to the FileSystem constructor', function() {
+
+    var cwd = process.cwd();
+    var tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
+
+    var withoutCwd = FileSystem.create({}, {createCwd: false});
+    var withoutTmp = FileSystem.create({}, {createTmp: false});
+
+    assert.isNull(withoutCwd.getItem(cwd));
+    assert.instanceOf(withoutCwd.getItem(tmp), Directory);
+
+    assert.isNull(withoutTmp.getItem(tmp));
+    assert.instanceOf(withoutTmp.getItem(cwd), Directory);
+
+  });
+
   it('accepts file factory', function() {
 
     var system = FileSystem.create({
