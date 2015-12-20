@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 'use strict';
 
+var os = require('os');
 var path = require('path');
 
 var Directory = require('../../lib/directory');
@@ -16,6 +17,24 @@ describe('FileSystem', function() {
     it('creates a new instance', function() {
       var system = new FileSystem();
       assert.instanceOf(system, FileSystem);
+    });
+
+    it('accepts a createCwd option', function() {
+      var cwd = process.cwd();
+      var withCwd = new FileSystem({createCwd: true});
+      var withoutCwd = new FileSystem({createCwd: false});
+
+      assert.instanceOf(withCwd.getItem(cwd), Directory);
+      assert.isNull(withoutCwd.getItem(cwd));
+    });
+
+    it('accepts a createTmp option', function() {
+      var tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
+      var withTmp = new FileSystem({createTmp: true});
+      var withoutTmp = new FileSystem({createTmp: false});
+
+      assert.instanceOf(withTmp.getItem(tmp), Directory);
+      assert.isNull(withoutTmp.getItem(tmp));
     });
 
   });
