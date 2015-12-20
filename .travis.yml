@@ -1,12 +1,12 @@
+sudo: false
+
 language: node_js
 node_js:
-  - "0.12"
-  - "0.10"
   - "0.8"
-  - iojs-v1
-  - iojs-v2
-  - iojs-v3
-  - "4.2"
+  - "0.10"
+  - "0.12"
+  - "4"
+  - "5"
 
 before_install:
   - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
