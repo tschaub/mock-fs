@@ -34,7 +34,7 @@
     "chai": "^3.3.0",
     "eslint": "^1.6.0",
     "eslint-config-tschaub": "^2.0.0",
-    "glob": "^5.0.15",
+    "glob": "^6.0.1",
     "mocha": "^2.3.3",
     "rimraf": "^2.4.3"
   },
