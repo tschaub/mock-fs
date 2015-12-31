@@ -60,6 +60,26 @@ describe('File', function() {
       assert.equal(String(content), 'baz');
     });
 
+    it('accepts a function returning a string', function() {
+      var file = new File();
+      file.setContent(function() {
+        return 'foobar'
+      });
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'foobar');
+    });
+
+    it('accepts a function returning a buffer', function() {
+      var file = new File();
+      file.setContent(function() {
+        return new Buffer('quxbaz');
+      });
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'quxbaz');
+    });
+
     it('throws for other types', function() {
       assert.throws(function() {
         var file = new File();

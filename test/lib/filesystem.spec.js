@@ -114,6 +114,19 @@ describe('FileSystem.file', function() {
     assert.equal(String(content), 'foo');
   });
 
+  it('accepts a content function', function() {
+    var factory = FileSystem.file({content: function() {
+      return 'bar';
+    }});
+    assert.isFunction(factory);
+
+    var file = factory();
+    assert.instanceOf(file, File);
+    var content = file.getContent();
+    assert.isTrue(Buffer.isBuffer(content));
+    assert.equal(String(content), 'bar');
+  });
+
 });
 
 
@@ -137,6 +150,9 @@ describe('FileSystem.create', function() {
     var system = FileSystem.create({
       'path/to/one': {
         'file.js': 'file.js content',
+        'async.file': FileSystem.file({content: function() {
+          return 'async.file content';
+        }}),
         'dir': {}
       },
       'path/to/two.js': 'two.js content',
@@ -151,13 +167,19 @@ describe('FileSystem.create', function() {
     filepath = path.join('path', 'to', 'one');
     item = system.getItem(filepath);
     assert.instanceOf(item, Directory);
-    assert.deepEqual(item.list().sort(), ['dir', 'file.js']);
+    assert.deepEqual(item.list().sort(), ['async.file', 'dir', 'file.js']);
 
     // confirm 'path/to/one/file.js' file was created
     filepath = path.join('path', 'to', 'one', 'file.js');
     item = system.getItem(filepath);
     assert.instanceOf(item, File);
     assert.equal(String(item.getContent()), 'file.js content');
+
+    // confirm 'path/to/one/async.file' file was created
+    filepath = path.join('path', 'to', 'one', 'async.file');
+    item = system.getItem(filepath);
+    assert.instanceOf(item, File);
+    assert.equal(String(item.getContent()), 'async.file content');
 
     // confirm 'path/to/one/dir' directory was created
     filepath = path.join('path', 'to', 'one', 'dir');
