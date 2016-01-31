@@ -1258,4 +1258,55 @@ describe('Binding', function() {
 
   });
 
+  describe('#access()', function() {
+
+    it('works if file exists', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'one-link.txt');
+      binding.access(pathname);
+    });
+
+    if (process.getuid && process.getgid) {
+
+      it('fails in case of insufficient user permissions', function() {
+        var binding = new Binding(system);
+        var item = system.getItem(path.join('mock-dir', 'one.txt'));
+        item.setMode(parseInt('0077', 8));
+        assert.throws(function() {
+          binding.access(path.join('mock-dir', 'one.txt'), 1);
+        }, /EACCES/);
+      });
+
+      it('fails in case of insufficient group permissions', function() {
+        var binding = new Binding(system);
+        var item = system.getItem(path.join('mock-dir', 'one.txt'));
+        item.setUid(process.getuid() + 1);
+        item.setMode(parseInt('0707', 8));
+        assert.throws(function() {
+          binding.access(path.join('mock-dir', 'one.txt'), 2);
+        }, /EACCES/);
+      });
+
+      it('fails in case of insufficient permissions', function() {
+        var binding = new Binding(system);
+        var item = system.getItem(path.join('mock-dir', 'one.txt'));
+        item.setUid(process.getuid() + 1);
+        item.setGid(process.getgid() + 1);
+        item.setMode(parseInt('0771', 8));
+        assert.throws(function() {
+          binding.access(path.join('mock-dir', 'one.txt'), 5);
+        }, /EACCES/);
+      });
+
+    }
+
+    it('fails for bogus paths', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.access(path.join('mock-dir', 'bogus'));
+      }, /ENOENT/);
+    });
+
+  });
+
 });
