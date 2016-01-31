@@ -30,12 +30,12 @@
     "bench": "bench benchmarks"
   },
   "devDependencies": {
-    "bench-it": "^0.4.0",
-    "chai": "^3.3.0",
-    "eslint": "^1.6.0",
-    "eslint-config-tschaub": "^2.0.0",
-    "mocha": "^2.3.3",
-    "rimraf": "^2.4.3"
+    "bench-it": "0.4.0",
+    "chai": "3.5.0",
+    "eslint": "2.0.0-beta.3",
+    "eslint-config-tschaub": "3.0.0-beta.1",
+    "mocha": "2.4.5",
+    "rimraf": "2.5.1"
   },
   "dependencies": {
     "rewire": "^2.3.4",
