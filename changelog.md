@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.7.0
+
+ * Add support for `fs.access()` and `fs.accessSync()` (thanks @shyiko, see [#78][#78] and [#80][#80]).
+
 ## 3.6.0
 
  * Add `createCwd` and `createTmp` options to control the creation of `process.cwd()` and `os.tmpdir()` directories in the mocked filesystem (see [#72][#72]).
@@ -108,3 +112,5 @@
 [#72]: https://github.com/tschaub/mock-fs/pull/72
 [#73]: https://github.com/tschaub/mock-fs/pull/73
 [#75]: https://github.com/tschaub/mock-fs/pull/75
+[#78]: https://github.com/tschaub/mock-fs/pull/78
+[#80]: https://github.com/tschaub/mock-fs/pull/80
