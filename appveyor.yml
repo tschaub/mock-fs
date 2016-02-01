@@ -13,4 +13,8 @@ test_script:
 
 build: "off"
 
+branches:
+  only:
+    - master
+
 version: "{build}"
