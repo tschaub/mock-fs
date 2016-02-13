@@ -35,7 +35,7 @@
     "eslint": "2.0.0-beta.3",
     "eslint-config-tschaub": "3.0.0-beta.1",
     "mocha": "2.4.5",
-    "rimraf": "2.5.1"
+    "rimraf": "2.5.2"
   },
   "dependencies": {
     "rewire": "2.5.1",
