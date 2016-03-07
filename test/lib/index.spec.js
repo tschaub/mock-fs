@@ -1,12 +1,11 @@
-/* eslint-env mocha */
 'use strict';
 
+var Writable = require('stream').Writable;
+var assert = require('../helper').assert;
 var fs = require('fs');
+var mock = require('../../lib/index');
 var os = require('os');
 var path = require('path');
-
-var mock = require('../../lib/index');
-var assert = require('../helper').assert;
 
 describe('The API', function() {
 
@@ -987,7 +986,6 @@ describe('Mocking the file system', function() {
 
   });
 
-
   describe('fs.existsSync(path)', function() {
 
     beforeEach(function() {
@@ -1074,7 +1072,6 @@ describe('Mocking the file system', function() {
     });
 
   });
-
 
   describe('fs.readdir(path, callback)', function() {
 
@@ -1327,8 +1324,7 @@ describe('Mocking the file system', function() {
 
   });
 
-  var readSig = 'fs.read(fd, buffer, offset, length, position, callback)';
-  describe(readSig, function() {
+  describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
 
     beforeEach(function() {
       mock({
@@ -1587,8 +1583,7 @@ describe('Mocking the file system', function() {
 
   });
 
-  var fsWrite = 'fs.write(fd, buffer, offset, length, position, callback)';
-  describe(fsWrite, function() {
+  describe('fs.write(fd, buffer, offset, length, position, callback)', function() {
 
     beforeEach(function() {
       mock({
@@ -2895,6 +2890,63 @@ describe('Mocking the file system', function() {
       input.pipe(output);
 
     });
+
+  });
+
+  describe('fs.createWriteStream(path[, options])', function() {
+
+    beforeEach(function() {
+      mock();
+    });
+    afterEach(mock.restore);
+
+    it('provides a write stream for a file', function(done) {
+
+      var output = fs.createWriteStream('test.txt');
+      output.on('close', function() {
+        fs.readFile('test.txt', function(err, data) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(String(data), 'lots of source content');
+          done();
+        });
+      });
+      output.on('error', done);
+
+      output.write(new Buffer('lots '));
+      output.write(new Buffer('of '));
+      output.write(new Buffer('source '));
+      output.end(new Buffer('content'));
+
+    });
+
+    if (Writable && Writable.prototype.cork) {
+
+      it('works when write stream is corked', function(done) {
+
+        var output = fs.createWriteStream('test.txt');
+        output.on('close', function() {
+          fs.readFile('test.txt', function(err, data) {
+            if (err) {
+              return done(err);
+            }
+            assert.equal(String(data), 'lots of source content');
+            done();
+          });
+        });
+        output.on('error', done);
+
+        output.cork();
+        output.write(new Buffer('lots '));
+        output.write(new Buffer('of '));
+        output.write(new Buffer('source '));
+        output.end(new Buffer('content'));
+        output.uncork();
+
+      });
+
+    }
 
   });
 

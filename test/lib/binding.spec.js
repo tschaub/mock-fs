@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 'use strict';
 
 var path = require('path');
@@ -739,6 +738,68 @@ describe('Binding', function() {
       var buffer = new Buffer('some content');
       assert.throws(function() {
         binding.write(fd, buffer, 0, 12, 0);
+      });
+    });
+
+  });
+
+  describe('#writeBuffers()', function() {
+
+    it('writes to a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
+      var buffers = [
+        new Buffer('new '),
+        new Buffer('content')
+      ];
+      var written = binding.writeBuffers(fd, buffers);
+      assert.equal(written, 11);
+      var file = system.getItem(path.join('mock-dir', 'new.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'new content');
+    });
+
+    it('can append to a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
+      var buffers = [
+        new Buffer(' more'),
+        new Buffer(' content')
+      ];
+      var written = binding.writeBuffers(fd, buffers);
+      assert.equal(written, 13);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'one content more content');
+    });
+
+    it('can overwrite part of a file', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
+      var buffers = [
+        new Buffer('n'),
+        new Buffer('e'),
+        new Buffer('w')
+      ];
+      var written = binding.writeBuffers(fd, buffers, 0);
+      assert.equal(written, 3);
+      var file = system.getItem(path.join('mock-dir', 'one.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.equal(String(content), 'new content');
+    });
+
+    it('throws if not open for writing', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
+      var buffers = [new Buffer('some content')];
+      assert.throws(function() {
+        binding.writeBuffers(fd, buffers);
       });
     });
 
