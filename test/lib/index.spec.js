@@ -1,5 +1,6 @@
 'use strict';
 
+var Writable = require('stream').Writable;
 var assert = require('../helper').assert;
 var fs = require('fs');
 var mock = require('../../lib/index');
@@ -2919,6 +2920,33 @@ describe('Mocking the file system', function() {
       output.end(new Buffer('content'));
 
     });
+
+    if (Writable && Writable.prototype.cork) {
+
+      it('works when write stream is corked', function(done) {
+
+        var output = fs.createWriteStream('test.txt');
+        output.on('close', function() {
+          fs.readFile('test.txt', function(err, data) {
+            if (err) {
+              return done(err);
+            }
+            assert.equal(String(data), 'lots of source content');
+            done();
+          });
+        });
+        output.on('error', done);
+
+        output.cork();
+        output.write(new Buffer('lots '));
+        output.write(new Buffer('of '));
+        output.write(new Buffer('source '));
+        output.end(new Buffer('content'));
+        output.uncork();
+
+      });
+
+    }
 
   });
 
