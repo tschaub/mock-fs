@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 'use strict';
 
 var FileDescriptor = require('../../lib/descriptor');

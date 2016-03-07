@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 'use strict';
 
 var fs = require('fs');
@@ -987,7 +986,6 @@ describe('Mocking the file system', function() {
 
   });
 
-
   describe('fs.existsSync(path)', function() {
 
     beforeEach(function() {
@@ -1074,7 +1072,6 @@ describe('Mocking the file system', function() {
     });
 
   });
-
 
   describe('fs.readdir(path, callback)', function() {
 
@@ -1327,8 +1324,7 @@ describe('Mocking the file system', function() {
 
   });
 
-  var readSig = 'fs.read(fd, buffer, offset, length, position, callback)';
-  describe(readSig, function() {
+  describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
 
     beforeEach(function() {
       mock({
@@ -1587,8 +1583,7 @@ describe('Mocking the file system', function() {
 
   });
 
-  var fsWrite = 'fs.write(fd, buffer, offset, length, position, callback)';
-  describe(fsWrite, function() {
+  describe('fs.write(fd, buffer, offset, length, position, callback)', function() {
 
     beforeEach(function() {
       mock({
