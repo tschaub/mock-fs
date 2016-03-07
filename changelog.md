@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.8.0
+
+ * Implement `binding.writeBuffers()` (see [#94][#94]).
+
 ## 3.7.0
 
  * Add support for `fs.access()` and `fs.accessSync()` (thanks @shyiko, see [#78][#78] and [#80][#80]).
@@ -114,3 +118,4 @@
 [#75]: https://github.com/tschaub/mock-fs/pull/75
 [#78]: https://github.com/tschaub/mock-fs/pull/78
 [#80]: https://github.com/tschaub/mock-fs/pull/80
+[#94]: https://github.com/tschaub/mock-fs/pull/94
