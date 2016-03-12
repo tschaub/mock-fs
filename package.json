@@ -32,7 +32,7 @@
   "devDependencies": {
     "bench-it": "0.4.0",
     "chai": "3.5.0",
-    "eslint": "2.3.0",
+    "eslint": "2.4.0",
     "eslint-config-tschaub": "4.0.0",
     "mocha": "2.4.5",
     "rimraf": "2.5.2"
