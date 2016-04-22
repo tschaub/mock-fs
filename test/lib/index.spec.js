@@ -276,7 +276,13 @@ describe('Mocking the file system', function() {
           'path/to/777': mock.file({
             mode: parseInt('0777', 8),
             content: 'read, write, and execute'
-          })
+          }),
+          'unreadable': mock.directory({mode: parseInt('0000', 8), items: {
+            'readable-child': mock.file({
+              mode: parseInt('0777', 8),
+              content: 'read, write, and execute'
+            })
+          }})
         });
       });
       afterEach(mock.restore);
@@ -521,6 +527,13 @@ describe('Mocking the file system', function() {
         fs.access('path/to/777', fs.R_OK | fs.W_OK | fs.X_OK, done);
       });
 
+      it('generates EACCESS for F_OK and an unreadable parent', function(done) {
+        fs.access('unreadable/readable-child', function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'EACCES');
+          done();
+        });
+      });
     });
 
     describe('fs.accessSync(path[, mode])', function() {
@@ -575,7 +588,6 @@ describe('Mocking the file system', function() {
           fs.accessSync('path/to/000', fs.X_OK | fs.W_OK | fs.R_OK);
         });
       });
-
     });
 
   }
@@ -1971,7 +1983,8 @@ describe('Mocking the file system', function() {
 
     beforeEach(function() {
       mock({
-        'parent': {}
+        'parent': {},
+        'unwriteable': mock.directory({mode: parseInt('0555', 8)})
       });
     });
     afterEach(mock.restore);
@@ -2013,6 +2026,13 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('fails if parent is not writeable', function(done) {
+      fs.mkdir('unwriteable/child', function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+
     it('calls callback with a single argument on success', function(done) {
       fs.mkdir('parent/arity', function(_) {
         assert.equal(arguments.length, 1);
@@ -2026,7 +2046,6 @@ describe('Mocking the file system', function() {
         done();
       });
     });
-
   });
 
   describe('fs.mkdirSync(path, [mode])', function() {
@@ -2034,7 +2053,8 @@ describe('Mocking the file system', function() {
     beforeEach(function() {
       mock({
         'parent': {},
-        'file.txt': 'content'
+        'file.txt': 'content',
+        'unwriteable': mock.directory({mode: parseInt('0555', 8)})
       });
     });
     afterEach(mock.restore);
@@ -2070,13 +2090,19 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('fails if parent is not writeable', function() {
+      assert.throws(function() {
+        fs.mkdirSync('unwriteable/child');
+      });
+    });
   });
 
   describe('fs.rmdir(path, callback)', function() {
 
     beforeEach(function() {
       mock({
-        'path/to/empty': {}
+        'path/to/empty': {},
+        'unwriteable': mock.directory({mode: parseInt('0555', 8), items: {child: {}}})
       });
     });
     afterEach(mock.restore);
@@ -2101,6 +2127,12 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('fails if parent is not writeable', function(done) {
+      fs.rmdir('unwriteable/child', function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
   });
 
   describe('fs.rmdirSync(path)', function() {
@@ -2108,7 +2140,8 @@ describe('Mocking the file system', function() {
     beforeEach(function() {
       mock({
         'path/empty': {},
-        'file.txt': 'content'
+        'file.txt': 'content',
+        'unwriteable': mock.directory({mode: parseInt('0555', 8), items: {child: {}}})
       });
     });
     afterEach(mock.restore);
@@ -2136,6 +2169,11 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('fails if parent is not writeable', function() {
+      assert.throws(function() {
+        fs.rmdirSync('unwriteable/child');
+      });
+    });
   });
 
   describe('fs.chown(path, uid, gid, callback)', function() {
