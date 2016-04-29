@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.9.0
+
+ * Support for Node 6.x (thanks @tmcw, see [#107][#107]).
+
 ## 3.8.0
 
  * Implement `binding.writeBuffers()` (see [#94][#94]).
@@ -119,3 +123,4 @@
 [#78]: https://github.com/tschaub/mock-fs/pull/78
 [#80]: https://github.com/tschaub/mock-fs/pull/80
 [#94]: https://github.com/tschaub/mock-fs/pull/94
+[#107]: https://github.com/tschaub/mock-fs/pull/107
