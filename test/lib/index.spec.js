@@ -7,6 +7,8 @@ var mock = require('../../lib/index');
 var os = require('os');
 var path = require('path');
 
+var testParentPerms = (fs.access && fs.accessSync && process.getuid && process.getgid);
+
 describe('The API', function() {
 
   describe('mock()', function() {
@@ -2026,12 +2028,14 @@ describe('Mocking the file system', function() {
       });
     });
 
-    it('fails if parent is not writeable', function(done) {
-      fs.mkdir('unwriteable/child', function(err) {
-        assert.instanceOf(err, Error);
-        done();
+    if (testParentPerms) {
+      it('fails if parent is not writeable', function(done) {
+        fs.mkdir('unwriteable/child', function(err) {
+          assert.instanceOf(err, Error);
+          done();
+        });
       });
-    });
+    }
 
     it('calls callback with a single argument on success', function(done) {
       fs.mkdir('parent/arity', function(_) {
@@ -2090,11 +2094,13 @@ describe('Mocking the file system', function() {
       });
     });
 
-    it('fails if parent is not writeable', function() {
-      assert.throws(function() {
-        fs.mkdirSync('unwriteable/child');
+    if (testParentPerms) {
+      it('fails if parent is not writeable', function() {
+        assert.throws(function() {
+          fs.mkdirSync('unwriteable/child');
+        });
       });
-    });
+    }
   });
 
   describe('fs.rmdir(path, callback)', function() {
@@ -2127,12 +2133,14 @@ describe('Mocking the file system', function() {
       });
     });
 
-    it('fails if parent is not writeable', function(done) {
-      fs.rmdir('unwriteable/child', function(err) {
-        assert.instanceOf(err, Error);
-        done();
+    if (testParentPerms) {
+      it('fails if parent is not writeable', function(done) {
+        fs.rmdir('unwriteable/child', function(err) {
+          assert.instanceOf(err, Error);
+          done();
+        });
       });
-    });
+    }
   });
 
   describe('fs.rmdirSync(path)', function() {
@@ -2169,11 +2177,13 @@ describe('Mocking the file system', function() {
       });
     });
 
-    it('fails if parent is not writeable', function() {
-      assert.throws(function() {
-        fs.rmdirSync('unwriteable/child');
+    if (testParentPerms) {
+      it('fails if parent is not writeable', function() {
+        assert.throws(function() {
+          fs.rmdirSync('unwriteable/child');
+        });
       });
-    });
+    }
   });
 
   describe('fs.chown(path, uid, gid, callback)', function() {
