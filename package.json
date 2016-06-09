@@ -33,7 +33,7 @@
     "bench-it": "0.4.0",
     "chai": "3.5.0",
     "eslint": "2.10.2",
-    "eslint-config-tschaub": "4.0.0",
+    "eslint-config-tschaub": "5.0.0",
     "mocha": "2.5.2",
     "rimraf": "2.5.2"
   },
