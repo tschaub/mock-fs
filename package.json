@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "rewire": "2.5.1",
-    "semver": "5.1.0"
+    "semver": "5.1.1"
   }
 }
