@@ -38,7 +38,7 @@
     "rimraf": "2.5.2"
   },
   "dependencies": {
-    "rewire": "2.5.1",
+    "rewire": "2.5.2",
     "semver": "5.1.1"
   }
 }
