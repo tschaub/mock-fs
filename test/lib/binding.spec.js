@@ -8,11 +8,11 @@ var SymbolicLink = require('../../lib/symlink');
 var File = require('../../lib/file');
 var FileSystem = require('../../lib/filesystem');
 var helper = require('../helper');
+var constants = require('constants');
 
 var assert = helper.assert;
 var flags = helper.flags;
 
-var constants = process.binding('constants');
 
 describe('Binding', function() {
 
