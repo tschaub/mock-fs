@@ -6,7 +6,7 @@
 const util = require('util');
 const pathModule = require('path');
 
-const binding = process.binding('fs');
+let binding = process.binding('fs');
 const constants = require('constants');
 const fs = exports;
 const Buffer = require('buffer').Buffer;
@@ -34,42 +34,6 @@ const isWindows = process.platform === 'win32';
 
 const DEBUG = process.env.NODE_DEBUG && /fs/.test(process.env.NODE_DEBUG);
 const errnoException = util._errnoException;
-
-var printDeprecation;
-try {
-  printDeprecation = require('internal/util').printDeprecationMessage;
-} catch (e) {
-  if (e.code !== 'MODULE_NOT_FOUND') throw e;
-
-  // TODO(ChALkeR): remove this in master after 6.x
-  // This code was based upon internal/util and is required to give users
-  // a grace period before actually breaking modules that re-evaluate fs
-  // sources from context where internal modules are not allowed, e.g.
-  // older versions of graceful-fs module.
-
-  const prefix = `(${process.release.name}:${process.pid}) `;
-
-  printDeprecation = function(msg, warned) {
-    if (process.noDeprecation)
-      return true;
-
-    if (warned)
-      return warned;
-
-    if (process.throwDeprecation)
-      throw new Error(`${prefix}${msg}`);
-    else if (process.traceDeprecation)
-      console.trace(msg);
-    else
-      console.error(`${prefix}${msg}`);
-
-    return true;
-  };
-  printDeprecation('fs: re-evaluating native module sources is not ' +
-                   'supported. If you are using the graceful-fs module, ' +
-                   'please update it to a more recent version.',
-                    false);
-}
 
 function throwOptionsError(options) {
   throw new TypeError('Expected options to be either an object or a string, ' +
@@ -285,7 +249,7 @@ fs.readFile = function(path, options, callback_) {
   context.isUserFd = isFd(path); // file descriptor ownership
   var req = new FSReqWrap();
   req.context = context;
-  req.oncomplete = readFileAfterOpen;
+  req.oncomplete = readFileAfterOpen.bind(req);
 
   if (context.isUserFd) {
     process.nextTick(function() {
@@ -330,7 +294,7 @@ ReadFileContext.prototype.read = function() {
   }
 
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterRead;
+  req.oncomplete = readFileAfterRead.bind(req);
   req.context = this;
 
   binding.read(this.fd, buffer, offset, length, -1, req);
@@ -338,7 +302,7 @@ ReadFileContext.prototype.read = function() {
 
 ReadFileContext.prototype.close = function(err) {
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterClose;
+  req.oncomplete = readFileAfterClose.bind(req);
   req.context = this;
   this.err = err;
 
@@ -363,7 +327,7 @@ function readFileAfterOpen(err, fd) {
   context.fd = fd;
 
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterStat;
+  req.oncomplete = readFileAfterStat.bind(req);
   req.context = context;
   binding.fstat(fd, req);
 }
