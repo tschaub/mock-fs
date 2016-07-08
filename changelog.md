@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.10.0
+
+ * Fixes for Node 6.3 ([#138][#138]).
+ * Fix permissions issues on directories (thanks @as3richa, see [#105][#105]).
+
 ## 3.9.0
 
  * Support for Node 6.x (thanks @tmcw, see [#107][#107]).
@@ -124,3 +129,5 @@
 [#80]: https://github.com/tschaub/mock-fs/pull/80
 [#94]: https://github.com/tschaub/mock-fs/pull/94
 [#107]: https://github.com/tschaub/mock-fs/pull/107
+[#105]: https://github.com/tschaub/mock-fs/pull/105
+[#138]: https://github.com/tschaub/mock-fs/pull/138
