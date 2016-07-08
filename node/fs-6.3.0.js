@@ -249,7 +249,7 @@ fs.readFile = function(path, options, callback_) {
   context.isUserFd = isFd(path); // file descriptor ownership
   var req = new FSReqWrap();
   req.context = context;
-  req.oncomplete = readFileAfterOpen.bind(req);
+  req.oncomplete = readFileAfterOpen;
 
   if (context.isUserFd) {
     process.nextTick(function() {
@@ -294,7 +294,7 @@ ReadFileContext.prototype.read = function() {
   }
 
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterRead.bind(req);
+  req.oncomplete = readFileAfterRead;
   req.context = this;
 
   binding.read(this.fd, buffer, offset, length, -1, req);
@@ -302,7 +302,7 @@ ReadFileContext.prototype.read = function() {
 
 ReadFileContext.prototype.close = function(err) {
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterClose.bind(req);
+  req.oncomplete = readFileAfterClose;
   req.context = this;
   this.err = err;
 
@@ -327,7 +327,7 @@ function readFileAfterOpen(err, fd) {
   context.fd = fd;
 
   var req = new FSReqWrap();
-  req.oncomplete = readFileAfterStat.bind(req);
+  req.oncomplete = readFileAfterStat;
   req.context = context;
   binding.fstat(fd, req);
 }
