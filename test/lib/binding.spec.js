@@ -244,13 +244,22 @@ describe('Binding', function() {
 
   describe('#realpath()', function() {
 
+    function assertEqualPaths(actual, expected) {
+      if (path._makeLong(expected) === expected) {
+        // not on Windows
+        assert.equal(actual, expected);
+      } else {
+        assert.equal(actual.toLowerCase(), path._makeLong(expected).toLowerCase());
+      }
+    }
+
     it('returns the real path for a regular file', function(done) {
       var binding = new Binding(system);
       binding.realpath('mock-dir/one.txt', 'utf-8', function(err, realPath) {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
         done();
       });
     });
@@ -261,7 +270,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/empty'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/empty'));
         done();
       });
     });
@@ -272,7 +281,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
         done();
       });
     });
@@ -283,7 +292,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
         done();
       });
     });
@@ -294,7 +303,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/non-empty'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
         done();
       });
     });
@@ -305,7 +314,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/non-empty'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
         done();
       });
     });
@@ -316,7 +325,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/non-empty/b.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty/b.txt'));
         done();
       });
     });
@@ -327,7 +336,7 @@ describe('Binding', function() {
         if (err) {
           return done(err);
         }
-        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
         done();
       });
     });
@@ -339,7 +348,7 @@ describe('Binding', function() {
           return done(err);
         }
         assert.equal(Buffer.isBuffer(realPath), true);
-        assert.equal(realPath.toString(), path.resolve('mock-dir/one.txt'));
+        assertEqualPaths(realPath.toString(), path.resolve('mock-dir/one.txt'));
         done();
       });
     });
