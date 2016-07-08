@@ -64,6 +64,15 @@ describe('The API', function() {
       mock.restore();
     });
 
+    it('uses the real fs module in require() calls', function() {
+      mock({foo: 'bar'});
+
+      var pkg = require('../../package.json');
+      assert.equal(pkg.name, 'mock-fs');
+
+      mock.restore();
+    });
+
   });
 
   describe('mock.restore()', function() {
