@@ -1428,6 +1428,13 @@ describe('Binding', function() {
       assert.equal(srcPath, './one.txt');
     });
 
+    it('can return "buffer" encoding', function() {
+      var binding = new Binding(system);
+      var srcPath = binding.readlink(path.join('mock-dir', 'one-link.txt'), 'buffer');
+      assert.equal(Buffer.isBuffer(srcPath), true);
+      assert.equal(srcPath.toString(), './one.txt');
+    });
+
     it('fails for regular files', function() {
       var binding = new Binding(system);
       assert.throws(function() {
