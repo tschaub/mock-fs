@@ -458,6 +458,25 @@ describe('Binding', function() {
       });
     });
 
+    it('accepts "buffer" encoding', function(done) {
+      var binding = new Binding(system);
+      binding.readdir('mock-dir', 'buffer', function(err, items) {
+        assert.isNull(err);
+        assert.isArray(items);
+        items.forEach(function(item) {
+          assert.equal(Buffer.isBuffer(item), true);
+        });
+        var strings = items.map(function(item) {
+          return item.toString();
+        });
+        assert.deepEqual(strings.sort(),
+            ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+                'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+                'two.txt']);
+        done();
+      });
+    });
+
     it('returns a file list (sync)', function() {
       var binding = new Binding(system);
       var items = binding.readdir('mock-dir');
