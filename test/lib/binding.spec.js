@@ -8,11 +8,11 @@ var SymbolicLink = require('../../lib/symlink');
 var File = require('../../lib/file');
 var FileSystem = require('../../lib/filesystem');
 var helper = require('../helper');
+var constants = require('constants');
 
 var assert = helper.assert;
 var flags = helper.flags;
 
-var constants = process.binding('constants');
 
 describe('Binding', function() {
 
@@ -242,6 +242,141 @@ describe('Binding', function() {
 
   });
 
+  describe('#realpath()', function() {
+
+    function assertEqualPaths(actual, expected) {
+      if (path._makeLong(expected) === expected) {
+        // not on Windows
+        assert.equal(actual, expected);
+      } else {
+        assert.equal(actual.toLowerCase(), path._makeLong(expected).toLowerCase());
+      }
+    }
+
+    it('returns the real path for a regular file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/empty', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a symlinked file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one-link.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a deeply symlinked file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one-link2.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a deeply symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link2', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a file in a symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link/b.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty/b.txt'));
+        done();
+      });
+    });
+
+    it('accepts a buffer', function(done) {
+      var binding = new Binding(system);
+      binding.realpath(new Buffer('mock-dir/one.txt'), 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('can return a buffer', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt', 'buffer', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(Buffer.isBuffer(realPath), true);
+        assertEqualPaths(realPath.toString(), path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('throws ENOENT for a non-existent file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/bogus-path', 'utf-8', function(err, realPath) {
+        if (!err || realPath) {
+          return done(new Error('Expected ENOENT'));
+        }
+        assert.equal(err.code, 'ENOENT');
+        done();
+      });
+    });
+
+    it('throws ENOTDIR for a file treated like a directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt/foo', 'utf-8', function(err, realPath) {
+        if (!err || realPath) {
+          return done(new Error('Expected ENOTDIR'));
+        }
+        assert.equal(err.code, 'ENOTDIR');
+        done();
+      });
+    });
+
+  });
+
   describe('#fstat()', function() {
 
     it('calls callback with a Stats instance', function(done) {
@@ -325,6 +460,25 @@ describe('Binding', function() {
         assert.isNull(err);
         assert.isArray(items);
         assert.deepEqual(items.sort(),
+            ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+                'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+                'two.txt']);
+        done();
+      });
+    });
+
+    it('accepts "buffer" encoding', function(done) {
+      var binding = new Binding(system);
+      binding.readdir('mock-dir', 'buffer', function(err, items) {
+        assert.isNull(err);
+        assert.isArray(items);
+        items.forEach(function(item) {
+          assert.equal(Buffer.isBuffer(item), true);
+        });
+        var strings = items.map(function(item) {
+          return item.toString();
+        });
+        assert.deepEqual(strings.sort(),
             ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
                 'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
                 'two.txt']);
@@ -1281,6 +1435,13 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var srcPath = binding.readlink(path.join('mock-dir', 'one-link.txt'));
       assert.equal(srcPath, './one.txt');
+    });
+
+    it('can return "buffer" encoding', function() {
+      var binding = new Binding(system);
+      var srcPath = binding.readlink(path.join('mock-dir', 'one-link.txt'), 'buffer');
+      assert.equal(Buffer.isBuffer(srcPath), true);
+      assert.equal(srcPath.toString(), './one.txt');
     });
 
     it('fails for regular files', function() {

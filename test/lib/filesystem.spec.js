@@ -38,6 +38,13 @@ describe('FileSystem', function() {
 
   });
 
+  describe('#getRoot()', function() {
+    it ('gets the root directory', function() {
+      var system = new FileSystem();
+      assert.instanceOf(system.getRoot(), Directory);
+    });
+  });
+
   describe('#getItem()', function() {
 
     it('gets an item', function() {

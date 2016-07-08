@@ -1,6 +1,7 @@
 'use strict';
 
 var chai = require('chai');
+var constants = require('constants');
 
 
 /** @type {boolean} */
@@ -12,9 +13,6 @@ chai.config.includeStack = true;
  * @type {function}
  */
 exports.assert = chai.assert;
-
-
-var constants = process.binding('constants');
 
 
 /**
