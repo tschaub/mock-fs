@@ -242,6 +242,132 @@ describe('Binding', function() {
 
   });
 
+  describe('#realpath()', function() {
+
+    it('returns the real path for a regular file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/empty', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a symlinked file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one-link.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a deeply symlinked file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one-link2.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('returns the real path for a symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/non-empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a deeply symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link2', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/non-empty'));
+        done();
+      });
+    });
+
+    it('returns the real path for a file in a symlinked directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/dir-link/b.txt', 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/non-empty/b.txt'));
+        done();
+      });
+    });
+
+    it('accepts a buffer', function(done) {
+      var binding = new Binding(system);
+      binding.realpath(new Buffer('mock-dir/one.txt'), 'utf-8', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(realPath, path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('can return a buffer', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt', 'buffer', function(err, realPath) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(Buffer.isBuffer(realPath), true);
+        assert.equal(realPath.toString(), path.resolve('mock-dir/one.txt'));
+        done();
+      });
+    });
+
+    it('throws ENOENT for a non-existent file', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/bogus-path', 'utf-8', function(err, realPath) {
+        if (!err || realPath) {
+          return done(new Error('Expected ENOENT'));
+        }
+        assert.equal(err.code, 'ENOENT');
+        done();
+      });
+    });
+
+    it('throws ENOTDIR for a file treated like a directory', function(done) {
+      var binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt/foo', 'utf-8', function(err, realPath) {
+        if (!err || realPath) {
+          return done(new Error('Expected ENOTDIR'));
+        }
+        assert.equal(err.code, 'ENOTDIR');
+        done();
+      });
+    });
+
+  });
+
   describe('#fstat()', function() {
 
     it('calls callback with a Stats instance', function(done) {
