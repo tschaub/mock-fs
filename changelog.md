@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.11.0
+
+ * Make `require()` calls use the real filesystem ([#139][#139]).
+ * Reduce the manual `fs` module patching ([#140][#140]).
+
 ## 3.10.0
 
  * Fixes for Node 6.3 ([#138][#138]).
@@ -131,3 +136,5 @@
 [#107]: https://github.com/tschaub/mock-fs/pull/107
 [#105]: https://github.com/tschaub/mock-fs/pull/105
 [#138]: https://github.com/tschaub/mock-fs/pull/138
+[#139]: https://github.com/tschaub/mock-fs/pull/139
+[#140]: https://github.com/tschaub/mock-fs/pull/140
