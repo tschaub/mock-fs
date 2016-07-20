@@ -19,7 +19,7 @@ mock({
 });
 ```
 
-When you are ready to restore the `fs` module (so that it is backed by your real file system), call [`mock.restore()`](#mockrestore). Note that calling this maybe **mandatory** in some cases. See [istanbuljs/nyc#324](https://github.com/istanbuljs/nyc/issues/324#issuecomment-234018654)
+When you are ready to restore the `fs` module (so that it is backed by your real file system), call [`mock.restore()`](#mockrestore). Note that calling this may be **mandatory** in some cases. See [istanbuljs/nyc#324](https://github.com/istanbuljs/nyc/issues/324#issuecomment-234018654)
 
 ```js
 // after a test runs
