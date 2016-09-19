@@ -35,7 +35,7 @@
     "eslint": "2.13.0",
     "eslint-config-tschaub": "5.0.0",
     "fs-extra": "^0.30.0",
-    "mocha": "2.5.2",
+    "mocha": "3.0.0",
     "rimraf": "2.5.2"
   },
   "dependencies": {
