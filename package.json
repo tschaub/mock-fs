@@ -40,6 +40,6 @@
   },
   "dependencies": {
     "rewire": "2.5.2",
-    "semver": "5.1.1"
+    "semver": "5.3.0"
   }
 }
