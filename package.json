@@ -32,7 +32,7 @@
   "devDependencies": {
     "bench-it": "0.4.0",
     "chai": "3.5.0",
-    "eslint": "2.13.0",
+    "eslint": "3.1.0",
     "eslint-config-tschaub": "6.0.0",
     "fs-extra": "^0.30.0",
     "mocha": "3.0.0",
