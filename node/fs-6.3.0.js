@@ -598,14 +598,9 @@ fs.openSync = function(path, flags, mode) {
   return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
 };
 
-var readWarned = false;
 fs.read = function(fd, buffer, offset, length, position, callback) {
   if (!(buffer instanceof Buffer)) {
     // legacy string interface (fd, length, position, encoding, callback)
-    readWarned = printDeprecation('fs.read\'s legacy String interface ' +
-                                  'is deprecated. Use the Buffer API as ' +
-                                  'mentioned in the documentation instead.',
-                                  readWarned);
     const cb = arguments[4];
     const encoding = arguments[3];
 
@@ -655,17 +650,12 @@ function tryToStringWithEnd(buf, encoding, end, callback) {
   callback(e, buf, end);
 }
 
-var readSyncWarned = false;
 fs.readSync = function(fd, buffer, offset, length, position) {
   var legacy = false;
   var encoding;
 
   if (!(buffer instanceof Buffer)) {
     // legacy string interface (fd, length, position, encoding, callback)
-    readSyncWarned = printDeprecation('fs.readSync\'s legacy String interface' +
-                                      'is deprecated. Use the Buffer API as ' +
-                                      'mentioned in the documentation instead.',
-                                      readSyncWarned);
     legacy = true;
     encoding = arguments[3];
 
