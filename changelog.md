@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.12.0
+
+ * Support for Node 7.x (thanks @goliney, see [#174][#174]).
+ * Remove calls to `printDeprecation` ([#175][#175]).
+ * Break early when checking version (thanks @isiahmeadows, see [#157][#157]).
+ * Add a note about restoring `fs` (thanks @matheuss, see [#147][#147]).
+ * Clear the require cache before overriding fs functions ([#141][#141])
+
 ## 3.11.0
 
  * Make `require()` calls use the real filesystem ([#139][#139]).
@@ -138,3 +146,8 @@
 [#138]: https://github.com/tschaub/mock-fs/pull/138
 [#139]: https://github.com/tschaub/mock-fs/pull/139
 [#140]: https://github.com/tschaub/mock-fs/pull/140
+[#141]: https://github.com/tschaub/mock-fs/pull/141
+[#147]: https://github.com/tschaub/mock-fs/pull/147
+[#157]: https://github.com/tschaub/mock-fs/pull/157
+[#174]: https://github.com/tschaub/mock-fs/pull/174
+[#175]: https://github.com/tschaub/mock-fs/pull/175
