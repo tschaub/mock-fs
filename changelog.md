@@ -1,5 +1,9 @@
 # Change Log
 
+## 3.12.1
+
+ * Revert the require cache clearing behavior ([#181][#181]).
+
 ## 3.12.0
 
  * Support for Node 7.x (thanks @goliney, see [#174][#174]).
@@ -151,3 +155,4 @@
 [#157]: https://github.com/tschaub/mock-fs/pull/157
 [#174]: https://github.com/tschaub/mock-fs/pull/174
 [#175]: https://github.com/tschaub/mock-fs/pull/175
+[#181]: https://github.com/tschaub/mock-fs/pull/181
