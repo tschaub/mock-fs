@@ -459,10 +459,11 @@ describe('Binding', function() {
       binding.readdir('mock-dir', function(err, items) {
         assert.isNull(err);
         assert.isArray(items);
-        assert.deepEqual(items.sort(),
-            ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
-                'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
-                'two.txt']);
+        assert.deepEqual(items.sort(), [
+          'dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+          'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+          'two.txt'
+        ]);
         done();
       });
     });
@@ -478,10 +479,11 @@ describe('Binding', function() {
         var strings = items.map(function(item) {
           return item.toString();
         });
-        assert.deepEqual(strings.sort(),
-            ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
-                'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
-                'two.txt']);
+        assert.deepEqual(strings.sort(), [
+          'dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+          'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+          'two.txt'
+        ]);
         done();
       });
     });
@@ -490,10 +492,11 @@ describe('Binding', function() {
       var binding = new Binding(system);
       var items = binding.readdir('mock-dir');
       assert.isArray(items);
-      assert.deepEqual(items.sort(),
-          ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
-              'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
-              'two.txt']);
+      assert.deepEqual(items.sort(), [
+        'dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+        'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+        'two.txt'
+      ]);
     });
 
     it('calls callback with file list for symbolic linked dir', function(done) {
@@ -1013,10 +1016,11 @@ describe('Binding', function() {
       assert.equal(stats.mode & constants.S_IFMT, constants.S_IFDIR);
       var items = binding.readdir(newPath);
       assert.isArray(items);
-      assert.deepEqual(items.sort(),
-          ['dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
-              'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
-              'two.txt']);
+      assert.deepEqual(items.sort(), [
+        'dead-link', 'dir-link', 'dir-link2', 'empty', 'non-empty',
+        'one-link.txt', 'one-link2.txt', 'one.txt', 'three.bin',
+        'two.txt'
+      ]);
     });
 
     it('calls callback with error for bogus old path', function(done) {
