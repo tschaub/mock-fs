@@ -28,20 +28,16 @@ mock.restore();
 
 ## Upgrading to version 4
 
-The `mock-fs@4` release will contain breaking changes.  Instead of overriding all methods of the built-in `fs` module, the library now overrides `process.binding('fs')`.  The purpose of this change is to avoid conflicts with other libraries that override `fs` methods (e.g. `graceful-fs`) and to make it possible to work with multiple Node releases without maintaining copied and slightly modified versions of Node's `fs` module.
+Instead of overriding all methods of the built-in `fs` module, the library now overrides `process.binding('fs')`.  The purpose of this change is to avoid conflicts with other libraries that override `fs` methods (e.g. `graceful-fs`) and to make it possible to work with multiple Node releases without maintaining copied and slightly modified versions of Node's `fs` module.
 
-Until the `mock-fs@4.0.0` release, you can try out a beta release:
+Breaking changes:
 
-```
-npm install mock-fs@beta --save-dev
-```
-
-The final 4.0 release may contain fewer breaking changes than the latest beta.  For now, these are the breaking changes:
-
- * The `mock.fs()` function has been removed.  This returned an object with `fs`-like methods without overriding the built-in `fs` module.  It may be possible to bring this function back, but it is not included in the latest beta release.
- * The object created by `fs.Stats` is no longer an instanceof `fs.Stats` (though it has all the same properties and methods).  This too may be possible to fix before the final release.
+ * The `mock.fs()` function has been removed.  This returned an object with `fs`-like methods without overriding the built-in `fs` module.
+ * The object created by `fs.Stats` is no longer an instance of `fs.Stats` (though it has all the same properties and methods).
  * Lazy `require()` do not use the real filesystem.
  * Tests are no longer run in Node < 4.
+
+Some of these breaking changes may be restored in a future release.
 
 ## Docs
 

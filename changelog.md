@@ -1,5 +1,20 @@
 # Change Log
 
+## 4.0.0
+
+In earlier versions of `mock-fs`, a monkey-patched version of the `fs` module was used to provide an in-memory filesystem.  With each major release of Node, the `mock-fs` package needed to include a modified copy of the `fs` module.  With the `mock-fs@4` release, this package no longer includes a modified copy of the `fs` module.  Instead, this package overrides `process.binding('fs')`.  While this is not part of Node's stable API, it has proven to be a more stable interface than the `fs` module itself (based on experience implementing it with Node 0.8 through 7.0).
+
+Upgrading from 3.x to 4.0 should be straightforward for most applications.  There are several breaking changes that may be restored in future releases:
+
+ * The `mock.fs()` function has been removed.
+ * The object created by `fs.stat()` and friends is no longer an instance of `fs.Stats` (though it behaves as one).
+ * Lazy `require()` calls do not work consistently.
+
+Detailed changes:
+
+ * Only override `process.binding('fs')` ([#182][#182])
+ * Expose the root of the mocked filesystem (thanks @ciaranj, see [#194][#194])
+
 ## 3.12.1
 
  * Revert the require cache clearing behavior ([#181][#181]).
@@ -156,3 +171,5 @@
 [#174]: https://github.com/tschaub/mock-fs/pull/174
 [#175]: https://github.com/tschaub/mock-fs/pull/175
 [#181]: https://github.com/tschaub/mock-fs/pull/181
+[#182]: https://github.com/tschaub/mock-fs/pull/182
+[#194]: https://github.com/tschaub/mock-fs/pull/194
