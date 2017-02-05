@@ -23,6 +23,14 @@ describe('The API', function() {
       mock.restore();
     });
 
+    it('provides direct access to the internal filesystem object', function() {
+      mock();
+      var root = mock.getMockRoot();
+      assert.notDeepEqual(root, {});
+      mock.restore();
+      assert.deepEqual(mock.getMockRoot(), {});
+    });
+
     it('creates process.cwd() and os.tmpdir() by default', function() {
       mock();
 
