@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.0
+
+ * Correctly follow a symlink chain in `binding.open()` (thanks @vlindhol, see [#195][#195])
+
 ## 4.0.0
 
 In earlier versions of `mock-fs`, a monkey-patched version of the `fs` module was used to provide an in-memory filesystem.  With each major release of Node, the `mock-fs` package needed to include a modified copy of the `fs` module.  With the `mock-fs@4` release, this package no longer includes a modified copy of the `fs` module.  Instead, this package overrides `process.binding('fs')`.  While this is not part of Node's stable API, it has proven to be a more stable interface than the `fs` module itself (based on experience implementing it with Node 0.8 through 7.0).
@@ -173,3 +177,4 @@ Detailed changes:
 [#181]: https://github.com/tschaub/mock-fs/pull/181
 [#182]: https://github.com/tschaub/mock-fs/pull/182
 [#194]: https://github.com/tschaub/mock-fs/pull/194
+[#195]: https://github.com/tschaub/mock-fs/pull/195
