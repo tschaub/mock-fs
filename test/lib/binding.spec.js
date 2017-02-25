@@ -763,6 +763,7 @@ describe('Binding', function() {
             parseInt('0666', 8));
       });
     });
+
   });
 
   describe('#close()', function() {
