@@ -824,6 +824,15 @@ describe('Binding', function() {
       assert.equal(String(buffer), 'one content');
     });
 
+    it('reads from a deeply linked symlink', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one-link2.txt'), flags('r'));
+      var buffer = new Buffer(11);
+      var read = binding.read(fd, buffer, 0, 11, 0);
+      assert.equal(read, 11);
+      assert.equal(String(buffer), 'one content');
+    });
+
     it('throws if not open for reading', function() {
       var binding = new Binding(system);
       var fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'));
