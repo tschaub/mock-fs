@@ -763,7 +763,6 @@ describe('Binding', function() {
             parseInt('0666', 8));
       });
     });
-
   });
 
   describe('#close()', function() {
@@ -818,6 +817,15 @@ describe('Binding', function() {
     it('reads from a symbolic link', function() {
       var binding = new Binding(system);
       var fd = binding.open(path.join('mock-dir', 'one-link.txt'), flags('r'));
+      var buffer = new Buffer(11);
+      var read = binding.read(fd, buffer, 0, 11, 0);
+      assert.equal(read, 11);
+      assert.equal(String(buffer), 'one content');
+    });
+
+    it('reads from a deeply linked symlink', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'one-link2.txt'), flags('r'));
       var buffer = new Buffer(11);
       var read = binding.read(fd, buffer, 0, 11, 0);
       assert.equal(read, 11);
