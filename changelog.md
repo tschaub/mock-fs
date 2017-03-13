@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.2.0
+
+ * Update fs.stat(), fs.lstat(), and fs.fstat() for Node 7.7+ (thanks @not-an-aardvark, see [#198][#198])
+
 ## 4.1.0
 
  * Correctly follow a symlink chain in `binding.open()` (thanks @vlindhol, see [#195][#195])
@@ -178,3 +182,4 @@ Detailed changes:
 [#182]: https://github.com/tschaub/mock-fs/pull/182
 [#194]: https://github.com/tschaub/mock-fs/pull/194
 [#195]: https://github.com/tschaub/mock-fs/pull/195
+[#198]: https://github.com/tschaub/mock-fs/pull/198
