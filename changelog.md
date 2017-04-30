@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.3.0
+
+ * Add support for fs.mkdtemp() and fs.mkdtempSync (see [#207][#207])
+
 ## 4.2.0
 
  * Update fs.stat(), fs.lstat(), and fs.fstat() for Node 7.7+ (thanks @not-an-aardvark, see [#198][#198])
@@ -183,3 +187,4 @@ Detailed changes:
 [#194]: https://github.com/tschaub/mock-fs/pull/194
 [#195]: https://github.com/tschaub/mock-fs/pull/195
 [#198]: https://github.com/tschaub/mock-fs/pull/198
+[#207]: https://github.com/tschaub/mock-fs/pull/207
