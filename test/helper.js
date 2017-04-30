@@ -2,6 +2,7 @@
 
 var chai = require('chai');
 var constants = require('constants');
+var semver = require('semver');
 
 
 /** @type {boolean} */
@@ -14,6 +15,13 @@ chai.config.includeStack = true;
  */
 exports.assert = chai.assert;
 
+exports.inVersion = function(range) {
+  if (semver.satisfies(process.version, range)) {
+    return {it: it, describe: describe};
+  } else {
+    return {it: xit, describe: xdescribe};
+  }
+};
 
 /**
  * Convert a string to flags for fs.open.

@@ -1101,6 +1101,35 @@ describe('Binding', function() {
 
   });
 
+  describe('#mkdtemp()', function() {
+
+    it('creates a new directory', function() {
+      var binding = new Binding(system);
+      var template = path.join('mock-dir', 'fooXXXXXX');
+      var dirPath = binding.mkdtemp(template);
+      assert.notEqual(template, dirPath);
+      var dir = system.getItem(dirPath);
+      assert.instanceOf(dir, Directory);
+    });
+
+    it('fails if parent does not exist', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('bogus', 'pathXXXXXX');
+      assert.throws(function() {
+        binding.mkdtemp(dirPath);
+      });
+    });
+
+    it('fails if file exists', function() {
+      var binding = new Binding(system);
+      var dirPath = path.join('mock-dir', 'one.txt', 'XXXXXX');
+      assert.throws(function() {
+        binding.mkdtemp(dirPath);
+      });
+    });
+
+  });
+
   describe('#rmdir()', function() {
 
     it('removes an empty directory', function() {
