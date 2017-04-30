@@ -1,11 +1,14 @@
 'use strict';
 
 var Writable = require('stream').Writable;
-var assert = require('../helper').assert;
+var helper = require('../helper');
 var fs = require('fs');
 var mock = require('../../lib/index');
 var os = require('os');
 var path = require('path');
+
+var assert = helper.assert;
+var inVersion = helper.inVersion;
 
 var testParentPerms = (fs.access && fs.accessSync && process.getuid && process.getgid);
 
@@ -2119,6 +2122,212 @@ describe('Mocking the file system', function() {
       });
     }
   });
+
+  if (fs.mkdtemp) {
+    describe('fs.mkdtemp(prefix[, options], callback)', function() {
+
+      beforeEach(function() {
+        mock({
+          'parent': {},
+          'file': 'contents',
+          'unwriteable': mock.directory({mode: parseInt('0555', 8)})
+        });
+      });
+      afterEach(mock.restore);
+
+      it('creates a new directory', function(done) {
+        fs.mkdtemp('parent/dir', function(err, dirPath) {
+          if (err) {
+            return done(err);
+          }
+          var parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          var stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        });
+      });
+
+      inVersion('>=6').it('accepts a "utf8" encoding argument', function(done) {
+        fs.mkdtemp('parent/dir', 'utf8', function(err, dirPath) {
+          if (err) {
+            return done(err);
+          }
+          assert.isString(dirPath);
+          var parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          var stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        });
+      });
+
+      inVersion('>=6').it('accepts a "buffer" encoding argument', function(done) {
+        fs.mkdtemp('parent/dir', 'buffer', function(err, buffer) {
+          if (err) {
+            return done(err);
+          }
+          assert.instanceOf(buffer, Buffer);
+          var dirPath = buffer.toString();
+          var parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          var stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        });
+      });
+
+      inVersion('>=6').it('accepts an options argument with "utf8" encoding', function(done) {
+        fs.mkdtemp('parent/dir', {encoding: 'utf8'}, function(err, dirPath) {
+          if (err) {
+            return done(err);
+          }
+          assert.isString(dirPath);
+          var parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          var stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        });
+      });
+
+      inVersion('>=6').it('accepts an options argument with "buffer" encoding', function(done) {
+        fs.mkdtemp('parent/dir', {encoding: 'buffer'}, function(err, buffer) {
+          if (err) {
+            return done(err);
+          }
+          assert.instanceOf(buffer, Buffer);
+          var dirPath = buffer.toString();
+          var parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          var stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        });
+      });
+
+      it('fails if parent does not exist', function(done) {
+        fs.mkdtemp('unknown/child', function(err, dirPath) {
+          if (!err || dirPath) {
+            done(new Error('Expected failure'));
+          } else {
+            assert.isTrue(!dirPath);
+            assert.instanceOf(err, Error);
+            assert.equal(err.code, 'ENOENT');
+            done();
+          }
+        });
+      });
+
+      it('fails if parent is a file', function(done) {
+        fs.mkdtemp('file/child', function(err, dirPath) {
+          if (!err || dirPath) {
+            done(new Error('Expected failure'));
+          } else {
+            assert.isTrue(!dirPath);
+            assert.instanceOf(err, Error);
+            assert.equal(err.code, 'ENOTDIR');
+            done();
+          }
+        });
+      });
+
+      if (testParentPerms) {
+        it('fails if parent is not writeable', function(done) {
+          fs.mkdtemp('unwriteable/child', function(err, dirPath) {
+            if (!err || dirPath) {
+              done(new Error('Expected failure'));
+            } else {
+              assert.isTrue(!dirPath);
+              assert.instanceOf(err, Error);
+              assert.equal(err.code, 'EACCES');
+              done();
+            }
+          });
+        });
+      }
+    });
+  }
+
+  if (fs.mkdtempSync) {
+    describe('fs.mkdtempSync(prefix[, options])', function() {
+
+      beforeEach(function() {
+        mock({
+          'parent': {},
+          'file': 'contents',
+          'unwriteable': mock.directory({mode: parseInt('0555', 8)})
+        });
+      });
+      afterEach(mock.restore);
+
+      it('creates a new directory', function() {
+        var dirPath = fs.mkdtempSync('parent/dir');
+        var parentPath = path.dirname(dirPath);
+        assert.equal(parentPath, 'parent');
+        var stats = fs.statSync(dirPath);
+        assert.isTrue(stats.isDirectory());
+      });
+
+      inVersion('>=6').it('accepts a "utf8" encoding argument', function() {
+        var dirPath = fs.mkdtempSync('parent/dir', 'utf8');
+        assert.isString(dirPath);
+        var parentPath = path.dirname(dirPath);
+        assert.equal(parentPath, 'parent');
+        var stats = fs.statSync(dirPath);
+        assert.isTrue(stats.isDirectory());
+      });
+
+      inVersion('>=6').it('accepts a "buffer" encoding argument', function() {
+        var buffer = fs.mkdtempSync('parent/dir', 'buffer');
+        assert.instanceOf(buffer, Buffer);
+        var dirPath = buffer.toString();
+        var parentPath = path.dirname(dirPath);
+        assert.equal(parentPath, 'parent');
+        var stats = fs.statSync(dirPath);
+        assert.isTrue(stats.isDirectory());
+      });
+
+      inVersion('>=6').it('accepts an options argument with "utf8" encoding', function() {
+        var dirPath = fs.mkdtempSync('parent/dir', {encoding: 'utf8'});
+        assert.isString(dirPath);
+        var parentPath = path.dirname(dirPath);
+        assert.equal(parentPath, 'parent');
+        var stats = fs.statSync(dirPath);
+        assert.isTrue(stats.isDirectory());
+      });
+
+      inVersion('>=6').it('accepts an options argument with "buffer" encoding', function() {
+        var buffer = fs.mkdtempSync('parent/dir', {encoding: 'buffer'});
+        assert.instanceOf(buffer, Buffer);
+        var dirPath = buffer.toString();
+        var parentPath = path.dirname(dirPath);
+        assert.equal(parentPath, 'parent');
+        var stats = fs.statSync(dirPath);
+        assert.isTrue(stats.isDirectory());
+      });
+
+      it('fails if parent does not exist', function() {
+        assert.throws(function() {
+          fs.mkdtempSync('unknown/child');
+        });
+      });
+
+      it('fails if parent is a file', function() {
+        assert.throws(function() {
+          fs.mkdtempSync('file/child');
+        });
+      });
+
+      if (testParentPerms) {
+        it('fails if parent is not writeable', function() {
+          assert.throws(function() {
+            fs.mkdtempSync('unwriteable/child');
+          });
+        });
+      }
+    });
+  }
 
   describe('fs.rmdir(path, callback)', function() {
 
