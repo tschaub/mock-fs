@@ -4,10 +4,8 @@ var chai = require('chai');
 var constants = require('constants');
 var semver = require('semver');
 
-
 /** @type {boolean} */
 chai.config.includeStack = true;
-
 
 /**
  * Chai's assert function configured to include stacks on failure.
@@ -43,29 +41,45 @@ exports.flags = function(str) {
       return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY;
     case 'wx': // fall through
     case 'xw':
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_WRONLY |
-          constants.O_EXCL;
+      return (
+        constants.O_TRUNC |
+        constants.O_CREAT |
+        constants.O_WRONLY |
+        constants.O_EXCL
+      );
 
     case 'w+':
       return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR;
     case 'wx+': // fall through
     case 'xw+':
-      return constants.O_TRUNC | constants.O_CREAT | constants.O_RDWR |
-          constants.O_EXCL;
+      return (
+        constants.O_TRUNC |
+        constants.O_CREAT |
+        constants.O_RDWR |
+        constants.O_EXCL
+      );
 
     case 'a':
       return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY;
     case 'ax': // fall through
     case 'xa':
-      return constants.O_APPEND | constants.O_CREAT | constants.O_WRONLY |
-          constants.O_EXCL;
+      return (
+        constants.O_APPEND |
+        constants.O_CREAT |
+        constants.O_WRONLY |
+        constants.O_EXCL
+      );
 
     case 'a+':
       return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR;
     case 'ax+': // fall through
     case 'xa+':
-      return constants.O_APPEND | constants.O_CREAT | constants.O_RDWR |
-          constants.O_EXCL;
+      return (
+        constants.O_APPEND |
+        constants.O_CREAT |
+        constants.O_RDWR |
+        constants.O_EXCL
+      );
     default:
       throw new Error('Unsupported flag: ' + str);
   }

@@ -27,7 +27,6 @@ function numFiles(dir, items, callback) {
   });
 }
 
-
 /**
  * Count the number of files in a directory.
  * @param {string} dir Path to directory.

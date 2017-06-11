@@ -6,39 +6,30 @@ var helper = require('../helper');
 var assert = helper.assert;
 var flags = helper.flags;
 
-
 describe('FileDescriptor', function() {
-
   describe('constructor', function() {
-
     it('creates a new descriptor', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.instanceOf(fd, FileDescriptor);
     });
-
   });
 
   describe('#getPosition()', function() {
-
     it('returns zero by default', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.equal(fd.getPosition(), 0);
     });
-
   });
 
   describe('#setPosition()', function() {
-
     it('updates the position', function() {
       var fd = new FileDescriptor(flags('r'));
       fd.setPosition(10);
       assert.equal(fd.getPosition(), 10);
     });
-
   });
 
   describe('#isAppend()', function() {
-
     it('not opened for appending (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isFalse(fd.isAppend());
@@ -98,11 +89,9 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isAppend());
     });
-
   });
 
   describe('#isTruncate()', function() {
-
     it('not opened for truncating (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isFalse(fd.isTruncate());
@@ -162,11 +151,9 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isFalse(fd.isTruncate());
     });
-
   });
 
   describe('#isCreate()', function() {
-
     it('not opened for creation (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isFalse(fd.isCreate());
@@ -226,11 +213,9 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isCreate());
     });
-
   });
 
   describe('#isRead()', function() {
-
     it('opened for reading (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isTrue(fd.isRead());
@@ -290,11 +275,9 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isRead());
     });
-
   });
 
   describe('#isWrite()', function() {
-
     it('not opened for writing (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isFalse(fd.isWrite());
@@ -354,11 +337,9 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isWrite());
     });
-
   });
 
   describe('#isExclusive()', function() {
-
     it('not opened exclusive (r)', function() {
       var fd = new FileDescriptor(flags('r'));
       assert.isFalse(fd.isExclusive());
@@ -418,7 +399,5 @@ describe('FileDescriptor', function() {
       var fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isExclusive());
     });
-
   });
-
 });

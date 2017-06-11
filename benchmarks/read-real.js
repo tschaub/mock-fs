@@ -6,7 +6,6 @@ var rimraf = require('rimraf');
 
 var tmpPath = '.tmp';
 
-
 /**
  * Test setup.  Not timed.
  * @param {function(Error)} done Callback.
@@ -20,7 +19,6 @@ exports.beforeEach = function(done) {
   });
 };
 
-
 /**
  * Timed test.
  * @param {function(Error)} done Callback.
@@ -32,7 +30,6 @@ exports.test = function(done) {
     done();
   });
 };
-
 
 /**
  * Test teardown.  Not timed.

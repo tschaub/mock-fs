@@ -3,7 +3,6 @@ var fs = require('fs');
 
 var mock = require('..');
 
-
 /**
  * Test setup.  Not timed.
  */
@@ -12,7 +11,6 @@ exports.beforeEach = function() {
     'foo-mock.txt': 'foo'
   });
 };
-
 
 /**
  * Timed test.
@@ -25,7 +23,6 @@ exports.test = function(done) {
     done();
   });
 };
-
 
 /**
  * Test teardown.  Not timed.

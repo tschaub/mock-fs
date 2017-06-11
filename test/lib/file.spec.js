@@ -5,19 +5,15 @@ var File = require('../../lib/file');
 var assert = require('../helper').assert;
 
 describe('File', function() {
-
   describe('constructor', function() {
-
     it('creates a named file', function() {
       var file = new File();
       assert.instanceOf(file, File);
       assert.instanceOf(file, Item);
     });
-
   });
 
   describe('#getContent()', function() {
-
     it('gets the file content', function() {
       var file = new File();
       var content = new Buffer('bar');
@@ -38,11 +34,9 @@ describe('File', function() {
       file.getContent();
       assert.isTrue(file.getATime() > old);
     });
-
   });
 
   describe('#setContent()', function() {
-
     it('accepts a string', function() {
       var file = new File();
       file.setContent('bar');
@@ -75,7 +69,5 @@ describe('File', function() {
       assert.isTrue(file.getCTime() > old);
       assert.isTrue(file.getMTime() > old);
     });
-
   });
-
 });
