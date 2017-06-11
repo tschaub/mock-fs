@@ -839,12 +839,12 @@ describe('Mocking the file system', function() {
         if (process.getuid) {
           assert.isNumber(stats.uid);
         } else {
-          assert.isUndefined(stats.uid);
+          assert.isNaN(stats.uid);
         }
         if (process.getgid) {
           assert.isNumber(stats.gid);
         } else {
-          assert.isUndefined(stats.gid);
+          assert.isNaN(stats.gid);
         }
         assert.equal(stats.nlink, 3);
         assert.isNumber(stats.blocks);
