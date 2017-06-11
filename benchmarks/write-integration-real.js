@@ -6,7 +6,6 @@ var rimraf = require('rimraf');
 
 var tmpPath = '.tmp';
 
-
 /**
  * Timed test.  This includes the setup and teardown as part of the overall
  * test time.

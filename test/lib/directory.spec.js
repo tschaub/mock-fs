@@ -6,19 +6,15 @@ var File = require('../../lib/file');
 var assert = require('../helper').assert;
 
 describe('Directory', function() {
-
   describe('constructor', function() {
-
     it('creates a named directory', function() {
       var dir = new Directory();
       assert.instanceOf(dir, Directory);
       assert.instanceOf(dir, Item);
     });
-
   });
 
   describe('#addItem()', function() {
-
     it('allows a directory to be added', function() {
       var parent = new Directory();
       var child = new Directory();
@@ -39,11 +35,9 @@ describe('Directory', function() {
       var got = parent.addItem('child', child);
       assert.equal(got, child);
     });
-
   });
 
   describe('#getItem()', function() {
-
     it('retrieves a named directory', function() {
       var parent = new Directory();
       var child = new Directory();
@@ -64,11 +58,9 @@ describe('Directory', function() {
       parent.addItem('child', child);
       assert.isNull(parent.getItem('kid'));
     });
-
   });
 
   describe('#removeItem()', function() {
-
     it('allows a directory to be removed', function() {
       var parent = new Directory();
       var child = new Directory();
@@ -95,11 +87,9 @@ describe('Directory', function() {
         parent.removeItem('three');
       });
     });
-
   });
 
   describe('#list()', function() {
-
     it('lists all items in a directory', function() {
       var dir = new Directory();
       dir.addItem('one file', new File());
@@ -128,7 +118,5 @@ describe('Directory', function() {
       d0.addItem('d1', d1);
       assert.deepEqual(d0.list(), ['d1']);
     });
-
   });
-
 });

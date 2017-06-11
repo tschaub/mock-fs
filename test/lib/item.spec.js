@@ -4,115 +4,93 @@ var Item = require('../../lib/item');
 var assert = require('../helper').assert;
 
 describe('Item', function() {
-
   describe('constructor', function() {
-
     it('creates a new instance', function() {
       var item = new Item();
       assert.instanceOf(item, Item);
     });
-
   });
 
   describe('#getATime()', function() {
-
     it('returns a date', function() {
       var item = new Item();
       var date = item.getATime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
     });
-
   });
 
   describe('#setATime()', function() {
-
     it('sets the atime', function() {
       var item = new Item();
       var date = new Date();
       item.setATime(date);
       assert.equal(item.getATime(), date);
     });
-
   });
 
   describe('#getCTime()', function() {
-
     it('returns a date', function() {
       var item = new Item();
       var date = item.getCTime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
     });
-
   });
 
   describe('#setCTime()', function() {
-
     it('sets the ctime', function() {
       var item = new Item();
       var date = new Date();
       item.setCTime(date);
       assert.equal(item.getCTime(), date);
     });
-
   });
 
   describe('#getBirthtime()', function() {
-
     it('returns a date', function() {
       var item = new Item();
       var date = item.getBirthtime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
     });
-
   });
 
   describe('#setBirthtime()', function() {
-
     it('sets the birthtime', function() {
       var item = new Item();
       var date = new Date();
       item.setBirthtime(date);
       assert.equal(item.getBirthtime(), date);
     });
-
   });
 
   describe('#getMTime()', function() {
-
     it('returns a date', function() {
       var item = new Item();
       var date = item.getMTime();
       assert.instanceOf(date, Date);
       assert.isTrue(date <= new Date());
     });
-
   });
 
   describe('#setMTime()', function() {
-
     it('sets the mtime', function() {
       var item = new Item();
       var date = new Date();
       item.setMTime(date);
       assert.equal(item.getMTime(), date);
     });
-
   });
 
   describe('#getMode()', function() {
-
     it('returns a number', function() {
       var item = new Item();
       assert.isNumber(item.getMode());
     });
-
   });
 
   describe('#setMode()', function() {
-
     it('sets the mode', function() {
       var item = new Item();
       item.setMode(parseInt('0644', 8));
@@ -126,11 +104,9 @@ describe('Item', function() {
       item.setMode(parseInt('0644', 8));
       assert.isTrue(item.getCTime() > original);
     });
-
   });
 
   describe('#setUid()', function() {
-
     it('sets the uid', function() {
       var item = new Item();
       item.setUid(42);
@@ -144,11 +120,9 @@ describe('Item', function() {
       item.setUid(42);
       assert.isTrue(item.getCTime() > original);
     });
-
   });
 
   describe('#setGid()', function() {
-
     it('sets the gid', function() {
       var item = new Item();
       item.setGid(42);
@@ -162,11 +136,9 @@ describe('Item', function() {
       item.setGid(42);
       assert.isTrue(item.getCTime() > original);
     });
-
   });
 
   if (process.getgid && process.getuid) {
-
     var uid = process.getuid();
     var gid = process.getgid();
 
@@ -176,7 +148,6 @@ describe('Item', function() {
     });
 
     describe('#canRead()', function() {
-
       it('returns true if owner and 0700', function() {
         item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canRead());
@@ -249,11 +220,9 @@ describe('Item', function() {
         item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canRead());
       });
-
     });
 
     describe('#canWrite()', function() {
-
       it('returns true if owner and 0700', function() {
         item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canWrite());
@@ -326,11 +295,9 @@ describe('Item', function() {
         item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canWrite());
       });
-
     });
 
     describe('#canExecute()', function() {
-
       it('returns true if owner and 0700', function() {
         item.setMode(parseInt('0700', 8));
         assert.isTrue(item.canExecute());
@@ -403,9 +370,6 @@ describe('Item', function() {
         item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canExecute());
       });
-
     });
-
   }
-
 });

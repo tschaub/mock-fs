@@ -3,7 +3,6 @@ var fs = require('fs');
 
 var mock = require('..');
 
-
 /**
  * Timed test.  This includes the mock setup and teardown as part of the overall
  * test time.
@@ -21,5 +20,4 @@ exports.test = function(done) {
     mock.restore();
     done();
   });
-
 };
