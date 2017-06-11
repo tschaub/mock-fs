@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.4.0
+
+ * Fix stat issue with Node 8 (thanks @AGrzes, see [#209][#209])
+ * Make code prettier (see [#210][#210])
+
 ## 4.3.0
 
  * Add support for fs.mkdtemp() and fs.mkdtempSync (see [#207][#207])
@@ -188,3 +193,5 @@ Detailed changes:
 [#195]: https://github.com/tschaub/mock-fs/pull/195
 [#198]: https://github.com/tschaub/mock-fs/pull/198
 [#207]: https://github.com/tschaub/mock-fs/pull/207
+[#209]: https://github.com/tschaub/mock-fs/pull/209
+[#210]: https://github.com/tschaub/mock-fs/pull/210
