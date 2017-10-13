@@ -25,19 +25,19 @@
   },
   "license": "MIT",
   "scripts": {
-    "lint:fix": "eslint --fix benchmarks lib test",
-    "pretest": "eslint benchmarks lib test",
+    "lint": "eslint benchmarks lib test",
+    "pretest": "npm run lint",
     "test": "mocha --recursive test",
     "bench": "bench benchmarks"
   },
   "devDependencies": {
     "bench-it": "0.4.0",
-    "chai": "3.5.0",
-    "eslint": "^3.19.0",
-    "eslint-config-tschaub": "^7.0.0",
-    "mocha": "3.1.2",
-    "rimraf": "2.5.4",
-    "semver": "^5.3.0"
+    "chai": "^4.1.2",
+    "eslint": "^4.8.0",
+    "eslint-config-tschaub": "^8.0.0",
+    "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
+    "semver": "^5.4.1"
   },
   "eslintConfig": {
     "extends": "tschaub"
