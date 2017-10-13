@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.4.2
+
+ * Throw if item content is invalid in config (thanks @mutantcornholio, see [#221][#221])
+ * Use const in readme (thanks @denar90, see [#222][#222])
+
+## 4.4.1
+
+ * Document that tests are run on Node 8.x as well.
+
 ## 4.4.0
 
  * Fix stat issue with Node 8 (thanks @AGrzes, see [#209][#209])
@@ -195,3 +204,5 @@ Detailed changes:
 [#207]: https://github.com/tschaub/mock-fs/pull/207
 [#209]: https://github.com/tschaub/mock-fs/pull/209
 [#210]: https://github.com/tschaub/mock-fs/pull/210
+[#221]: https://github.com/tschaub/mock-fs/pull/221
+[#222]: https://github.com/tschaub/mock-fs/pull/222
