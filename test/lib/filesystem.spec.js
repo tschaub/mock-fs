@@ -311,4 +311,26 @@ describe('FileSystem.create', function() {
      */
     assert.equal(system.getItem('/dir-a.0/dir-b.0/symlink-c.0').links, 1);
   });
+
+  it('throws if item content is not valid type', function() {
+    assert.throws(function() {
+      FileSystem.create({
+        '/dir-a.0': {
+          'dir-b.0': {
+            'file-c.0': undefined
+          }
+        }
+      });
+    });
+
+    assert.throws(function() {
+      FileSystem.create({
+        '/dir-a.0': {
+          'dir-b.0': {
+            'file-c.0': 123
+          }
+        }
+      });
+    });
+  });
 });
