@@ -7,7 +7,7 @@ The `mock-fs` module allows Node's built-in [`fs` module](http://nodejs.org/api/
 The code below makes it so the `fs` module is temporarily backed by a mock file system with a few files and directories.
 
 ```js
-var mock = require('mock-fs');
+const mock = require('mock-fs');
 
 mock({
   'path/to/fake/dir': {
