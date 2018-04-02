@@ -1506,21 +1506,21 @@ describe('Binding', function() {
       var binding = new Binding(system);
       assert.throws(function() {
         binding.readlink(path.join('mock-dir', 'one.txt'));
-      });
+      }, /EINVAL/);
     });
 
     it('fails for directories', function() {
       var binding = new Binding(system);
       assert.throws(function() {
         binding.readlink(path.join('mock-dir', 'empty'));
-      });
+      }, /EINVAL/);
     });
 
     it('fails for bogus paths', function() {
       var binding = new Binding(system);
       assert.throws(function() {
         binding.readlink(path.join('mock-dir', 'bogus'));
-      });
+      }, /ENOENT/);
     });
   });
 
