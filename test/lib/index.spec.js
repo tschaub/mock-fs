@@ -545,7 +545,10 @@ describe('Mocking the file system', function() {
           'path/to/000': mock.file({
             mode: parseInt('0000', 8),
             content: 'no permissions'
-          })
+          }),
+          'broken-link': mock.symlink({path: './path/to/nothing'}),
+          'circular-link': mock.symlink({path: './loop-link'}),
+          'loop-link': mock.symlink({path: './circular-link'})
         });
       });
       afterEach(mock.restore);
@@ -560,6 +563,18 @@ describe('Mocking the file system', function() {
         fs.accessSync('path/to/777', fs.X_OK | fs.R_OK);
         fs.accessSync('path/to/777', fs.W_OK | fs.R_OK);
         fs.accessSync('path/to/777', fs.X_OK | fs.W_OK | fs.R_OK);
+      });
+
+      it('throws EACCESS for broken link', function() {
+        assert.throws(function() {
+          fs.accessSync('broken-link');
+        });
+      });
+
+      it('throws ELOOP for circular link', function() {
+        assert.throws(function() {
+          fs.accessSync('circular-link');
+        });
       });
 
       it('throws EACCESS for all but F_OK for 000', function() {

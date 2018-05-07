@@ -205,6 +205,6 @@ Mock `fs.Stats` objects have the following properties: `dev`, `ino`, `nlink`, `m
 
 Mock file access is controlled based on file mode where `process.getuid()` and `process.getgid()` are available (POSIX systems).  On other systems (e.g. Windows) the file mode has no effect.
 
-Tested on Linux, OSX, and Windows using Node 0.10 through 8.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
+Tested on Linux, OSX, and Windows using Node 0.10 through 10.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)

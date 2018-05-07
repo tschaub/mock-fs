@@ -1544,6 +1544,14 @@ describe('Binding', function() {
       binding.access(pathname);
     });
 
+    it('throws for dead link', function() {
+      var binding = new Binding(system);
+      var pathname = path.join('mock-dir', 'dead-link.txt');
+      assert.throws(function() {
+        binding.access(pathname);
+      }, /ENOENT/);
+    });
+
     if (process.getuid && process.getgid) {
       it('fails in case of insufficient user permissions', function() {
         var binding = new Binding(system);
