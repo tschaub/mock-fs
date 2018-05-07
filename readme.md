@@ -14,7 +14,7 @@ mock({
     'some-file.txt': 'file content here',
     'empty-dir': {/** empty directory */}
   },
-  'path/to/some.png': new Buffer([8, 6, 7, 5, 3, 0, 9]),
+  'path/to/some.png': Buffer.from([8, 6, 7, 5, 3, 0, 9]),
   'some/other/path': {/** another empty directory */}
 });
 ```
@@ -106,7 +106,7 @@ mock({
     to: {
       dir: {
         file1: 'text content',
-        file2: new Buffer([1, 2, 3, 4])
+        file2: Buffer.from([1, 2, 3, 4])
       }
     }
   }
@@ -135,7 +135,7 @@ mock({
     mode: 0755,
     items: {
       file1: 'file one content',
-      file2: new Buffer([8, 6, 7, 5, 3, 0, 9])
+      file2: Buffer.from([8, 6, 7, 5, 3, 0, 9])
     }
   })
 });

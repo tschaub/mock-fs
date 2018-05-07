@@ -3,6 +3,7 @@
 var Item = require('../../lib/item');
 var File = require('../../lib/file');
 var assert = require('../helper').assert;
+var bufferFrom = require('../../lib/buffer').from;
 
 describe('File', function() {
   describe('constructor', function() {
@@ -16,7 +17,7 @@ describe('File', function() {
   describe('#getContent()', function() {
     it('gets the file content', function() {
       var file = new File();
-      var content = new Buffer('bar');
+      var content = bufferFrom('bar');
       file.setContent(content);
       assert.equal(file.getContent(), content);
     });
@@ -47,7 +48,7 @@ describe('File', function() {
 
     it('accepts a buffer', function() {
       var file = new File();
-      file.setContent(new Buffer('baz'));
+      file.setContent(bufferFrom('baz'));
       var content = file.getContent();
       assert.isTrue(Buffer.isBuffer(content));
       assert.equal(String(content), 'baz');
