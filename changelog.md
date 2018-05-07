@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.5.0
+
+ * Updates for Node 10 compatibility ([#237][#237])
+ * Throw ENOENT in readlink when item is missing (thanks @deployable, see [#232][#232])
+ * Add path to errors when it exists (thanks @deployable, see [#230][#230])
+
 ## 4.4.2
 
  * Throw if item content is invalid in config (thanks @mutantcornholio, see [#221][#221])
@@ -206,3 +212,6 @@ Detailed changes:
 [#210]: https://github.com/tschaub/mock-fs/pull/210
 [#221]: https://github.com/tschaub/mock-fs/pull/221
 [#222]: https://github.com/tschaub/mock-fs/pull/222
+[#230]: https://github.com/tschaub/mock-fs/pull/230
+[#232]: https://github.com/tschaub/mock-fs/pull/232
+[#237]: https://github.com/tschaub/mock-fs/pull/237
