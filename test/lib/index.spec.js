@@ -6,6 +6,8 @@ var fs = require('fs');
 var mock = require('../../lib/index');
 var os = require('os');
 var path = require('path');
+var bufferFrom = require('../../lib/buffer').from;
+var bufferAlloc = require('../../lib/buffer').alloc;
 
 var assert = helper.assert;
 var inVersion = helper.inVersion;
@@ -543,7 +545,10 @@ describe('Mocking the file system', function() {
           'path/to/000': mock.file({
             mode: parseInt('0000', 8),
             content: 'no permissions'
-          })
+          }),
+          'broken-link': mock.symlink({path: './path/to/nothing'}),
+          'circular-link': mock.symlink({path: './loop-link'}),
+          'loop-link': mock.symlink({path: './circular-link'})
         });
       });
       afterEach(mock.restore);
@@ -558,6 +563,18 @@ describe('Mocking the file system', function() {
         fs.accessSync('path/to/777', fs.X_OK | fs.R_OK);
         fs.accessSync('path/to/777', fs.W_OK | fs.R_OK);
         fs.accessSync('path/to/777', fs.X_OK | fs.W_OK | fs.R_OK);
+      });
+
+      it('throws EACCESS for broken link', function() {
+        assert.throws(function() {
+          fs.accessSync('broken-link');
+        });
+      });
+
+      it('throws ELOOP for circular link', function() {
+        assert.throws(function() {
+          fs.accessSync('circular-link');
+        });
       });
 
       it('throws EACCESS for all but F_OK for 000', function() {
@@ -590,7 +607,7 @@ describe('Mocking the file system', function() {
   describe('fs.rename(oldPath, newPath, callback)', function() {
     beforeEach(function() {
       mock({
-        'path/to/a.bin': new Buffer([1, 2, 3]),
+        'path/to/a.bin': bufferFrom([1, 2, 3]),
         empty: {},
         nested: {
           dir: mock.directory({
@@ -660,7 +677,7 @@ describe('Mocking the file system', function() {
   describe('fs.renameSync(oldPath, newPath)', function() {
     beforeEach(function() {
       mock({
-        'path/to/a.bin': new Buffer([1, 2, 3]),
+        'path/to/a.bin': bufferFrom([1, 2, 3]),
         empty: {},
         nested: {
           dir: {
@@ -895,7 +912,7 @@ describe('Mocking the file system', function() {
   describe('fs.exists(path, callback)', function() {
     beforeEach(function() {
       mock({
-        'path/to/a.bin': new Buffer([1, 2, 3]),
+        'path/to/a.bin': bufferFrom([1, 2, 3]),
         empty: {},
         nested: {
           dir: {
@@ -966,7 +983,7 @@ describe('Mocking the file system', function() {
   describe('fs.existsSync(path)', function() {
     beforeEach(function() {
       mock({
-        'path/to/a.bin': new Buffer([1, 2, 3]),
+        'path/to/a.bin': bufferFrom([1, 2, 3]),
         empty: {},
         nested: {
           dir: {
@@ -1298,7 +1315,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(12);
+        var buffer = bufferAlloc(12);
         fs.read(fd, buffer, 0, 12, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1316,8 +1333,8 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(12);
-        fs.read(fd, buffer, 5, 12, 0, function(err2, bytesRead, buf) {
+        var buffer = bufferAlloc(12);
+        fs.read(fd, buffer, 5, 7, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
           }
@@ -1334,7 +1351,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(12);
+        var buffer = bufferAlloc(12);
         fs.read(fd, buffer, 0, 4, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1352,7 +1369,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(12);
+        var buffer = bufferAlloc(12);
         fs.read(fd, buffer, 2, 4, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1370,7 +1387,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(7);
+        var buffer = bufferAlloc(7);
         fs.read(fd, buffer, 0, 7, 5, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1388,7 +1405,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(12);
+        var buffer = bufferAlloc(12);
         fs.read(fd, buffer, 2, 7, 5, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1404,7 +1421,7 @@ describe('Mocking the file system', function() {
     it('fails for closed file descriptor', function(done) {
       var fd = fs.openSync('path/to/file.txt', 'r');
       fs.closeSync(fd);
-      fs.read(fd, new Buffer(12), 0, 12, 0, function(err, bytesRead, buf) {
+      fs.read(fd, bufferAlloc(12), 0, 12, 0, function(err, bytesRead, buf) {
         assert.instanceOf(err, Error);
         assert.equal(0, bytesRead);
         done();
@@ -1413,7 +1430,7 @@ describe('Mocking the file system', function() {
 
     it('fails if not open for reading', function(done) {
       var fd = fs.openSync('path/to/file.txt', 'w');
-      fs.read(fd, new Buffer(12), 0, 12, 0, function(err, bytesRead, buf) {
+      fs.read(fd, bufferAlloc(12), 0, 12, 0, function(err, bytesRead, buf) {
         assert.instanceOf(err, Error);
         assert.equal(0, bytesRead);
         done();
@@ -1431,7 +1448,7 @@ describe('Mocking the file system', function() {
 
     it('allows a file to be read synchronously', function() {
       var fd = fs.openSync('path/to/file.txt', 'r');
-      var buffer = new Buffer(12);
+      var buffer = bufferAlloc(12);
       var read = fs.readSync(fd, buffer, 0, 12, 0);
       assert.equal(read, 12);
       assert.equal(String(buffer), 'file content');
@@ -1439,25 +1456,25 @@ describe('Mocking the file system', function() {
 
     it('allows a file to be read in two parts', function() {
       var fd = fs.openSync('path/to/file.txt', 'r');
-      var first = new Buffer(4);
+      var first = bufferAlloc(4);
       fs.readSync(fd, first, 0, 4, 0);
       assert.equal(String(first), 'file');
 
-      var second = new Buffer(7);
+      var second = bufferAlloc(7);
       fs.readSync(fd, second, 0, 7, 5);
       assert.equal(String(second), 'content');
     });
 
     it('treats null position as current position', function() {
       var fd = fs.openSync('path/to/file.txt', 'r');
-      var first = new Buffer(4);
+      var first = bufferAlloc(4);
       fs.readSync(fd, first, 0, 4, null);
       assert.equal(String(first), 'file');
 
       // consume the space
-      assert.equal(fs.readSync(fd, new Buffer(1), 0, 1, null), 1);
+      assert.equal(fs.readSync(fd, bufferAlloc(1), 0, 1, null), 1);
 
-      var second = new Buffer(7);
+      var second = bufferAlloc(7);
       fs.readSync(fd, second, 0, 7, null);
       assert.equal(String(second), 'content');
     });
@@ -1540,7 +1557,7 @@ describe('Mocking the file system', function() {
 
     it('writes a buffer to a file', function(done) {
       var fd = fs.openSync('path/new-file.txt', 'w');
-      var buffer = new Buffer('new file');
+      var buffer = bufferFrom('new file');
       fs.write(fd, buffer, 0, buffer.length, null, function(err, written, buf) {
         if (err) {
           return done(err);
@@ -1557,7 +1574,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer('new file');
+        var buffer = bufferFrom('new file');
         fs.write(fd, buffer, 1, 5, null, function(err2, written, buf) {
           if (err2) {
             return done(err2);
@@ -1575,7 +1592,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = new Buffer(' more');
+        var buffer = bufferFrom(' more');
         fs.write(fd, buffer, 0, 5, null, function(err2, written, buf) {
           if (err2) {
             return done(err2);
@@ -1596,7 +1613,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        fs.write(fd, new Buffer('oops'), 0, 4, null, function(err2) {
+        fs.write(fd, bufferFrom('oops'), 0, 4, null, function(err2) {
           assert.instanceOf(err2, Error);
           done();
         });
@@ -1613,7 +1630,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('writes a buffer to a file', function() {
-      var buffer = new Buffer('new file');
+      var buffer = bufferFrom('new file');
       var fd = fs.openSync('path/new-file.txt', 'w');
       var written = fs.writeSync(fd, buffer, 0, buffer.length);
       assert.equal(written, 8);
@@ -1621,7 +1638,7 @@ describe('Mocking the file system', function() {
     });
 
     it('can write a portion of a buffer to a file', function() {
-      var buffer = new Buffer('new file');
+      var buffer = bufferFrom('new file');
       var fd = fs.openSync('path/new-file.txt', 'w');
       var written = fs.writeSync(fd, buffer, 1, 5);
       assert.equal(written, 5);
@@ -1629,7 +1646,7 @@ describe('Mocking the file system', function() {
     });
 
     it('can append to a file', function() {
-      var buffer = new Buffer(' more');
+      var buffer = bufferFrom(' more');
       var fd = fs.openSync('path/to/file.txt', 'a');
       var written = fs.writeSync(fd, buffer, 0, 5);
       assert.equal(written, 5);
@@ -1642,7 +1659,7 @@ describe('Mocking the file system', function() {
     it('fails if file not open for writing', function() {
       var fd = fs.openSync('path/to/file.txt', 'r');
       assert.throws(function() {
-        fs.writeSync(fd, new Buffer('oops'), 0, 4);
+        fs.writeSync(fd, bufferFrom('oops'), 0, 4);
       });
     });
   });
@@ -1772,7 +1789,7 @@ describe('Mocking the file system', function() {
     });
 
     it('writes a buffer to a file', function(done) {
-      fs.writeFile('dir/foo', new Buffer('bar'), function(err) {
+      fs.writeFile('dir/foo', bufferFrom('bar'), function(err) {
         if (err) {
           return done(err);
         }
@@ -1803,7 +1820,7 @@ describe('Mocking the file system', function() {
     });
 
     it('writes a buffer to a file', function() {
-      fs.writeFileSync('foo', new Buffer('bar'));
+      fs.writeFileSync('foo', bufferFrom('bar'));
       assert.equal(String(fs.readFileSync('foo')), 'bar');
     });
 
@@ -1847,7 +1864,7 @@ describe('Mocking the file system', function() {
     });
 
     it('appends a buffer to a file', function(done) {
-      fs.appendFile('dir/file.txt', new Buffer(' bar'), function(err) {
+      fs.appendFile('dir/file.txt', bufferFrom(' bar'), function(err) {
         if (err) {
           return done(err);
         }
@@ -2536,7 +2553,7 @@ describe('Mocking the file system', function() {
         }
         assert.isFalse(fs.existsSync('file.txt'));
         // but we can still use fd to read
-        var buffer = new Buffer(7);
+        var buffer = bufferAlloc(7);
         var read = fs.readSync(fd, buffer, 0, 7);
         assert.equal(read, 7);
         assert.equal(String(buffer), 'content');
@@ -2563,7 +2580,7 @@ describe('Mocking the file system', function() {
       fs.unlinkSync('file.txt');
       assert.isFalse(fs.existsSync('file.txt'));
       // but we can still use fd to read
-      var buffer = new Buffer(7);
+      var buffer = bufferAlloc(7);
       var read = fs.readSync(fd, buffer, 0, 7);
       assert.equal(read, 7);
       assert.equal(String(buffer), 'content');
@@ -3046,10 +3063,10 @@ describe('Mocking the file system', function() {
       });
       output.on('error', done);
 
-      output.write(new Buffer('lots '));
-      output.write(new Buffer('of '));
-      output.write(new Buffer('source '));
-      output.end(new Buffer('content'));
+      output.write(bufferFrom('lots '));
+      output.write(bufferFrom('of '));
+      output.write(bufferFrom('source '));
+      output.end(bufferFrom('content'));
     });
 
     if (Writable && Writable.prototype.cork) {
@@ -3067,10 +3084,10 @@ describe('Mocking the file system', function() {
         output.on('error', done);
 
         output.cork();
-        output.write(new Buffer('lots '));
-        output.write(new Buffer('of '));
-        output.write(new Buffer('source '));
-        output.end(new Buffer('content'));
+        output.write(bufferFrom('lots '));
+        output.write(bufferFrom('of '));
+        output.write(bufferFrom('source '));
+        output.end(bufferFrom('content'));
         output.uncork();
       });
     }

@@ -14,7 +14,7 @@ mock({
     'some-file.txt': 'file content here',
     'empty-dir': {/** empty directory */}
   },
-  'path/to/some.png': new Buffer([8, 6, 7, 5, 3, 0, 9]),
+  'path/to/some.png': Buffer.from([8, 6, 7, 5, 3, 0, 9]),
   'some/other/path': {/** another empty directory */}
 });
 ```
@@ -106,7 +106,7 @@ mock({
     to: {
       dir: {
         file1: 'text content',
-        file2: new Buffer([1, 2, 3, 4])
+        file2: Buffer.from([1, 2, 3, 4])
       }
     }
   }
@@ -135,7 +135,7 @@ mock({
     mode: 0755,
     items: {
       file1: 'file one content',
-      file2: new Buffer([8, 6, 7, 5, 3, 0, 9])
+      file2: Buffer.from([8, 6, 7, 5, 3, 0, 9])
     }
   })
 });
@@ -205,6 +205,6 @@ Mock `fs.Stats` objects have the following properties: `dev`, `ino`, `nlink`, `m
 
 Mock file access is controlled based on file mode where `process.getuid()` and `process.getgid()` are available (POSIX systems).  On other systems (e.g. Windows) the file mode has no effect.
 
-Tested on Linux, OSX, and Windows using Node 0.10 through 8.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
+Tested on Linux, OSX, and Windows using Node 0.10 through 10.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
