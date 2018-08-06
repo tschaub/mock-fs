@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.6.0
+
+Note that the mocked fs.createReadStream and fs.createWriteStream are not working properly with Node 10.5+.
+
+ * Implement binding.copyFile ([#243][#243])
+ * Stat fixes for Node 10.5 (thanks @tomhughes, see [#241][#241])
+
 ## 4.5.0
 
  * Updates for Node 10 compatibility ([#237][#237])
@@ -215,3 +222,4 @@ Detailed changes:
 [#230]: https://github.com/tschaub/mock-fs/pull/230
 [#232]: https://github.com/tschaub/mock-fs/pull/232
 [#237]: https://github.com/tschaub/mock-fs/pull/237
+[#243]: https://github.com/tschaub/mock-fs/pull/243
