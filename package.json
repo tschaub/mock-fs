@@ -24,6 +24,9 @@
     "url": "https://github.com/tschaub/mock-fs/issues"
   },
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "lint": "eslint benchmarks lib test",
     "pretest": "npm run lint",
