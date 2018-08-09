@@ -695,6 +695,13 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
+    it('generates error if file is directory (w)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('mock-dir', flags('w'));
+      });
+    });
+
     it('generates error if file exists (wx)', function() {
       var binding = new Binding(system);
       assert.throws(function() {
@@ -762,6 +769,13 @@ describe('Binding', function() {
       var file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
       assert.equal(String(file.getContent()), 'one content');
+    });
+
+    it('generates error if file is directory (a)', function() {
+      var binding = new Binding(system);
+      assert.throws(function() {
+        binding.open('mock-dir', flags('a'));
+      });
     });
 
     it('opens a new file for appending (ax)', function() {
