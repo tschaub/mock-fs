@@ -853,6 +853,15 @@ describe('Binding', function() {
       assert.equal(String(buffer), 'two content');
     });
 
+    it('reads into a Uint8Array', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'three.bin'), flags('r'));
+      var buffer = new Uint8Array(3);
+      var read = binding.read(fd, buffer, 0, 3, 0);
+      assert.equal(read, 3);
+      assert.deepEqual(Array.from(buffer), [1, 2, 3]);
+    });
+
     it('interprets null position as current position', function() {
       var binding = new Binding(system);
       var fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
@@ -911,6 +920,19 @@ describe('Binding', function() {
       var content = file.getContent();
       assert.isTrue(Buffer.isBuffer(content));
       assert.equal(String(content), 'new content');
+    });
+
+    it('can take input from a Uint8Array', function() {
+      var binding = new Binding(system);
+      var fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
+      var buffer = Uint8Array.from([1, 2, 3, 4, 5]);
+      var written = binding.write(fd, buffer, 0, 5, 0);
+      assert.equal(written, 5);
+      var file = system.getItem(path.join('mock-dir', 'new.txt'));
+      assert.instanceOf(file, File);
+      var content = file.getContent();
+      assert.isTrue(Buffer.isBuffer(content));
+      assert.deepEqual(Array.from(content), [1, 2, 3, 4, 5]);
     });
 
     it('can overwrite a file', function() {
