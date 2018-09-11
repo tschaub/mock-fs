@@ -207,4 +207,21 @@ Mock file access is controlled based on file mode where `process.getuid()` and `
 
 Tested on Linux, OSX, and Windows using Node 0.10 through 10.x.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
+### Using with Jest Snapshot Testing
+
+`.toMatchSnapshot` in [Jest](https://jestjs.io/docs/en/snapshot-testing) uses `fs` to load existing snapshots.
+If `mockFs` is active, Jest isn't able to load existing snapshots. In such case it accepts all snapshots
+without diffing the old ones, which breaks the concept of snapshot testing.
+
+Calling `mock.restore()` in `afterEach` is too late and it's necessary to call it before snapshot matching:
+
+```js
+const actual = testedFunction()
+mock.restore()
+expect(actual).toMatchSnapshot()
+```
+
+Note: it's safe to call `mock.restore` multiple times, so it can still be called in `afterEach` and then manually
+in test cases which use snapshot testing.
+
 [![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
