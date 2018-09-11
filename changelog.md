@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.7.0
+
+ * Fix for readdir on Node 10.10 (thanks @maxwellgerber [#251][#251])
+ * Fix for reading and writing using Uint8Array (thanks @maxwellgerber [#249][#249])
+ * Document how to properly restore the fs with Jest snapshot testing (thanks @tricoder42 [#247][#247])
+ * More informative error when opening a directory (thanks @maxwellgerber [#242][#242])
+
 ## 4.6.0
 
 Note that the mocked fs.createReadStream and fs.createWriteStream are not working properly with Node 10.5+.
@@ -223,3 +230,7 @@ Detailed changes:
 [#232]: https://github.com/tschaub/mock-fs/pull/232
 [#237]: https://github.com/tschaub/mock-fs/pull/237
 [#243]: https://github.com/tschaub/mock-fs/pull/243
+[#242]: https://github.com/tschaub/mock-fs/pull/242
+[#247]: https://github.com/tschaub/mock-fs/pull/247
+[#249]: https://github.com/tschaub/mock-fs/pull/249
+[#251]: https://github.com/tschaub/mock-fs/pull/251
