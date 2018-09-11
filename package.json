@@ -30,11 +30,9 @@
   "scripts": {
     "lint": "eslint benchmarks lib test",
     "pretest": "npm run lint",
-    "test": "mocha --recursive test",
-    "bench": "bench benchmarks"
+    "test": "mocha --recursive test"
   },
   "devDependencies": {
-    "bench-it": "0.4.0",
     "chai": "^4.1.2",
     "eslint": "^4.8.0",
     "eslint-config-tschaub": "^8.0.0",
