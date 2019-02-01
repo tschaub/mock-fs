@@ -3123,6 +3123,27 @@ describe('Mocking the file system', function() {
     });
     afterEach(mock.restore);
 
+    it('provides a write stream for a file in buffered mode', function(done) {
+      var output = fs.createWriteStream('test.txt');
+      output.on('close', function() {
+        fs.readFile('test.txt', function(err, data) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(String(data), 'lots of source content');
+          done();
+        });
+      });
+      output.on('error', done);
+
+      // if output._writev is available, buffered multiple writes will hit _writev.
+      // otherwise, hit multiple _write.
+      output.write(bufferFrom('lots '));
+      output.write(bufferFrom('of '));
+      output.write(bufferFrom('source '));
+      output.end(bufferFrom('content'));
+    });
+
     it('provides a write stream for a file', function(done) {
       var output = fs.createWriteStream('test.txt');
       output.on('close', function() {
@@ -3137,9 +3158,15 @@ describe('Mocking the file system', function() {
       output.on('error', done);
 
       output.write(bufferFrom('lots '));
-      output.write(bufferFrom('of '));
-      output.write(bufferFrom('source '));
-      output.end(bufferFrom('content'));
+      setTimeout(function() {
+        output.write(bufferFrom('of '));
+        setTimeout(function() {
+          output.write(bufferFrom('source '));
+          setTimeout(function() {
+            output.end(bufferFrom('content'));
+          }, 50);
+        }, 50);
+      }, 50);
     });
 
     if (Writable && Writable.prototype.cork) {
