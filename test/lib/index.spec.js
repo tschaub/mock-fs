@@ -1575,6 +1575,21 @@ describe('Mocking the file system', function() {
       });
     });
 
+    if (fs.promises) {
+      it('allows a file to be read asynchronously in promise', function(done) {
+        fs.promises.readFile('path/to/file.txt').then(
+          function(data) {
+            assert.isTrue(Buffer.isBuffer(data));
+            assert.equal(String(data), 'file content');
+            done();
+          },
+          function(err) {
+            done(err);
+          }
+        );
+      });
+    }
+
     it('fails for directory', function(done) {
       fs.readFile('path/to', function(err, data) {
         assert.instanceOf(err, Error);
@@ -1848,6 +1863,20 @@ describe('Mocking the file system', function() {
         done();
       });
     });
+
+    if (fs.promises) {
+      it('writes a string to a file in promise', function(done) {
+        fs.promises.writeFile('dir/foo', 'bar').then(
+          function() {
+            assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
+            done();
+          },
+          function(err) {
+            done(err);
+          }
+        );
+      });
+    }
 
     it('updates mtime of parent directory', function(done) {
       var oldTime = fs.statSync('dir').mtime;
