@@ -1,5 +1,3 @@
-sudo: false
-
 os:
   - linux
   - windows
@@ -7,11 +5,7 @@ os:
 
 language: node_js
 node_js:
-  - "4"
   - "6"
   - "8"
   - "10"
   - "11"
-
-before_install:
-  - if [[ `npm -v` == 2.* ]]; then npm install --global npm@3; fi
