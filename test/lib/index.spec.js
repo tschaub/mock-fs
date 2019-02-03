@@ -1600,6 +1600,8 @@ describe('Mocking the file system', function() {
     it('fails for bad path', function(done) {
       fs.readFile('path/to/bogus', function(err, data) {
         assert.instanceOf(err, Error);
+        // windows has different errno for ENOENT
+        assert.equal(err.code, 'ENOENT');
         done();
       });
     });
