@@ -873,9 +873,20 @@ describe('Mocking the file system', function() {
         assert.equal(stats.uid, 42);
         assert.equal(stats.gid, 43);
         assert.equal(stats.nlink, 1);
+        assert.isNumber(stats.rdev);
+        done();
+      });
+    });
+
+    // TODO: unconditionally test this when this issue is addressed
+    // https://github.com/nodejs/node/issues/25913
+    inVersion('<10').it('includes blocks and blksize in stats', function(done) {
+      fs.stat('/path/to/file.txt', function(err, stats) {
+        if (err) {
+          return done(err);
+        }
         assert.isNumber(stats.blocks);
         assert.isNumber(stats.blksize);
-        assert.isNumber(stats.rdev);
         done();
       });
     });
@@ -899,9 +910,22 @@ describe('Mocking the file system', function() {
           assert.isNaN(stats.gid);
         }
         assert.equal(stats.nlink, 3);
+        assert.isNumber(stats.rdev);
+        done();
+      });
+    });
+
+    // TODO: unconditionally test this when this issue is addressed
+    // https://github.com/nodejs/node/issues/25913
+    inVersion(
+      '<10'
+    ).it('includes blocks and blksize in directory stats', function(done) {
+      fs.stat('/path', function(err, stats) {
+        if (err) {
+          return done(err);
+        }
         assert.isNumber(stats.blocks);
         assert.isNumber(stats.blksize);
-        assert.isNumber(stats.rdev);
         done();
       });
     });
