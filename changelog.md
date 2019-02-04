@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.8.0
+
+ * Fix compatibility issues with Node 10 and 11 (thanks @huochunpeng [#260][#260])
+ * Support experimental `fs.promises` (thanks @huochunpeng [#260][#260])
+
 ## 4.7.0
 
  * Fix for readdir on Node 10.10 (thanks @maxwellgerber [#251][#251])
@@ -234,3 +239,4 @@ Detailed changes:
 [#247]: https://github.com/tschaub/mock-fs/pull/247
 [#249]: https://github.com/tschaub/mock-fs/pull/249
 [#251]: https://github.com/tschaub/mock-fs/pull/251
+[#260]: https://github.com/tschaub/mock-fs/pull/260
