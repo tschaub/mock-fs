@@ -1575,6 +1575,21 @@ describe('Mocking the file system', function() {
       });
     });
 
+    if (fs.promises) {
+      it('allows a file to be read asynchronously in promise', function(done) {
+        fs.promises.readFile('path/to/file.txt').then(
+          function(data) {
+            assert.isTrue(Buffer.isBuffer(data));
+            assert.equal(String(data), 'file content');
+            done();
+          },
+          function(err) {
+            done(err);
+          }
+        );
+      });
+    }
+
     it('fails for directory', function(done) {
       fs.readFile('path/to', function(err, data) {
         assert.instanceOf(err, Error);
@@ -1585,6 +1600,8 @@ describe('Mocking the file system', function() {
     it('fails for bad path', function(done) {
       fs.readFile('path/to/bogus', function(err, data) {
         assert.instanceOf(err, Error);
+        // windows has different errno for ENOENT
+        assert.equal(err.code, 'ENOENT');
         done();
       });
     });
@@ -1848,6 +1865,20 @@ describe('Mocking the file system', function() {
         done();
       });
     });
+
+    if (fs.promises) {
+      it('writes a string to a file in promise', function(done) {
+        fs.promises.writeFile('dir/foo', 'bar').then(
+          function() {
+            assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
+            done();
+          },
+          function(err) {
+            done(err);
+          }
+        );
+      });
+    }
 
     it('updates mtime of parent directory', function(done) {
       var oldTime = fs.statSync('dir').mtime;
@@ -3123,6 +3154,27 @@ describe('Mocking the file system', function() {
     });
     afterEach(mock.restore);
 
+    it('provides a write stream for a file in buffered mode', function(done) {
+      var output = fs.createWriteStream('test.txt');
+      output.on('close', function() {
+        fs.readFile('test.txt', function(err, data) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(String(data), 'lots of source content');
+          done();
+        });
+      });
+      output.on('error', done);
+
+      // if output._writev is available, buffered multiple writes will hit _writev.
+      // otherwise, hit multiple _write.
+      output.write(bufferFrom('lots '));
+      output.write(bufferFrom('of '));
+      output.write(bufferFrom('source '));
+      output.end(bufferFrom('content'));
+    });
+
     it('provides a write stream for a file', function(done) {
       var output = fs.createWriteStream('test.txt');
       output.on('close', function() {
@@ -3137,9 +3189,15 @@ describe('Mocking the file system', function() {
       output.on('error', done);
 
       output.write(bufferFrom('lots '));
-      output.write(bufferFrom('of '));
-      output.write(bufferFrom('source '));
-      output.end(bufferFrom('content'));
+      setTimeout(function() {
+        output.write(bufferFrom('of '));
+        setTimeout(function() {
+          output.write(bufferFrom('source '));
+          setTimeout(function() {
+            output.end(bufferFrom('content'));
+          }, 50);
+        }, 50);
+      }, 50);
     });
 
     if (Writable && Writable.prototype.cork) {
