@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.9.0
+
+ * Improve `readFile` support for Node 10+ (thanks @huochunpeng, see [#265][#265])
+ * Updated dev dependencies (see [#267][#267])
+
 ## 4.8.0
 
  * Fix compatibility issues with Node 10 and 11 (thanks @huochunpeng [#260][#260])
@@ -240,3 +245,5 @@ Detailed changes:
 [#249]: https://github.com/tschaub/mock-fs/pull/249
 [#251]: https://github.com/tschaub/mock-fs/pull/251
 [#260]: https://github.com/tschaub/mock-fs/pull/260
+[#265]: https://github.com/tschaub/mock-fs/pull/265
+[#267]: https://github.com/tschaub/mock-fs/pull/267
