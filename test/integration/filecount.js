@@ -1,12 +1,12 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 function numFiles(dir, items, callback) {
-  var total = items.length;
-  var files = 0;
-  var completed = 0;
+  const total = items.length;
+  let files = 0;
+  let completed = 0;
 
   if (total === 0) {
     callback(null, 0);

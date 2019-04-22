@@ -1,9 +1,9 @@
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-var rimraf = require('rimraf');
+const rimraf = require('rimraf');
 
-var tmpPath = '.tmp';
+const tmpPath = '.tmp';
 
 /**
  * Test setup.  Not timed.

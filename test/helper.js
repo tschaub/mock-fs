@@ -1,8 +1,8 @@
 'use strict';
 
-var chai = require('chai');
-var constants = require('constants');
-var semver = require('semver');
+const chai = require('chai');
+const constants = require('constants');
+const semver = require('semver');
 
 /** @type {boolean} */
 chai.config.includeStack = true;

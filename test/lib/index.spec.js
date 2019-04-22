@@ -1,18 +1,18 @@
 'use strict';
 
-var Writable = require('stream').Writable;
-var helper = require('../helper');
-var fs = require('fs');
-var mock = require('../../lib/index');
-var os = require('os');
-var path = require('path');
-var bufferFrom = require('../../lib/buffer').from;
-var bufferAlloc = require('../../lib/buffer').alloc;
+const Writable = require('stream').Writable;
+const helper = require('../helper');
+const fs = require('fs');
+const mock = require('../../lib/index');
+const os = require('os');
+const path = require('path');
+const bufferFrom = require('../../lib/buffer').from;
+const bufferAlloc = require('../../lib/buffer').alloc;
 
-var assert = helper.assert;
-var inVersion = helper.inVersion;
+const assert = helper.assert;
+const inVersion = helper.inVersion;
 
-var testParentPerms =
+const testParentPerms =
   fs.access && fs.accessSync && process.getuid && process.getgid;
 
 describe('The API', function() {
@@ -29,7 +29,7 @@ describe('The API', function() {
 
     it('provides direct access to the internal filesystem object', function() {
       mock();
-      var root = mock.getMockRoot();
+      const root = mock.getMockRoot();
       assert.notDeepEqual(root, {});
       mock.restore();
       assert.deepEqual(mock.getMockRoot(), {});
@@ -39,7 +39,7 @@ describe('The API', function() {
       mock();
 
       assert.isTrue(fs.statSync(process.cwd()).isDirectory());
-      var tmp;
+      let tmp;
       if (os.tmpdir) {
         tmp = os.tmpdir();
       } else if (os.tmpDir) {
@@ -63,7 +63,7 @@ describe('The API', function() {
     it('passes the createTmp option to the FileSystem constructor', function() {
       mock({}, {createTmp: false});
 
-      var tmp;
+      let tmp;
       if (os.tmpdir) {
         tmp = os.tmpdir();
       } else if (os.tmpDir) {
@@ -79,7 +79,7 @@ describe('The API', function() {
     xit('uses the real fs module in require() calls', function() {
       mock({foo: 'bar'});
 
-      var pkg = require('../../package.json');
+      const pkg = require('../../package.json');
       assert.equal(pkg.name, 'mock-fs');
 
       mock.restore();
@@ -181,7 +181,7 @@ describe('The API', function() {
         'path/to/link': mock.symlink({path: './file'})
       });
 
-      var stats = fs.statSync('path/to/link');
+      const stats = fs.statSync('path/to/link');
       assert.isTrue(stats.isFile());
       assert.equal(String(fs.readFileSync('path/to/link')), 'content');
     });
@@ -189,7 +189,7 @@ describe('The API', function() {
 
   xdescribe('mock.fs()', function() {
     it('generates a mock fs module with a mock file system', function(done) {
-      var mockFs = mock.fs({
+      const mockFs = mock.fs({
         'path/to/file.txt': 'file content'
       });
 
@@ -200,7 +200,7 @@ describe('The API', function() {
     });
 
     it('passes options to the FileSystem constructor', function() {
-      var mockFs = mock.fs(
+      const mockFs = mock.fs(
         {
           '/path/to/file.txt': 'file content'
         },
@@ -215,7 +215,7 @@ describe('The API', function() {
     });
 
     it('accepts an arbitrary nesting of files and directories', function() {
-      var mockFs = mock.fs({
+      const mockFs = mock.fs({
         'dir-one': {
           'dir-two': {
             'some-file.txt': 'file content here'
@@ -702,12 +702,12 @@ describe('Mocking the file system', function() {
     });
 
     it('updates mtime of parent directory', function(done) {
-      var oldTime = fs.statSync('nested/dir').mtime;
+      const oldTime = fs.statSync('nested/dir').mtime;
       fs.rename('nested/dir/file.txt', 'nested/dir/renamed.txt', function(err) {
         assert.isTrue(!err);
         assert.isFalse(fs.existsSync('nested/dir/file.txt'));
         assert.isTrue(fs.existsSync('nested/dir/renamed.txt'));
-        var newTime = fs.statSync('nested/dir').mtime;
+        const newTime = fs.statSync('nested/dir').mtime;
         assert.isTrue(newTime > oldTime);
         done();
       });
@@ -917,18 +917,19 @@ describe('Mocking the file system', function() {
 
     // TODO: unconditionally test this when this issue is addressed
     // https://github.com/nodejs/node/issues/25913
-    inVersion(
-      '<10'
-    ).it('includes blocks and blksize in directory stats', function(done) {
-      fs.stat('/path', function(err, stats) {
-        if (err) {
-          return done(err);
-        }
-        assert.isNumber(stats.blocks);
-        assert.isNumber(stats.blksize);
-        done();
-      });
-    });
+    inVersion('<10').it(
+      'includes blocks and blksize in directory stats',
+      function(done) {
+        fs.stat('/path', function(err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.isNumber(stats.blocks);
+          assert.isNumber(stats.blksize);
+          done();
+        });
+      }
+    );
   });
 
   describe('fs.fstat(fd, callback)', function() {
@@ -941,7 +942,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('accepts a file descriptor for a file (r)', function(done) {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       fs.fstat(fd, function(err, stats) {
         if (err) {
           return done(err);
@@ -953,7 +954,7 @@ describe('Mocking the file system', function() {
     });
 
     it('accepts a file descriptor for a directory (r)', function(done) {
-      var fd = fs.openSync('path/to', 'r');
+      const fd = fs.openSync('path/to', 'r');
       fs.fstat(fd, function(err, stats) {
         if (err) {
           return done(err);
@@ -965,7 +966,7 @@ describe('Mocking the file system', function() {
     });
 
     it('fails for bad file descriptor', function(done) {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       fs.closeSync(fd);
       fs.fstat(fd, function(err, stats) {
         assert.instanceOf(err, Error);
@@ -984,21 +985,21 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('accepts a file descriptor for a file (r)', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
-      var stats = fs.fstatSync(fd);
+      const fd = fs.openSync('path/to/file.txt', 'r');
+      const stats = fs.fstatSync(fd);
       assert.isTrue(stats.isFile());
       assert.equal(stats.size, 12);
     });
 
     it('accepts a file descriptor for a directory (r)', function() {
-      var fd = fs.openSync('path/to', 'r');
-      var stats = fs.fstatSync(fd);
+      const fd = fs.openSync('path/to', 'r');
+      const stats = fs.fstatSync(fd);
       assert.isTrue(stats.isDirectory());
       assert.isTrue(stats.size > 0);
     });
 
     it('fails for bad file descriptor', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       fs.closeSync(fd);
       assert.throws(function() {
         fs.fstatSync(fd);
@@ -1142,13 +1143,13 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('lists directory contents', function() {
-      var items = fs.readdirSync(path.join('path', 'to'));
+      const items = fs.readdirSync(path.join('path', 'to'));
       assert.isArray(items);
       assert.deepEqual(items, ['file.txt']);
     });
 
     it('lists nested directory contents', function() {
-      var items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
+      const items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
       assert.isArray(items);
       assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
     });
@@ -1222,13 +1223,13 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('lists directory contents', function() {
-      var items = fs.readdirSync(path.join('path', 'to'));
+      const items = fs.readdirSync(path.join('path', 'to'));
       assert.isArray(items);
       assert.deepEqual(items, ['file.txt']);
     });
 
     it('lists nested directory contents', function() {
-      var items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
+      const items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
       assert.isArray(items);
       assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
     });
@@ -1324,7 +1325,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('opens an existing file for reading (r)', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       assert.isNumber(fd);
     });
 
@@ -1335,13 +1336,13 @@ describe('Mocking the file system', function() {
     });
 
     it('creates a new file for writing (w)', function() {
-      var fd = fs.openSync('nested/sub/new.txt', 'w', parseInt('0666', 8));
+      const fd = fs.openSync('nested/sub/new.txt', 'w', parseInt('0666', 8));
       assert.isNumber(fd);
       assert.isTrue(fs.existsSync('nested/sub/new.txt'));
     });
 
     it('opens an existing file for writing (w)', function() {
-      var fd = fs.openSync('path/to/one.txt', 'w', parseInt('0666', 8));
+      const fd = fs.openSync('path/to/one.txt', 'w', parseInt('0666', 8));
       assert.isNumber(fd);
     });
 
@@ -1359,14 +1360,14 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('closes a file descriptor', function(done) {
-      var fd = fs.openSync('dir/file.txt', 'w');
+      const fd = fs.openSync('dir/file.txt', 'w');
       fs.close(fd, function(err) {
         done(err);
       });
     });
 
     it('fails for closed file descriptors', function(done) {
-      var fd = fs.openSync('dir/file.txt', 'w');
+      const fd = fs.openSync('dir/file.txt', 'w');
       fs.close(fd, function(err) {
         if (err) {
           return done(err);
@@ -1386,12 +1387,12 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('closes a file descriptor', function() {
-      var fd = fs.openSync('dir/file.txt', 'w');
+      const fd = fs.openSync('dir/file.txt', 'w');
       fs.closeSync(fd);
     });
 
     it('fails for closed file descriptors', function() {
-      var fd = fs.openSync('dir/file.txt', 'w');
+      const fd = fs.openSync('dir/file.txt', 'w');
       fs.closeSync(fd);
       assert.throws(function() {
         fs.closeSync(fd);
@@ -1412,7 +1413,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(12);
+        const buffer = bufferAlloc(12);
         fs.read(fd, buffer, 0, 12, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1430,7 +1431,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(12);
+        const buffer = bufferAlloc(12);
         fs.read(fd, buffer, 5, 7, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1448,7 +1449,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(12);
+        const buffer = bufferAlloc(12);
         fs.read(fd, buffer, 0, 4, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1466,7 +1467,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(12);
+        const buffer = bufferAlloc(12);
         fs.read(fd, buffer, 2, 4, 0, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1484,7 +1485,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(7);
+        const buffer = bufferAlloc(7);
         fs.read(fd, buffer, 0, 7, 5, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1502,7 +1503,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferAlloc(12);
+        const buffer = bufferAlloc(12);
         fs.read(fd, buffer, 2, 7, 5, function(err2, bytesRead, buf) {
           if (err2) {
             return done(err2);
@@ -1516,7 +1517,7 @@ describe('Mocking the file system', function() {
     });
 
     it('fails for closed file descriptor', function(done) {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       fs.closeSync(fd);
       fs.read(fd, bufferAlloc(12), 0, 12, 0, function(err, bytesRead, buf) {
         assert.instanceOf(err, Error);
@@ -1526,7 +1527,7 @@ describe('Mocking the file system', function() {
     });
 
     it('fails if not open for reading', function(done) {
-      var fd = fs.openSync('path/to/file.txt', 'w');
+      const fd = fs.openSync('path/to/file.txt', 'w');
       fs.read(fd, bufferAlloc(12), 0, 12, 0, function(err, bytesRead, buf) {
         assert.instanceOf(err, Error);
         assert.equal(0, bytesRead);
@@ -1544,34 +1545,34 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('allows a file to be read synchronously', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
-      var buffer = bufferAlloc(12);
-      var read = fs.readSync(fd, buffer, 0, 12, 0);
+      const fd = fs.openSync('path/to/file.txt', 'r');
+      const buffer = bufferAlloc(12);
+      const read = fs.readSync(fd, buffer, 0, 12, 0);
       assert.equal(read, 12);
       assert.equal(String(buffer), 'file content');
     });
 
     it('allows a file to be read in two parts', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
-      var first = bufferAlloc(4);
+      const fd = fs.openSync('path/to/file.txt', 'r');
+      const first = bufferAlloc(4);
       fs.readSync(fd, first, 0, 4, 0);
       assert.equal(String(first), 'file');
 
-      var second = bufferAlloc(7);
+      const second = bufferAlloc(7);
       fs.readSync(fd, second, 0, 7, 5);
       assert.equal(String(second), 'content');
     });
 
     it('treats null position as current position', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
-      var first = bufferAlloc(4);
+      const fd = fs.openSync('path/to/file.txt', 'r');
+      const first = bufferAlloc(4);
       fs.readSync(fd, first, 0, 4, null);
       assert.equal(String(first), 'file');
 
       // consume the space
       assert.equal(fs.readSync(fd, bufferAlloc(1), 0, 1, null), 1);
 
-      var second = bufferAlloc(7);
+      const second = bufferAlloc(7);
       fs.readSync(fd, second, 0, 7, null);
       assert.equal(String(second), 'content');
     });
@@ -1643,7 +1644,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('allows a file to be read synchronously', function() {
-      var data = fs.readFileSync('path/to/file.txt');
+      const data = fs.readFileSync('path/to/file.txt');
       assert.isTrue(Buffer.isBuffer(data));
       assert.equal(String(data), 'file content');
     });
@@ -1670,8 +1671,8 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('writes a buffer to a file', function(done) {
-      var fd = fs.openSync('path/new-file.txt', 'w');
-      var buffer = bufferFrom('new file');
+      const fd = fs.openSync('path/new-file.txt', 'w');
+      const buffer = bufferFrom('new file');
       fs.write(fd, buffer, 0, buffer.length, null, function(err, written, buf) {
         if (err) {
           return done(err);
@@ -1688,7 +1689,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferFrom('new file');
+        const buffer = bufferFrom('new file');
         fs.write(fd, buffer, 1, 5, null, function(err2, written, buf) {
           if (err2) {
             return done(err2);
@@ -1706,7 +1707,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var buffer = bufferFrom(' more');
+        const buffer = bufferFrom(' more');
         fs.write(fd, buffer, 0, 5, null, function(err2, written, buf) {
           if (err2) {
             return done(err2);
@@ -1744,25 +1745,25 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('writes a buffer to a file', function() {
-      var buffer = bufferFrom('new file');
-      var fd = fs.openSync('path/new-file.txt', 'w');
-      var written = fs.writeSync(fd, buffer, 0, buffer.length);
+      const buffer = bufferFrom('new file');
+      const fd = fs.openSync('path/new-file.txt', 'w');
+      const written = fs.writeSync(fd, buffer, 0, buffer.length);
       assert.equal(written, 8);
       assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
     });
 
     it('can write a portion of a buffer to a file', function() {
-      var buffer = bufferFrom('new file');
-      var fd = fs.openSync('path/new-file.txt', 'w');
-      var written = fs.writeSync(fd, buffer, 1, 5);
+      const buffer = bufferFrom('new file');
+      const fd = fs.openSync('path/new-file.txt', 'w');
+      const written = fs.writeSync(fd, buffer, 1, 5);
       assert.equal(written, 5);
       assert.equal(String(fs.readFileSync('path/new-file.txt')), 'ew fi');
     });
 
     it('can append to a file', function() {
-      var buffer = bufferFrom(' more');
-      var fd = fs.openSync('path/to/file.txt', 'a');
-      var written = fs.writeSync(fd, buffer, 0, 5);
+      const buffer = bufferFrom(' more');
+      const fd = fs.openSync('path/to/file.txt', 'a');
+      const written = fs.writeSync(fd, buffer, 0, 5);
       assert.equal(written, 5);
       assert.equal(
         String(fs.readFileSync('path/to/file.txt')),
@@ -1771,7 +1772,7 @@ describe('Mocking the file system', function() {
     });
 
     it('fails if file not open for writing', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       assert.throws(function() {
         fs.writeSync(fd, bufferFrom('oops'), 0, 4);
       });
@@ -1791,7 +1792,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var string = 'new file';
+        const string = 'new file';
         fs.write(fd, string, null, 'utf-8', function(err2, written, str) {
           if (err2) {
             return done(err2);
@@ -1809,7 +1810,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var string = ' more';
+        const string = ' more';
         fs.write(fd, string, null, 'utf-8', function(err2, written, str) {
           if (err2) {
             return done(err2);
@@ -1847,23 +1848,23 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('writes a string to a file', function() {
-      var fd = fs.openSync('path/new-file.txt', 'w');
-      var string = 'new file';
-      var written = fs.writeSync(fd, string, null, 'utf-8');
+      const fd = fs.openSync('path/new-file.txt', 'w');
+      const string = 'new file';
+      const written = fs.writeSync(fd, string, null, 'utf-8');
       assert.equal(written, 8);
       assert.equal(fs.readFileSync('path/new-file.txt'), 'new file');
     });
 
     it('can append to a file', function() {
-      var fd = fs.openSync('path/to/file.txt', 'a');
-      var string = ' more';
-      var written = fs.writeSync(fd, string, null, 'utf-8');
+      const fd = fs.openSync('path/to/file.txt', 'a');
+      const string = ' more';
+      const written = fs.writeSync(fd, string, null, 'utf-8');
       assert.equal(written, 5);
       assert.equal(fs.readFileSync('path/to/file.txt'), 'file content more');
     });
 
     it('fails if file not open for writing', function() {
-      var fd = fs.openSync('path/to/file.txt', 'r');
+      const fd = fs.openSync('path/to/file.txt', 'r');
       assert.throws(function() {
         fs.writeSync(fd, 'oops', null, 'utf-8');
       });
@@ -1905,12 +1906,12 @@ describe('Mocking the file system', function() {
     }
 
     it('updates mtime of parent directory', function(done) {
-      var oldTime = fs.statSync('dir').mtime;
+      const oldTime = fs.statSync('dir').mtime;
       fs.writeFile('dir/foo', 'bar', function(err) {
         if (err) {
           return done(err);
         }
-        var newTime = fs.statSync('dir').mtime;
+        const newTime = fs.statSync('dir').mtime;
         assert.isTrue(newTime > oldTime);
         done();
       });
@@ -2064,7 +2065,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('parent/dir');
+        const stats = fs.statSync('parent/dir');
         assert.isTrue(stats.isDirectory());
         done();
       });
@@ -2075,7 +2076,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('parent/dir');
+        const stats = fs.statSync('parent/dir');
         assert.isTrue(stats.isDirectory());
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
         done();
@@ -2132,13 +2133,13 @@ describe('Mocking the file system', function() {
 
     it('creates a new directory', function() {
       fs.mkdirSync('parent/dir');
-      var stats = fs.statSync('parent/dir');
+      const stats = fs.statSync('parent/dir');
       assert.isTrue(stats.isDirectory());
     });
 
     it('accepts dir mode', function() {
       fs.mkdirSync('parent/dir', parseInt('0755', 8));
-      var stats = fs.statSync('parent/dir');
+      const stats = fs.statSync('parent/dir');
       assert.isTrue(stats.isDirectory());
       assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
     });
@@ -2186,9 +2187,9 @@ describe('Mocking the file system', function() {
           if (err) {
             return done(err);
           }
-          var parentPath = path.dirname(dirPath);
+          const parentPath = path.dirname(dirPath);
           assert.equal(parentPath, 'parent');
-          var stats = fs.statSync(dirPath);
+          const stats = fs.statSync(dirPath);
           assert.isTrue(stats.isDirectory());
           done();
         });
@@ -2200,9 +2201,9 @@ describe('Mocking the file system', function() {
             return done(err);
           }
           assert.isString(dirPath);
-          var parentPath = path.dirname(dirPath);
+          const parentPath = path.dirname(dirPath);
           assert.equal(parentPath, 'parent');
-          var stats = fs.statSync(dirPath);
+          const stats = fs.statSync(dirPath);
           assert.isTrue(stats.isDirectory());
           done();
         });
@@ -2216,49 +2217,49 @@ describe('Mocking the file system', function() {
             return done(err);
           }
           assert.instanceOf(buffer, Buffer);
-          var dirPath = buffer.toString();
-          var parentPath = path.dirname(dirPath);
+          const dirPath = buffer.toString();
+          const parentPath = path.dirname(dirPath);
           assert.equal(parentPath, 'parent');
-          var stats = fs.statSync(dirPath);
+          const stats = fs.statSync(dirPath);
           assert.isTrue(stats.isDirectory());
           done();
         });
       });
 
-      inVersion(
-        '>=6'
-      ).it('accepts an options argument with "utf8" encoding', function(done) {
-        fs.mkdtemp('parent/dir', {encoding: 'utf8'}, function(err, dirPath) {
-          if (err) {
-            return done(err);
-          }
-          assert.isString(dirPath);
-          var parentPath = path.dirname(dirPath);
-          assert.equal(parentPath, 'parent');
-          var stats = fs.statSync(dirPath);
-          assert.isTrue(stats.isDirectory());
-          done();
-        });
-      });
+      inVersion('>=6').it(
+        'accepts an options argument with "utf8" encoding',
+        function(done) {
+          fs.mkdtemp('parent/dir', {encoding: 'utf8'}, function(err, dirPath) {
+            if (err) {
+              return done(err);
+            }
+            assert.isString(dirPath);
+            const parentPath = path.dirname(dirPath);
+            assert.equal(parentPath, 'parent');
+            const stats = fs.statSync(dirPath);
+            assert.isTrue(stats.isDirectory());
+            done();
+          });
+        }
+      );
 
-      inVersion(
-        '>=6'
-      ).it('accepts an options argument with "buffer" encoding', function(
-        done
-      ) {
-        fs.mkdtemp('parent/dir', {encoding: 'buffer'}, function(err, buffer) {
-          if (err) {
-            return done(err);
-          }
-          assert.instanceOf(buffer, Buffer);
-          var dirPath = buffer.toString();
-          var parentPath = path.dirname(dirPath);
-          assert.equal(parentPath, 'parent');
-          var stats = fs.statSync(dirPath);
-          assert.isTrue(stats.isDirectory());
-          done();
-        });
-      });
+      inVersion('>=6').it(
+        'accepts an options argument with "buffer" encoding',
+        function(done) {
+          fs.mkdtemp('parent/dir', {encoding: 'buffer'}, function(err, buffer) {
+            if (err) {
+              return done(err);
+            }
+            assert.instanceOf(buffer, Buffer);
+            const dirPath = buffer.toString();
+            const parentPath = path.dirname(dirPath);
+            assert.equal(parentPath, 'parent');
+            const stats = fs.statSync(dirPath);
+            assert.isTrue(stats.isDirectory());
+            done();
+          });
+        }
+      );
 
       it('fails if parent does not exist', function(done) {
         fs.mkdtemp('unknown/child', function(err, dirPath) {
@@ -2315,54 +2316,56 @@ describe('Mocking the file system', function() {
       afterEach(mock.restore);
 
       it('creates a new directory', function() {
-        var dirPath = fs.mkdtempSync('parent/dir');
-        var parentPath = path.dirname(dirPath);
+        const dirPath = fs.mkdtempSync('parent/dir');
+        const parentPath = path.dirname(dirPath);
         assert.equal(parentPath, 'parent');
-        var stats = fs.statSync(dirPath);
+        const stats = fs.statSync(dirPath);
         assert.isTrue(stats.isDirectory());
       });
 
       inVersion('>=6').it('accepts a "utf8" encoding argument', function() {
-        var dirPath = fs.mkdtempSync('parent/dir', 'utf8');
+        const dirPath = fs.mkdtempSync('parent/dir', 'utf8');
         assert.isString(dirPath);
-        var parentPath = path.dirname(dirPath);
+        const parentPath = path.dirname(dirPath);
         assert.equal(parentPath, 'parent');
-        var stats = fs.statSync(dirPath);
+        const stats = fs.statSync(dirPath);
         assert.isTrue(stats.isDirectory());
       });
 
       inVersion('>=6').it('accepts a "buffer" encoding argument', function() {
-        var buffer = fs.mkdtempSync('parent/dir', 'buffer');
+        const buffer = fs.mkdtempSync('parent/dir', 'buffer');
         assert.instanceOf(buffer, Buffer);
-        var dirPath = buffer.toString();
-        var parentPath = path.dirname(dirPath);
+        const dirPath = buffer.toString();
+        const parentPath = path.dirname(dirPath);
         assert.equal(parentPath, 'parent');
-        var stats = fs.statSync(dirPath);
+        const stats = fs.statSync(dirPath);
         assert.isTrue(stats.isDirectory());
       });
 
-      inVersion(
-        '>=6'
-      ).it('accepts an options argument with "utf8" encoding', function() {
-        var dirPath = fs.mkdtempSync('parent/dir', {encoding: 'utf8'});
-        assert.isString(dirPath);
-        var parentPath = path.dirname(dirPath);
-        assert.equal(parentPath, 'parent');
-        var stats = fs.statSync(dirPath);
-        assert.isTrue(stats.isDirectory());
-      });
+      inVersion('>=6').it(
+        'accepts an options argument with "utf8" encoding',
+        function() {
+          const dirPath = fs.mkdtempSync('parent/dir', {encoding: 'utf8'});
+          assert.isString(dirPath);
+          const parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          const stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+        }
+      );
 
-      inVersion(
-        '>=6'
-      ).it('accepts an options argument with "buffer" encoding', function() {
-        var buffer = fs.mkdtempSync('parent/dir', {encoding: 'buffer'});
-        assert.instanceOf(buffer, Buffer);
-        var dirPath = buffer.toString();
-        var parentPath = path.dirname(dirPath);
-        assert.equal(parentPath, 'parent');
-        var stats = fs.statSync(dirPath);
-        assert.isTrue(stats.isDirectory());
-      });
+      inVersion('>=6').it(
+        'accepts an options argument with "buffer" encoding',
+        function() {
+          const buffer = fs.mkdtempSync('parent/dir', {encoding: 'buffer'});
+          assert.instanceOf(buffer, Buffer);
+          const dirPath = buffer.toString();
+          const parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          const stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+        }
+      );
 
       it('fails if parent does not exist', function() {
         assert.throws(function() {
@@ -2524,7 +2527,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('changes ownership of a file', function(done) {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.fchown(fd, 42, 43, done);
     });
   });
@@ -2539,7 +2542,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('changes ownership of a file', function() {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.fchownSync(fd, 42, 43);
     });
   });
@@ -2557,7 +2560,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('file.txt');
+        const stats = fs.statSync('file.txt');
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
         done();
       });
@@ -2581,7 +2584,7 @@ describe('Mocking the file system', function() {
 
     it('changes permissions of a file', function() {
       fs.chmodSync('file.txt', parseInt('0644', 8));
-      var stats = fs.statSync('file.txt');
+      const stats = fs.statSync('file.txt');
       assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
     });
 
@@ -2601,12 +2604,12 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('changes permissions of a file', function(done) {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.fchmod(fd, parseInt('0644', 8), function(err) {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('file.txt');
+        const stats = fs.statSync('file.txt');
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
       });
@@ -2622,9 +2625,9 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('changes permissions of a file', function() {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.fchmodSync(fd, parseInt('0444', 8));
-      var stats = fs.statSync('file.txt');
+      const stats = fs.statSync('file.txt');
       assert.equal(stats.mode & parseInt('0777', 8), parseInt('0444', 8));
     });
   });
@@ -2653,13 +2656,13 @@ describe('Mocking the file system', function() {
     });
 
     it('updates mtime of parent', function(done) {
-      var oldTime = fs.statSync('dir2').mtime;
+      const oldTime = fs.statSync('dir2').mtime;
       fs.unlink('dir2/file', function(err) {
         if (err) {
           return done(err);
         }
         assert.isFalse(fs.existsSync('dir2/file'));
-        var newTime = fs.statSync('dir2').mtime;
+        const newTime = fs.statSync('dir2').mtime;
         assert.isTrue(newTime > oldTime);
         done();
       });
@@ -2674,15 +2677,15 @@ describe('Mocking the file system', function() {
     });
 
     it('respects previously opened file descriptors', function(done) {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.unlink('file.txt', function(err) {
         if (err) {
           return done(err);
         }
         assert.isFalse(fs.existsSync('file.txt'));
         // but we can still use fd to read
-        var buffer = bufferAlloc(7);
-        var read = fs.readSync(fd, buffer, 0, 7);
+        const buffer = bufferAlloc(7);
+        const read = fs.readSync(fd, buffer, 0, 7);
         assert.equal(read, 7);
         assert.equal(String(buffer), 'content');
         done();
@@ -2704,12 +2707,12 @@ describe('Mocking the file system', function() {
     });
 
     it('respects previously opened file descriptors', function() {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.unlinkSync('file.txt');
       assert.isFalse(fs.existsSync('file.txt'));
       // but we can still use fd to read
-      var buffer = bufferAlloc(7);
-      var read = fs.readSync(fd, buffer, 0, 7);
+      const buffer = bufferAlloc(7);
+      const read = fs.readSync(fd, buffer, 0, 7);
       assert.equal(read, 7);
       assert.equal(String(buffer), 'content');
     });
@@ -2729,7 +2732,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('file.txt');
+        const stats = fs.statSync('file.txt');
         assert.equal(stats.atime.getTime(), 100);
         assert.equal(stats.mtime.getTime(), 200);
         done();
@@ -2741,7 +2744,7 @@ describe('Mocking the file system', function() {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('dir');
+        const stats = fs.statSync('dir');
         assert.equal(stats.atime.getTime(), 300);
         assert.equal(stats.mtime.getTime(), 400);
         done();
@@ -2766,7 +2769,7 @@ describe('Mocking the file system', function() {
 
     it('updates timestamps for a file', function() {
       fs.utimesSync('file.txt', new Date(100), new Date(200));
-      var stats = fs.statSync('file.txt');
+      const stats = fs.statSync('file.txt');
       assert.equal(stats.atime.getTime(), 100);
       assert.equal(stats.mtime.getTime(), 200);
     });
@@ -2782,12 +2785,12 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('updates timestamps for a file', function(done) {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.futimes(fd, new Date(100), new Date(200), function(err) {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('file.txt');
+        const stats = fs.statSync('file.txt');
         assert.equal(stats.atime.getTime(), 100);
         assert.equal(stats.mtime.getTime(), 200);
         done();
@@ -2795,12 +2798,12 @@ describe('Mocking the file system', function() {
     });
 
     it('updates timestamps for a directory', function(done) {
-      var fd = fs.openSync('dir', 'r');
+      const fd = fs.openSync('dir', 'r');
       fs.futimes(fd, new Date(300), new Date(400), function(err) {
         if (err) {
           return done(err);
         }
-        var stats = fs.statSync('dir');
+        const stats = fs.statSync('dir');
         assert.equal(stats.atime.getTime(), 300);
         assert.equal(stats.mtime.getTime(), 400);
         done();
@@ -2817,9 +2820,9 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('updates timestamps for a file', function() {
-      var fd = fs.openSync('file.txt', 'r');
+      const fd = fs.openSync('file.txt', 'r');
       fs.futimesSync(fd, new Date(100), new Date(200));
-      var stats = fs.statSync('file.txt');
+      const stats = fs.statSync('file.txt');
       assert.equal(stats.atime.getTime(), 100);
       assert.equal(stats.mtime.getTime(), 200);
     });
@@ -3095,14 +3098,14 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('stats a symbolic link', function() {
-      var stats = fs.lstatSync('link');
+      const stats = fs.lstatSync('link');
       assert.isTrue(stats.isSymbolicLink());
       assert.isFalse(stats.isFile());
       assert.equal(stats.mtime.getTime(), 2);
     });
 
     it('stats a regular file', function() {
-      var stats = fs.lstatSync('file.txt');
+      const stats = fs.lstatSync('file.txt');
       assert.isTrue(stats.isFile());
       assert.isFalse(stats.isSymbolicLink());
       assert.equal(stats.mtime.getTime(), 1);
@@ -3150,13 +3153,13 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('creates a readable stream', function() {
-      var stream = fs.createReadStream('dir/source');
+      const stream = fs.createReadStream('dir/source');
       assert.isTrue(stream.readable);
     });
 
     it('allows piping to a writable stream', function(done) {
-      var input = fs.createReadStream('dir/source');
-      var output = fs.createWriteStream('dir/dest');
+      const input = fs.createReadStream('dir/source');
+      const output = fs.createWriteStream('dir/dest');
       output.on('close', function() {
         fs.readFile('dir/dest', function(err, data) {
           if (err) {
@@ -3179,7 +3182,7 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('provides a write stream for a file in buffered mode', function(done) {
-      var output = fs.createWriteStream('test.txt');
+      const output = fs.createWriteStream('test.txt');
       output.on('close', function() {
         fs.readFile('test.txt', function(err, data) {
           if (err) {
@@ -3200,7 +3203,7 @@ describe('Mocking the file system', function() {
     });
 
     it('provides a write stream for a file', function(done) {
-      var output = fs.createWriteStream('test.txt');
+      const output = fs.createWriteStream('test.txt');
       output.on('close', function() {
         fs.readFile('test.txt', function(err, data) {
           if (err) {
@@ -3226,7 +3229,7 @@ describe('Mocking the file system', function() {
 
     if (Writable && Writable.prototype.cork) {
       it('works when write stream is corked', function(done) {
-        var output = fs.createWriteStream('test.txt');
+        const output = fs.createWriteStream('test.txt');
         output.on('close', function() {
           fs.readFile('test.txt', function(err, data) {
             if (err) {
@@ -3252,28 +3255,28 @@ describe('Mocking the file system', function() {
     afterEach(mock.restore);
 
     it('maintains current working directory', function() {
-      var originalCwd = process.cwd();
+      const originalCwd = process.cwd();
       mock();
 
-      var cwd = process.cwd();
+      const cwd = process.cwd();
       assert.equal(cwd, originalCwd);
     });
 
     it('allows changing directory', function() {
-      var originalCwd = process.cwd();
+      const originalCwd = process.cwd();
       mock({
         dir: {}
       });
 
       process.chdir('dir');
-      var cwd = process.cwd();
+      const cwd = process.cwd();
       assert.equal(cwd, path.join(originalCwd, 'dir'));
     });
 
     it('prevents changing directory to non-existent path', function() {
       mock();
 
-      var err;
+      let err;
       try {
         process.chdir('dir');
       } catch (e) {
@@ -3288,7 +3291,7 @@ describe('Mocking the file system', function() {
         file: ''
       });
 
-      var err;
+      let err;
       try {
         process.chdir('file');
       } catch (e) {
@@ -3299,8 +3302,8 @@ describe('Mocking the file system', function() {
     });
 
     it('restores original methods on restore', function() {
-      var originalCwd = process.cwd;
-      var originalChdir = process.chdir;
+      const originalCwd = process.cwd;
+      const originalChdir = process.chdir;
       mock();
 
       mock.restore();
@@ -3309,7 +3312,7 @@ describe('Mocking the file system', function() {
     });
 
     it('restores original working directory on restore', function() {
-      var originalCwd = process.cwd();
+      const originalCwd = process.cwd();
       mock({
         dir: {}
       });
@@ -3317,7 +3320,7 @@ describe('Mocking the file system', function() {
       process.chdir('dir');
       mock.restore();
 
-      var cwd = process.cwd();
+      const cwd = process.cwd();
       assert.equal(cwd, originalCwd);
     });
   });
@@ -3338,7 +3341,7 @@ describe('Mocking the file system', function() {
           })
         });
 
-        var err;
+        let err;
         try {
           fs.readdirSync('secure/insecure');
         } catch (e) {
@@ -3360,7 +3363,7 @@ describe('Mocking the file system', function() {
           })
         });
 
-        var err;
+        let err;
         try {
           fs.readFileSync('secure/insecure/file');
         } catch (e) {
@@ -3380,7 +3383,7 @@ describe('Mocking the file system', function() {
           }
         });
 
-        var err;
+        let err;
         try {
           fs.readFileSync('insecure/write-only');
         } catch (e) {
@@ -3400,7 +3403,7 @@ describe('Mocking the file system', function() {
           }
         });
 
-        var err;
+        let err;
         try {
           fs.writeFileSync('insecure/read-only', 'denied');
         } catch (e) {
