@@ -1,6 +1,6 @@
-var fs = require('fs');
+const fs = require('fs');
 
-var mock = require('..');
+const mock = require('..');
 
 /**
  * Test setup.  Not timed.

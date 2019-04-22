@@ -1,10 +1,10 @@
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
-var rimraf = require('rimraf');
+const rimraf = require('rimraf');
 
-var tmpPath = '.tmp';
+const tmpPath = '.tmp';
 
 /**
  * Timed test.  This includes the setup and teardown as part of the overall
@@ -14,7 +14,7 @@ var tmpPath = '.tmp';
 exports.test = function(done) {
   fs.mkdir(tmpPath, function(mkdirErr) {
     assert.ifError(mkdirErr);
-    var tmpFile = path.join(tmpPath, 'foo-real.txt');
+    const tmpFile = path.join(tmpPath, 'foo-real.txt');
     fs.writeFile(tmpFile, 'foo', function(writeErr) {
       assert.ifError(writeErr);
       fs.readFile(tmpFile, 'utf8', function(readErr, str) {

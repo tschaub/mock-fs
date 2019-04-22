@@ -1,7 +1,7 @@
-var assert = require('assert');
-var fs = require('fs');
+const assert = require('assert');
+const fs = require('fs');
 
-var mock = require('..');
+const mock = require('..');
 
 /**
  * Test setup.  Not timed.
