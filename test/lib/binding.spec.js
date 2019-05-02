@@ -1179,6 +1179,63 @@ describe('Binding', function() {
     });
   });
 
+  describe('#mkdir() recursive', function() {
+    it('creates a new directory', function() {
+      const binding = new Binding(system);
+      const dirPath = path.join('mock-dir', 'foo');
+      binding.mkdir(dirPath, parseInt('0755', 8), true);
+      const dir = system.getItem(dirPath);
+      assert.instanceOf(dir, Directory);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
+    });
+
+    it('creates a new deep directory', function() {
+      const binding = new Binding(system);
+      const dirPath1 = path.join('mock-dir', 'foo');
+      const dirPath2 = path.join(dirPath1, 'bar');
+      const dirPath3 = path.join(dirPath2, 'loo');
+      binding.mkdir(dirPath3, parseInt('0755', 8), true);
+
+      let dir = system.getItem(dirPath3);
+      assert.instanceOf(dir, Directory);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
+
+      dir = system.getItem(dirPath2);
+      assert.instanceOf(dir, Directory);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
+
+      dir = system.getItem(dirPath1);
+      assert.instanceOf(dir, Directory);
+      assert.equal(dir.getMode(), parseInt('0755', 8));
+    });
+
+    it('fails if permission does not allow recursive creation', function() {
+      const binding = new Binding(system);
+      const dirPath1 = path.join('mock-dir', 'foo');
+      const dirPath2 = path.join(dirPath1, 'bar');
+      const dirPath3 = path.join(dirPath2, 'loo');
+      assert.throws(function() {
+        binding.mkdir(dirPath3, parseInt('0400', 8), true);
+      });
+    });
+
+    it('fails if one parent is not a folder', function() {
+      const binding = new Binding(system);
+      const dirPath = path.join('mock-dir', 'one.txt', 'foo', 'bar');
+      assert.throws(function() {
+        binding.mkdir(dirPath, parseInt('0755', 8), true);
+      });
+    });
+
+    it('fails if file exists', function() {
+      const binding = new Binding(system);
+      const dirPath = path.join('mock-dir', 'non-empty', 'a.txt');
+      assert.throws(function() {
+        binding.mkdir(dirPath, parseInt('0755', 8), true);
+      });
+    });
+  });
+
   describe('#mkdtemp()', function() {
     it('creates a new directory', function() {
       const binding = new Binding(system);

@@ -2055,6 +2055,7 @@ describe('Mocking the file system', function() {
     beforeEach(function() {
       mock({
         parent: {},
+        'file.txt': '',
         unwriteable: mock.directory({mode: parseInt('0555', 8)})
       });
     });
@@ -2066,6 +2067,23 @@ describe('Mocking the file system', function() {
           return done(err);
         }
         const stats = fs.statSync('parent/dir');
+        assert.isTrue(stats.isDirectory());
+        done();
+      });
+    });
+
+    inVersion('>=10.12').it('creates a new directory recursively', function(
+      done
+    ) {
+      fs.mkdir('parent/foo/bar/dir', {recursive: true}, function(err) {
+        if (err) {
+          return done(err);
+        }
+        let stats = fs.statSync('parent/foo/bar/dir');
+        assert.isTrue(stats.isDirectory());
+        stats = fs.statSync('parent/foo/bar');
+        assert.isTrue(stats.isDirectory());
+        stats = fs.statSync('parent/foo');
         assert.isTrue(stats.isDirectory());
         done();
       });
@@ -2083,12 +2101,60 @@ describe('Mocking the file system', function() {
       });
     });
 
+    inVersion('>=10.12').it('accepts dir mode recursively', function(done) {
+      fs.mkdir(
+        'parent/foo/bar/dir',
+        {recursive: true, mode: parseInt('0755', 8)},
+        function(err) {
+          if (err) {
+            return done(err);
+          }
+          let stats = fs.statSync('parent/foo/bar/dir');
+          assert.isTrue(stats.isDirectory());
+          assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+
+          stats = fs.statSync('parent/foo/bar');
+          assert.isTrue(stats.isDirectory());
+          assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+
+          stats = fs.statSync('parent/foo');
+          assert.isTrue(stats.isDirectory());
+          assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+          done();
+        }
+      );
+    });
+
     it('fails if parent does not exist', function(done) {
       fs.mkdir('parent/bogus/dir', function(err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
+
+    inVersion('>=10.12').it(
+      'fails if one parent is not a folder in recursive creation',
+      function(done) {
+        fs.mkdir('file.txt/bogus/dir', {recursive: true}, function(err) {
+          assert.instanceOf(err, Error);
+          done();
+        });
+      }
+    );
+
+    inVersion('>=10.12').it(
+      'fails if permission does not allow recursive creation',
+      function(done) {
+        fs.mkdir(
+          'parent/foo/bar/dir',
+          {recursive: true, mode: parseInt('0400', 8)},
+          function(err) {
+            assert.instanceOf(err, Error);
+            done();
+          }
+        );
+      }
+    );
 
     it('fails if directory already exists', function(done) {
       fs.mkdir('parent', function(err) {
@@ -2137,9 +2203,37 @@ describe('Mocking the file system', function() {
       assert.isTrue(stats.isDirectory());
     });
 
+    inVersion('>=10.12').it('creates a new directory recursively', function() {
+      fs.mkdirSync('parent/foo/bar/dir', {recursive: true});
+      let stats = fs.statSync('parent/foo/bar/dir');
+      assert.isTrue(stats.isDirectory());
+      stats = fs.statSync('parent/foo/bar');
+      assert.isTrue(stats.isDirectory());
+      stats = fs.statSync('parent/foo');
+      assert.isTrue(stats.isDirectory());
+    });
+
     it('accepts dir mode', function() {
       fs.mkdirSync('parent/dir', parseInt('0755', 8));
       const stats = fs.statSync('parent/dir');
+      assert.isTrue(stats.isDirectory());
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+    });
+
+    inVersion('>=10.12').it('accepts dir mode recursively', function() {
+      fs.mkdirSync('parent/foo/bar/dir', {
+        recursive: true,
+        mode: parseInt('0755', 8)
+      });
+      let stats = fs.statSync('parent/foo/bar/dir');
+      assert.isTrue(stats.isDirectory());
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+
+      stats = fs.statSync('parent/foo/bar');
+      assert.isTrue(stats.isDirectory());
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+
+      stats = fs.statSync('parent/foo');
       assert.isTrue(stats.isDirectory());
       assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
     });
@@ -2149,6 +2243,27 @@ describe('Mocking the file system', function() {
         fs.mkdirSync('parent/bogus/dir');
       });
     });
+
+    inVersion('>=10.12').it(
+      'fails if one parent is not a folder in recursive creation',
+      function() {
+        assert.throws(function() {
+          fs.mkdirSync('file.txt/bogus/dir', {recursive: true});
+        });
+      }
+    );
+
+    inVersion('>=10.12').it(
+      'fails if permission does not allow recursive creation',
+      function() {
+        assert.throws(function() {
+          fs.mkdirSync('parent/foo/bar/dir', {
+            recursive: true,
+            mode: parseInt('0400', 8)
+          });
+        });
+      }
+    );
 
     it('fails if directory already exists', function() {
       assert.throws(function() {
