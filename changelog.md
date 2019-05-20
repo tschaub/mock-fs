@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.10.0
+
+ * Support the `recursive` option for `fs.mkdir` (thanks @3cp, see [#268][#268])
+
 ## 4.9.0
 
  * Improve `readFile` support for Node 10+ (thanks @huochunpeng, see [#265][#265])
@@ -247,3 +251,4 @@ Detailed changes:
 [#260]: https://github.com/tschaub/mock-fs/pull/260
 [#265]: https://github.com/tschaub/mock-fs/pull/265
 [#267]: https://github.com/tschaub/mock-fs/pull/267
+[#268]: https://github.com/tschaub/mock-fs/pull/268
