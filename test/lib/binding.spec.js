@@ -1234,6 +1234,14 @@ describe('Binding', function() {
         binding.mkdir(dirPath, parseInt('0755', 8), true);
       });
     });
+
+    it('passes silently if directory exists', function() {
+      const binding = new Binding(system);
+      const dirPath = path.join('mock-dir', 'non-empty');
+      assert.doesNotThrow(function() {
+        binding.mkdir(dirPath, parseInt('0755', 8), true);
+      });
+    });
   });
 
   describe('#mkdtemp()', function() {
