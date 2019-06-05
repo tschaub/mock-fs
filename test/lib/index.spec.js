@@ -2054,7 +2054,10 @@ describe('Mocking the file system', function() {
   describe('fs.mkdir(path, [mode], callback)', function() {
     beforeEach(function() {
       mock({
-        parent: {},
+        parent: {
+          'file.md': '',
+          child: {}
+        },
         'file.txt': '',
         unwriteable: mock.directory({mode: parseInt('0555', 8)})
       });
@@ -2163,6 +2166,33 @@ describe('Mocking the file system', function() {
       });
     });
 
+    it('fails if file already exists', function(done) {
+      fs.mkdir('file.txt', function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      });
+    });
+
+    inVersion('>=10.12').it(
+      'fails in recursive mode if file already exists',
+      function(done) {
+        fs.mkdir('parent/file.md', {recursive: true}, function(err) {
+          assert.instanceOf(err, Error);
+          done();
+        });
+      }
+    );
+
+    inVersion('>=10.12').it(
+      'passes in recursive mode if directory already exists',
+      function(done) {
+        fs.mkdir('parent/child', {recursive: true}, function(err) {
+          assert.isNotOk(err, Error);
+          done();
+        });
+      }
+    );
+
     if (testParentPerms) {
       it('fails if parent is not writeable', function(done) {
         fs.mkdir('unwriteable/child', function(err) {
@@ -2190,7 +2220,10 @@ describe('Mocking the file system', function() {
   describe('fs.mkdirSync(path, [mode])', function() {
     beforeEach(function() {
       mock({
-        parent: {},
+        parent: {
+          'file.md': '',
+          child: {}
+        },
         'file.txt': 'content',
         unwriteable: mock.directory({mode: parseInt('0555', 8)})
       });
@@ -2276,6 +2309,24 @@ describe('Mocking the file system', function() {
         fs.mkdirSync('file.txt');
       });
     });
+
+    inVersion('>=10.12').it(
+      'fails in recursive mode if file already exists',
+      function() {
+        assert.throws(function() {
+          fs.mkdirSync('parent/file.md', {recursive: true});
+        });
+      }
+    );
+
+    inVersion('>=10.12').it(
+      'passes in recursive mode if directory already exists',
+      function() {
+        assert.doesNotThrow(function() {
+          fs.mkdirSync('parent/child', {recursive: true});
+        });
+      }
+    );
 
     if (testParentPerms) {
       it('fails if parent is not writeable', function() {
