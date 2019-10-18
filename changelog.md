@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.10.2
+
+ * Fix timestamps for Node > 12.10 (thanks @3cp, see [#277][#277])
+
 ## 4.10.1
 
  * Fix for `fs.mkdir` with the `recursive` option on existing directories (thanks @3cp, see [#271][#271])
@@ -257,3 +261,4 @@ Detailed changes:
 [#267]: https://github.com/tschaub/mock-fs/pull/267
 [#268]: https://github.com/tschaub/mock-fs/pull/268
 [#271]: https://github.com/tschaub/mock-fs/pull/271
+[#277]: https://github.com/tschaub/mock-fs/pull/277
