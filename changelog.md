@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.10.3
+
+ * Fix bad promise rejection on some fs.promises methods (thanks @3cp, see [#279][#279])
+
 ## 4.10.2
 
  * Fix timestamps for Node > 12.10 (thanks @3cp, see [#277][#277])
@@ -262,3 +266,4 @@ Detailed changes:
 [#268]: https://github.com/tschaub/mock-fs/pull/268
 [#271]: https://github.com/tschaub/mock-fs/pull/271
 [#277]: https://github.com/tschaub/mock-fs/pull/277
+[#279]: https://github.com/tschaub/mock-fs/pull/279
