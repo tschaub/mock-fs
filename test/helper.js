@@ -3,6 +3,8 @@
 const chai = require('chai');
 const constants = require('constants');
 const semver = require('semver');
+const fs = require('fs');
+const hasPromise = !!fs.promises;
 
 /** @type {boolean} */
 chai.config.includeStack = true;
@@ -20,6 +22,10 @@ exports.inVersion = function(range) {
     return {it: xit, describe: xdescribe};
   }
 };
+
+exports.withPromise = hasPromise
+  ? {it: it, describe: describe}
+  : {it: xit, describe: xdescribe};
 
 /**
  * Convert a string to flags for fs.open.
