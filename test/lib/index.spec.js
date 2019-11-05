@@ -1361,6 +1361,13 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.xit('promise creates an instance of fs.Stats', function(done) {
+      fs.promises.stat('/path/to/file.txt').then(function(stats) {
+        assert.instanceOf(stats, fs.Stats);
+        done();
+      }, done);
+    });
+
     it('identifies files', function(done) {
       fs.stat('/path/to/file.txt', function(err, stats) {
         if (err) {
@@ -1372,6 +1379,14 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise identifies files', function(done) {
+      fs.promises.stat('/path/to/file.txt').then(function(stats) {
+        assert.isTrue(stats.isFile());
+        assert.isFalse(stats.isDirectory());
+        done();
+      }, done);
+    });
+
     it('identifies directories', function(done) {
       fs.stat('/empty', function(err, stats) {
         if (err) {
@@ -1381,6 +1396,14 @@ describe('Mocking the file system', function() {
         assert.isFalse(stats.isFile());
         done();
       });
+    });
+
+    withPromise.it('promise identifies directories', function(done) {
+      fs.promises.stat('/empty').then(function(stats) {
+        assert.isTrue(stats.isDirectory());
+        assert.isFalse(stats.isFile());
+        done();
+      }, done);
     });
 
     it('provides file stats', function(done) {
@@ -1399,9 +1422,20 @@ describe('Mocking the file system', function() {
       });
     });
 
-    // TODO: unconditionally test this when this issue is addressed
-    // https://github.com/nodejs/node/issues/25913
-    inVersion('<10').it('includes blocks and blksize in stats', function(done) {
+    withPromise.it('promise provides file stats', function(done) {
+      fs.promises.stat('/path/to/file.txt').then(function(stats) {
+        assert.equal(stats.ctime.getTime(), 1);
+        assert.equal(stats.mtime.getTime(), 2);
+        assert.equal(stats.atime.getTime(), 3);
+        assert.equal(stats.uid, 42);
+        assert.equal(stats.gid, 43);
+        assert.equal(stats.nlink, 1);
+        assert.isNumber(stats.rdev);
+        done();
+      }, done);
+    });
+
+    it('includes blocks and blksize in stats', function(done) {
       fs.stat('/path/to/file.txt', function(err, stats) {
         if (err) {
           return done(err);
@@ -1410,6 +1444,16 @@ describe('Mocking the file system', function() {
         assert.isNumber(stats.blksize);
         done();
       });
+    });
+
+    withPromise.it('promise includes blocks and blksize in stats', function(
+      done
+    ) {
+      fs.promises.stat('/path/to/file.txt').then(function(stats) {
+        assert.isNumber(stats.blocks);
+        assert.isNumber(stats.blksize);
+        done();
+      }, done);
     });
 
     it('provides directory stats', function(done) {
@@ -1436,19 +1480,46 @@ describe('Mocking the file system', function() {
       });
     });
 
-    // TODO: unconditionally test this when this issue is addressed
-    // https://github.com/nodejs/node/issues/25913
-    inVersion('<10').it(
-      'includes blocks and blksize in directory stats',
+    withPromise.it('promise provides directory stats', function(done) {
+      fs.promises.stat('/path').then(function(stats) {
+        assert.instanceOf(stats.ctime, Date);
+        assert.instanceOf(stats.mtime, Date);
+        assert.instanceOf(stats.atime, Date);
+        if (process.getuid) {
+          assert.isNumber(stats.uid);
+        } else {
+          assert.isNaN(stats.uid);
+        }
+        if (process.getgid) {
+          assert.isNumber(stats.gid);
+        } else {
+          assert.isNaN(stats.gid);
+        }
+        assert.equal(stats.nlink, 3);
+        assert.isNumber(stats.rdev);
+        done();
+      }, done);
+    });
+
+    it('includes blocks and blksize in directory stats', function(done) {
+      fs.stat('/path', function(err, stats) {
+        if (err) {
+          return done(err);
+        }
+        assert.isNumber(stats.blocks);
+        assert.isNumber(stats.blksize);
+        done();
+      });
+    });
+
+    withPromise.it(
+      'promise includes blocks and blksize in directory stats',
       function(done) {
-        fs.stat('/path', function(err, stats) {
-          if (err) {
-            return done(err);
-          }
+        fs.promises.stat('/path').then(function(stats) {
           assert.isNumber(stats.blocks);
           assert.isNumber(stats.blksize);
           done();
-        });
+        }, done);
       }
     );
   });
