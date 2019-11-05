@@ -15,17 +15,18 @@ chai.config.includeStack = true;
  */
 exports.assert = chai.assert;
 
+const TEST = {it: it, xit: xit, describe: describe, xdescribe: xdescribe};
+const NO_TEST = {it: xit, xit: xit, describe: xdescribe, xdescribe: xdescribe};
+
 exports.inVersion = function(range) {
   if (semver.satisfies(process.version, range)) {
-    return {it: it, describe: describe};
+    return TEST;
   } else {
-    return {it: xit, describe: xdescribe};
+    return NO_TEST;
   }
 };
 
-exports.withPromise = hasPromise
-  ? {it: it, describe: describe}
-  : {it: xit, describe: xdescribe};
+exports.withPromise = hasPromise ? TEST : NO_TEST;
 
 /**
  * Convert a string to flags for fs.open.
