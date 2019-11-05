@@ -1150,6 +1150,14 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise allows files to be renamed', function(done) {
+      fs.promises.rename('path/to/a.bin', 'path/to/b.bin').then(function() {
+        assert.isFalse(fs.existsSync('path/to/a.bin'));
+        assert.isTrue(fs.existsSync('path/to/b.bin'));
+        done();
+      }, done);
+    });
+
     it('updates mtime of parent directory', function(done) {
       const oldTime = fs.statSync('nested/dir').mtime;
       fs.rename('nested/dir/file.txt', 'nested/dir/renamed.txt', function(err) {
@@ -1162,12 +1170,41 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise updates mtime of parent directory', function(done) {
+      const oldTime = fs.statSync('nested/dir').mtime;
+      fs.promises
+        .rename('nested/dir/file.txt', 'nested/dir/renamed.txt')
+        .then(function() {
+          assert.isFalse(fs.existsSync('nested/dir/file.txt'));
+          assert.isTrue(fs.existsSync('nested/dir/renamed.txt'));
+          const newTime = fs.statSync('nested/dir').mtime;
+          assert.isTrue(newTime > oldTime);
+          done();
+        }, done);
+    });
+
     it('calls callback with error if old path does not exist', function(done) {
       fs.rename('bogus', 'empty', function(err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
+
+    withPromise.it(
+      'promise calls callback with error if old path does not exist',
+      function(done) {
+        fs.promises.rename('bogus', 'empty').then(
+          function() {
+            assert.fail('Should not succeed.');
+            done();
+          },
+          function(err) {
+            assert.instanceOf(err, Error);
+            done();
+          }
+        );
+      }
+    );
 
     it('overwrites existing files', function(done) {
       fs.rename('path/to/a.bin', 'nested/dir/file.txt', function(err) {
@@ -1176,6 +1213,16 @@ describe('Mocking the file system', function() {
         assert.isTrue(fs.existsSync('nested/dir/file.txt'));
         done();
       });
+    });
+
+    withPromise.it('promise overwrites existing files', function(done) {
+      fs.promises
+        .rename('path/to/a.bin', 'nested/dir/file.txt')
+        .then(function() {
+          assert.isFalse(fs.existsSync('path/to/a.bin'));
+          assert.isTrue(fs.existsSync('nested/dir/file.txt'));
+          done();
+        }, done);
     });
 
     it('allows directories to be renamed', function(done) {
@@ -1188,12 +1235,37 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise allows directories to be renamed', function(done) {
+      fs.promises.rename('path/to', 'path/foo').then(function() {
+        assert.isFalse(fs.existsSync('path/to'));
+        assert.isTrue(fs.existsSync('path/foo'));
+        assert.deepEqual(fs.readdirSync('path/foo'), ['a.bin']);
+        done();
+      }, done);
+    });
+
     it('calls callback with error if new directory not empty', function(done) {
       fs.rename('path', 'nested', function(err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
+
+    withPromise.it(
+      'promise calls callback with error if new directory not empty',
+      function(done) {
+        fs.promises.rename('path', 'nested').then(
+          function() {
+            assert.fail('Should not succeed.');
+            done();
+          },
+          function(err) {
+            assert.instanceOf(err, Error);
+            done();
+          }
+        );
+      }
+    );
   });
 
   describe('fs.renameSync(oldPath, newPath)', function() {
