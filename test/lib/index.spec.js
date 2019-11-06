@@ -1893,11 +1893,35 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise opens an existing file for reading (r)', function(
+      done
+    ) {
+      fs.promises.open('nested/sub/dir/one.txt', 'r').then(function(fd) {
+        assert.isNumber(fd.fd);
+        done();
+      }, done);
+    });
+
     it('fails if file does not exist (r)', function(done) {
       fs.open('bogus.txt', 'r', function(err, fd) {
         assert.instanceOf(err, Error);
+        assert.equal(err.code, 'ENOENT');
         done();
       });
+    });
+
+    withPromise.it('promise fails if file does not exist (r)', function(done) {
+      fs.promises.open('bogus.txt', 'r').then(
+        function() {
+          assert.fail('should not succeed.');
+          done();
+        },
+        function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'ENOENT');
+          done();
+        }
+      );
     });
 
     it('creates a new file for writing (w)', function(done) {
@@ -1911,8 +1935,20 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise creates a new file for writing (w)', function(
+      done
+    ) {
+      fs.promises
+        .open('path/to/new.txt', 'w', parseInt('0666', 8))
+        .then(function(fd) {
+          assert.isNumber(fd.fd);
+          assert.isTrue(fs.existsSync('path/to/new.txt'));
+          done();
+        }, done);
+    });
+
     it('opens an existing file for writing (w)', function(done) {
-      fs.open('path/to/one.txt', 'w', parseInt('0666', 8), function(err, fd) {
+      fs.open('path/to/file.txt', 'w', parseInt('0666', 8), function(err, fd) {
         if (err) {
           return done(err);
         }
@@ -1921,14 +1957,37 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise opens an existing file for writing (w)', function(
+      done
+    ) {
+      fs.promises
+        .open('path/to/file.txt', 'w', parseInt('0666', 8))
+        .then(function(fd) {
+          assert.isNumber(fd.fd);
+          done();
+        }, done);
+    });
+
     it('fails if file exists (wx)', function(done) {
-      fs.open('path/to/one.txt', 'wx', parseInt('0666', 8), function(err, fd) {
-        if (err) {
-          return done(err);
-        }
-        assert.isNumber(fd);
+      fs.open('path/to/file.txt', 'wx', parseInt('0666', 8), function(err, fd) {
+        assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EEXIST');
         done();
       });
+    });
+
+    withPromise.it('promise fails if file exists (wx)', function(done) {
+      fs.promises.open('path/to/file.txt', 'wx', parseInt('0666', 8)).then(
+        function() {
+          assert.fail('should not succeed.');
+          done();
+        },
+        function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'EEXIST');
+          done();
+        }
+      );
     });
   });
 
@@ -1991,17 +2050,48 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise closes a file descriptor', function(done) {
+      fs.promises
+        .open('dir/file.txt', 'w')
+        .then(function(fd) {
+          return fd.close();
+        })
+        .then(done, done);
+    });
+
     it('fails for closed file descriptors', function(done) {
       const fd = fs.openSync('dir/file.txt', 'w');
       fs.close(fd, function(err) {
         if (err) {
           return done(err);
         }
-        fs.close(fd, function(err2) {
-          assert.instanceOf(err2, Error);
+        fs.close(fd, function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'EBADF');
           done();
         });
       });
+    });
+
+    withPromise.it('promise fails for closed file descriptors', function(done) {
+      fs.promises
+        .open('dir/file.txt', 'w')
+        .then(function(fd) {
+          return fd.close().then(function() {
+            return fd.close();
+          });
+        })
+        .then(
+          function() {
+            assert.fail('should not succeed.');
+            done();
+          },
+          function(err) {
+            assert.instanceOf(err, Error);
+            assert.equal(err.code, 'EBADF');
+            done();
+          }
+        );
     });
   });
 
