@@ -10,7 +10,6 @@ const bufferFrom = require('../../lib/buffer').from;
 const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -230,7 +229,6 @@ describe('The API', function() {
 });
 
 describe('Mocking the file system', function() {
-
   describe('fs.unlink(path, callback)', function() {
     beforeEach(function() {
       mock({
