@@ -1779,6 +1779,14 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise lists directory contents', function(done) {
+      fs.promises.readdir(path.join('path', 'to')).then(function(items) {
+        assert.isArray(items);
+        assert.deepEqual(items, ['file.txt']);
+        done();
+      }, done);
+    });
+
     it('lists nested directory contents', function(done) {
       fs.readdir(path.join('nested', 'sub', 'dir'), function(err, items) {
         assert.isNull(err);
@@ -1788,12 +1796,37 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise lists nested directory contents', function(done) {
+      fs.promises
+        .readdir(path.join('nested', 'sub', 'dir'))
+        .then(function(items) {
+          assert.isArray(items);
+          assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
+          done();
+        }, done);
+    });
+
     it('calls with an error for bogus path', function(done) {
       fs.readdir('bogus', function(err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
       });
+    });
+
+    withPromise.it('promise calls with an error for bogus path', function(
+      done
+    ) {
+      fs.promises.readdir('bogus').then(
+        function() {
+          assert.fail('should not succeed.');
+          done();
+        },
+        function(err) {
+          assert.instanceOf(err, Error);
+          done();
+        }
+      );
     });
   });
 
