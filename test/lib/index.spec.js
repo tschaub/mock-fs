@@ -10,11 +10,7 @@ const bufferFrom = require('../../lib/buffer').from;
 const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 const withPromise = helper.withPromise;
-
-const testParentPerms =
-  fs.access && fs.accessSync && process.getuid && process.getgid;
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -234,77 +230,6 @@ describe('The API', function() {
 });
 
 describe('Mocking the file system', function() {
-
-  describe('fs.chown(path, uid, gid, callback)', function() {
-    beforeEach(function() {
-      mock({
-        'path/empty': {},
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('changes ownership of a file', function(done) {
-      fs.chown('file.txt', 42, 43, done);
-    });
-
-    it('fails if file does not exist', function(done) {
-      fs.chown('bogus.txt', 42, 43, function(err) {
-        assert.instanceOf(err, Error);
-        done();
-      });
-    });
-  });
-
-  describe('fs.chownSync(path, uid, gid)', function() {
-    beforeEach(function() {
-      mock({
-        'path/empty': {},
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('changes ownership of a file', function() {
-      fs.chownSync('file.txt', 42, 43);
-    });
-
-    it('fails if file does not exist', function() {
-      assert.throws(function() {
-        fs.chownSync('bogus.txt', 42, 43);
-      });
-    });
-  });
-
-  describe('fs.fchown(fd, uid, gid, callback)', function() {
-    beforeEach(function() {
-      mock({
-        'path/empty': {},
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('changes ownership of a file', function(done) {
-      const fd = fs.openSync('file.txt', 'r');
-      fs.fchown(fd, 42, 43, done);
-    });
-  });
-
-  describe('fs.fchownSync(fd, uid, gid)', function() {
-    beforeEach(function() {
-      mock({
-        'path/empty': {},
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('changes ownership of a file', function() {
-      const fd = fs.openSync('file.txt', 'r');
-      fs.fchownSync(fd, 42, 43);
-    });
-  });
 
   describe('fs.chmod(path, mode, callback)', function() {
     beforeEach(function() {
