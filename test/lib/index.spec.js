@@ -7,9 +7,9 @@ const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
 const bufferFrom = require('../../lib/buffer').from;
-const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
+const withPromise = helper.withPromise;
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -229,91 +229,6 @@ describe('The API', function() {
 });
 
 describe('Mocking the file system', function() {
-  describe('fs.unlink(path, callback)', function() {
-    beforeEach(function() {
-      mock({
-        dir: {},
-        dir2: mock.directory({
-          mtime: new Date(1),
-          items: {file: 'content here'}
-        }),
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('deletes a file', function(done) {
-      fs.unlink('file.txt', function(err) {
-        if (err) {
-          return done(err);
-        }
-        assert.isFalse(fs.existsSync('file.txt'));
-        done();
-      });
-    });
-
-    it('updates mtime of parent', function(done) {
-      const oldTime = fs.statSync('dir2').mtime;
-      fs.unlink('dir2/file', function(err) {
-        if (err) {
-          return done(err);
-        }
-        assert.isFalse(fs.existsSync('dir2/file'));
-        const newTime = fs.statSync('dir2').mtime;
-        assert.isTrue(newTime > oldTime);
-        done();
-      });
-    });
-
-    it('fails for a directory', function(done) {
-      fs.unlink('dir', function(err) {
-        assert.instanceOf(err, Error);
-        assert.isTrue(fs.existsSync('dir'));
-        done();
-      });
-    });
-
-    it('respects previously opened file descriptors', function(done) {
-      const fd = fs.openSync('file.txt', 'r');
-      fs.unlink('file.txt', function(err) {
-        if (err) {
-          return done(err);
-        }
-        assert.isFalse(fs.existsSync('file.txt'));
-        // but we can still use fd to read
-        const buffer = bufferAlloc(7);
-        const read = fs.readSync(fd, buffer, 0, 7);
-        assert.equal(read, 7);
-        assert.equal(String(buffer), 'content');
-        done();
-      });
-    });
-  });
-
-  describe('fs.unlinkSync(path)', function() {
-    beforeEach(function() {
-      mock({
-        'file.txt': 'content'
-      });
-    });
-    afterEach(mock.restore);
-
-    it('deletes a file', function() {
-      fs.unlinkSync('file.txt');
-      assert.isFalse(fs.existsSync('file.txt'));
-    });
-
-    it('respects previously opened file descriptors', function() {
-      const fd = fs.openSync('file.txt', 'r');
-      fs.unlinkSync('file.txt');
-      assert.isFalse(fs.existsSync('file.txt'));
-      // but we can still use fd to read
-      const buffer = bufferAlloc(7);
-      const read = fs.readSync(fd, buffer, 0, 7);
-      assert.equal(read, 7);
-      assert.equal(String(buffer), 'content');
-    });
-  });
 
   describe('fs.utimes(path, atime, mtime, callback)', function() {
     beforeEach(function() {
