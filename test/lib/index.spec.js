@@ -343,7 +343,9 @@ describe('Mocking the file system', function() {
         });
       });
 
-      withPromise.it('promise generates EACCES for W_OK and 000', function(done) {
+      withPromise.it('promise generates EACCES for W_OK and 000', function(
+        done
+      ) {
         fs.promises.access('path/to/000', fs.W_OK).then(
           function() {
             assert.fail('should not succeed.');
@@ -1088,7 +1090,9 @@ describe('Mocking the file system', function() {
         });
       });
 
-      withPromise.it('promise fails if dest path does not exist', function(done) {
+      withPromise.it('promise fails if dest path does not exist', function(
+        done
+      ) {
         fs.promises.copyFile('path/to/src.txt', 'path/nope/dest.txt').then(
           function() {
             assert.fail('should not succeed.');
