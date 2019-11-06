@@ -1774,42 +1774,6 @@ describe('Mocking the file system', function() {
     });
   });
 
-  describe('fs.readdirSync(path)', function() {
-    beforeEach(function() {
-      mock({
-        'path/to/file.txt': 'file content',
-        nested: {
-          sub: {
-            dir: {
-              'one.txt': 'one content',
-              'two.txt': 'two content',
-              empty: {}
-            }
-          }
-        }
-      });
-    });
-    afterEach(mock.restore);
-
-    it('lists directory contents', function() {
-      const items = fs.readdirSync(path.join('path', 'to'));
-      assert.isArray(items);
-      assert.deepEqual(items, ['file.txt']);
-    });
-
-    it('lists nested directory contents', function() {
-      const items = fs.readdirSync(path.join('nested', 'sub', 'dir'));
-      assert.isArray(items);
-      assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
-    });
-
-    it('throws for bogus path', function() {
-      assert.throws(function() {
-        fs.readdirSync('bogus');
-      });
-    });
-  });
-
   describe('fs.readdir(path, callback)', function() {
     beforeEach(function() {
       mock({
