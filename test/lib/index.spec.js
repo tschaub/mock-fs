@@ -1549,6 +1549,21 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it('promise accepts a file descriptor for a file (r)', function(
+      done
+    ) {
+      fs.promises
+        .open('path/to/file.txt', 'r')
+        .then(function(fd) {
+          return fd.stat();
+        })
+        .then(function(stats) {
+          assert.isTrue(stats.isFile());
+          assert.equal(stats.size, 12);
+          done();
+        }, done);
+    });
+
     it('accepts a file descriptor for a directory (r)', function(done) {
       const fd = fs.openSync('path/to', 'r');
       fs.fstat(fd, function(err, stats) {
@@ -1561,13 +1576,51 @@ describe('Mocking the file system', function() {
       });
     });
 
+    withPromise.it(
+      'promise accepts a file descriptor for a directory (r)',
+      function(done) {
+        fs.promises
+          .open('path/to', 'r')
+          .then(function(fd) {
+            return fd.stat();
+          })
+          .then(function(stats) {
+            assert.isTrue(stats.isDirectory());
+            assert.isTrue(stats.size > 0);
+            done();
+          }, done);
+      }
+    );
+
     it('fails for bad file descriptor', function(done) {
       const fd = fs.openSync('path/to/file.txt', 'r');
       fs.closeSync(fd);
       fs.fstat(fd, function(err, stats) {
         assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EBADF');
         done();
       });
+    });
+
+    withPromise.it('promise fails for bad file descriptor', function(done) {
+      fs.promises
+        .open('path/to/file.txt', 'r')
+        .then(function(fd) {
+          return fd.close().then(function() {
+            return fd.stat();
+          });
+        })
+        .then(
+          function() {
+            assert.fail('should not succeed.');
+            done();
+          },
+          function(err) {
+            assert.instanceOf(err, Error);
+            assert.equal(err.code, 'EBADF');
+            done();
+          }
+        );
     });
   });
 
