@@ -60,7 +60,9 @@ if (fs.mkdtemp) {
       });
     });
 
-    withPromise.it('promise accepts a "utf8" encoding argument', function(done) {
+    withPromise.it('promise accepts a "utf8" encoding argument', function(
+      done
+    ) {
       fs.promises.mkdtemp('parent/dir', 'utf8').then(function(dirPath) {
         assert.isString(dirPath);
         const parentPath = path.dirname(dirPath);
@@ -86,7 +88,9 @@ if (fs.mkdtemp) {
       });
     });
 
-    withPromise.it('promise accepts a "buffer" encoding argument', function(done) {
+    withPromise.it('promise accepts a "buffer" encoding argument', function(
+      done
+    ) {
       fs.promises.mkdtemp('parent/dir', 'buffer').then(function(buffer) {
         assert.instanceOf(buffer, Buffer);
         const dirPath = buffer.toString();

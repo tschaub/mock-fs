@@ -1,15 +1,12 @@
 'use strict';
 
-const Writable = require('stream').Writable;
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -228,276 +225,166 @@ describe('The API', function() {
   });
 });
 
-describe('Mocking the file system', function() {
+describe('process.cwd()', function() {
+  afterEach(mock.restore);
 
-  describe('fs.createReadStream(path, [options])', function() {
-    beforeEach(function() {
-      mock({
-        'dir/source': 'source content'
-      });
-    });
-    afterEach(mock.restore);
+  it('maintains current working directory', function() {
+    const originalCwd = process.cwd();
+    mock();
 
-    it('creates a readable stream', function() {
-      const stream = fs.createReadStream('dir/source');
-      assert.isTrue(stream.readable);
-    });
-
-    it('allows piping to a writable stream', function(done) {
-      const input = fs.createReadStream('dir/source');
-      const output = fs.createWriteStream('dir/dest');
-      output.on('close', function() {
-        fs.readFile('dir/dest', function(err, data) {
-          if (err) {
-            return done(err);
-          }
-          assert.equal(String(data), 'source content');
-          done();
-        });
-      });
-      output.on('error', done);
-
-      input.pipe(output);
-    });
+    const cwd = process.cwd();
+    assert.equal(cwd, originalCwd);
   });
 
-  describe('fs.createWriteStream(path[, options])', function() {
-    beforeEach(function() {
-      mock();
-    });
-    afterEach(mock.restore);
-
-    it('provides a write stream for a file in buffered mode', function(done) {
-      const output = fs.createWriteStream('test.txt');
-      output.on('close', function() {
-        fs.readFile('test.txt', function(err, data) {
-          if (err) {
-            return done(err);
-          }
-          assert.equal(String(data), 'lots of source content');
-          done();
-        });
-      });
-      output.on('error', done);
-
-      // if output._writev is available, buffered multiple writes will hit _writev.
-      // otherwise, hit multiple _write.
-      output.write(bufferFrom('lots '));
-      output.write(bufferFrom('of '));
-      output.write(bufferFrom('source '));
-      output.end(bufferFrom('content'));
+  it('allows changing directory', function() {
+    const originalCwd = process.cwd();
+    mock({
+      dir: {}
     });
 
-    it('provides a write stream for a file', function(done) {
-      const output = fs.createWriteStream('test.txt');
-      output.on('close', function() {
-        fs.readFile('test.txt', function(err, data) {
-          if (err) {
-            return done(err);
-          }
-          assert.equal(String(data), 'lots of source content');
-          done();
-        });
-      });
-      output.on('error', done);
+    process.chdir('dir');
+    const cwd = process.cwd();
+    assert.equal(cwd, path.join(originalCwd, 'dir'));
+  });
 
-      output.write(bufferFrom('lots '));
-      setTimeout(function() {
-        output.write(bufferFrom('of '));
-        setTimeout(function() {
-          output.write(bufferFrom('source '));
-          setTimeout(function() {
-            output.end(bufferFrom('content'));
-          }, 50);
-        }, 50);
-      }, 50);
-    });
+  it('prevents changing directory to non-existent path', function() {
+    mock();
 
-    if (Writable && Writable.prototype.cork) {
-      it('works when write stream is corked', function(done) {
-        const output = fs.createWriteStream('test.txt');
-        output.on('close', function() {
-          fs.readFile('test.txt', function(err, data) {
-            if (err) {
-              return done(err);
-            }
-            assert.equal(String(data), 'lots of source content');
-            done();
-          });
-        });
-        output.on('error', done);
-
-        output.cork();
-        output.write(bufferFrom('lots '));
-        output.write(bufferFrom('of '));
-        output.write(bufferFrom('source '));
-        output.end(bufferFrom('content'));
-        output.uncork();
-      });
+    let err;
+    try {
+      process.chdir('dir');
+    } catch (e) {
+      err = e;
     }
+    assert.instanceOf(err, Error);
+    assert.equal(err.code, 'ENOENT');
   });
 
-  describe('process.cwd()', function() {
+  it('prevents changing directory to non-directory path', function() {
+    mock({
+      file: ''
+    });
+
+    let err;
+    try {
+      process.chdir('file');
+    } catch (e) {
+      err = e;
+    }
+    assert.instanceOf(err, Error);
+    assert.equal(err.code, 'ENOTDIR');
+  });
+
+  it('restores original methods on restore', function() {
+    const originalCwd = process.cwd;
+    const originalChdir = process.chdir;
+    mock();
+
+    mock.restore();
+    assert.equal(process.cwd, originalCwd);
+    assert.equal(process.chdir, originalChdir);
+  });
+
+  it('restores original working directory on restore', function() {
+    const originalCwd = process.cwd();
+    mock({
+      dir: {}
+    });
+
+    process.chdir('dir');
+    mock.restore();
+
+    const cwd = process.cwd();
+    assert.equal(cwd, originalCwd);
+  });
+});
+
+if (process.getuid && process.getgid) {
+  describe('security', function() {
     afterEach(mock.restore);
 
-    it('maintains current working directory', function() {
-      const originalCwd = process.cwd();
-      mock();
-
-      const cwd = process.cwd();
-      assert.equal(cwd, originalCwd);
-    });
-
-    it('allows changing directory', function() {
-      const originalCwd = process.cwd();
+    it('denies dir listing without execute on parent', function() {
       mock({
-        dir: {}
-      });
-
-      process.chdir('dir');
-      const cwd = process.cwd();
-      assert.equal(cwd, path.join(originalCwd, 'dir'));
-    });
-
-    it('prevents changing directory to non-existent path', function() {
-      mock();
-
-      let err;
-      try {
-        process.chdir('dir');
-      } catch (e) {
-        err = e;
-      }
-      assert.instanceOf(err, Error);
-      assert.equal(err.code, 'ENOENT');
-    });
-
-    it('prevents changing directory to non-directory path', function() {
-      mock({
-        file: ''
+        secure: mock.directory({
+          mode: parseInt('0666', 8),
+          items: {
+            insecure: {
+              file: 'file content'
+            }
+          }
+        })
       });
 
       let err;
       try {
-        process.chdir('file');
+        fs.readdirSync('secure/insecure');
       } catch (e) {
         err = e;
       }
       assert.instanceOf(err, Error);
-      assert.equal(err.code, 'ENOTDIR');
+      assert.equal(err.code, 'EACCES');
     });
 
-    it('restores original methods on restore', function() {
-      const originalCwd = process.cwd;
-      const originalChdir = process.chdir;
-      mock();
-
-      mock.restore();
-      assert.equal(process.cwd, originalCwd);
-      assert.equal(process.chdir, originalChdir);
-    });
-
-    it('restores original working directory on restore', function() {
-      const originalCwd = process.cwd();
+    it('denies file read without execute on parent', function() {
       mock({
-        dir: {}
+        secure: mock.directory({
+          mode: parseInt('0666', 8),
+          items: {
+            insecure: {
+              file: 'file content'
+            }
+          }
+        })
       });
 
-      process.chdir('dir');
-      mock.restore();
+      let err;
+      try {
+        fs.readFileSync('secure/insecure/file');
+      } catch (e) {
+        err = e;
+      }
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EACCES');
+    });
 
-      const cwd = process.cwd();
-      assert.equal(cwd, originalCwd);
+    it('denies file read without read on file', function() {
+      mock({
+        insecure: {
+          'write-only': mock.file({
+            mode: parseInt('0222', 8),
+            content: 'write only'
+          })
+        }
+      });
+
+      let err;
+      try {
+        fs.readFileSync('insecure/write-only');
+      } catch (e) {
+        err = e;
+      }
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EACCES');
+    });
+
+    it('denies file write without write on file', function() {
+      mock({
+        insecure: {
+          'read-only': mock.file({
+            mode: parseInt('0444', 8),
+            content: 'read only'
+          })
+        }
+      });
+
+      let err;
+      try {
+        fs.writeFileSync('insecure/read-only', 'denied');
+      } catch (e) {
+        err = e;
+      }
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EACCES');
     });
   });
-
-  if (process.getuid && process.getgid) {
-    describe('security', function() {
-      afterEach(mock.restore);
-
-      it('denies dir listing without execute on parent', function() {
-        mock({
-          secure: mock.directory({
-            mode: parseInt('0666', 8),
-            items: {
-              insecure: {
-                file: 'file content'
-              }
-            }
-          })
-        });
-
-        let err;
-        try {
-          fs.readdirSync('secure/insecure');
-        } catch (e) {
-          err = e;
-        }
-        assert.instanceOf(err, Error);
-        assert.equal(err.code, 'EACCES');
-      });
-
-      it('denies file read without execute on parent', function() {
-        mock({
-          secure: mock.directory({
-            mode: parseInt('0666', 8),
-            items: {
-              insecure: {
-                file: 'file content'
-              }
-            }
-          })
-        });
-
-        let err;
-        try {
-          fs.readFileSync('secure/insecure/file');
-        } catch (e) {
-          err = e;
-        }
-        assert.instanceOf(err, Error);
-        assert.equal(err.code, 'EACCES');
-      });
-
-      it('denies file read without read on file', function() {
-        mock({
-          insecure: {
-            'write-only': mock.file({
-              mode: parseInt('0222', 8),
-              content: 'write only'
-            })
-          }
-        });
-
-        let err;
-        try {
-          fs.readFileSync('insecure/write-only');
-        } catch (e) {
-          err = e;
-        }
-        assert.instanceOf(err, Error);
-        assert.equal(err.code, 'EACCES');
-      });
-
-      it('denies file write without write on file', function() {
-        mock({
-          insecure: {
-            'read-only': mock.file({
-              mode: parseInt('0444', 8),
-              content: 'read only'
-            })
-          }
-        });
-
-        let err;
-        try {
-          fs.writeFileSync('insecure/read-only', 'denied');
-        } catch (e) {
-          err = e;
-        }
-        assert.instanceOf(err, Error);
-        assert.equal(err.code, 'EACCES');
-      });
-    });
-  }
-});
+}
