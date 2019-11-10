@@ -91,3 +91,11 @@ exports.flags = function(str) {
       throw new Error('Unsupported flag: ' + str);
   }
 };
+
+exports.assertEqualPaths = function(actual, expected) {
+  if (process.platform === 'win32') {
+    chai.assert.equal(actual.toLowerCase(), expected.toLowerCase());
+  } else {
+    chai.assert(actual, expected);
+  }
+};

@@ -12,8 +12,8 @@ const constants = require('constants');
 const bufferFrom = require('../../lib/buffer').from;
 const bufferAlloc = require('../../lib/buffer').alloc;
 
-const toNamespacedPath = FileSystem.toNamespacedPath;
 const assert = helper.assert;
+const assertEqualPaths = helper.assertEqualPaths;
 const flags = helper.flags;
 
 describe('Binding', function() {
@@ -239,18 +239,6 @@ describe('Binding', function() {
   });
 
   describe('#realpath()', function() {
-    function assertEqualPaths(actual, expected) {
-      if (toNamespacedPath(expected) === expected) {
-        // not on Windows
-        assert.equal(actual, expected);
-      } else {
-        assert.equal(
-          actual.toLowerCase(),
-          toNamespacedPath(expected).toLowerCase()
-        );
-      }
-    }
-
     it('returns the real path for a regular file', function(done) {
       const binding = new Binding(system);
       binding.realpath('mock-dir/one.txt', 'utf-8', function(err, realPath) {
