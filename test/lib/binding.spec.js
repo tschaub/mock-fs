@@ -12,6 +12,7 @@ const constants = require('constants');
 const bufferFrom = require('../../lib/buffer').from;
 const bufferAlloc = require('../../lib/buffer').alloc;
 
+const toNamespacedPath = FileSystem.toNamespacedPath;
 const assert = helper.assert;
 const flags = helper.flags;
 
@@ -239,13 +240,13 @@ describe('Binding', function() {
 
   describe('#realpath()', function() {
     function assertEqualPaths(actual, expected) {
-      if (path._makeLong(expected) === expected) {
+      if (toNamespacedPath(expected) === expected) {
         // not on Windows
         assert.equal(actual, expected);
       } else {
         assert.equal(
           actual.toLowerCase(),
-          path._makeLong(expected).toLowerCase()
+          toNamespacedPath(expected).toLowerCase()
         );
       }
     }
