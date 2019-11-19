@@ -918,6 +918,16 @@ describe('Binding', function() {
         binding.read(fd, buffer, 0, 11, 0);
       });
     });
+
+    it('throws ENOTDIR when trying to open an incorrect path (nested under existing file)', function() {
+      const binding = new Binding(system);
+      assert.throws(function() {
+        binding.open(
+          path.join('mock-dir', 'two.txt', 'bogus-path'),
+          flags('r')
+        );
+      }, 'ENOTDIR');
+    });
   });
 
   describe('#write()', function() {
