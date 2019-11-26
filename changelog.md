@@ -2,6 +2,7 @@
 
 ## 4.10.4
 
+ * Throw ENOTDIR when trying to open an incorrect path (thanks @niieani, see [#282][#282])
  * Fix maybeCallback return (thanks @3cp, see [#281][#281])
 
 ## 4.10.3
@@ -272,3 +273,4 @@ Detailed changes:
 [#277]: https://github.com/tschaub/mock-fs/pull/277
 [#279]: https://github.com/tschaub/mock-fs/pull/279
 [#281]: https://github.com/tschaub/mock-fs/pull/281
+[#282]: https://github.com/tschaub/mock-fs/pull/282
