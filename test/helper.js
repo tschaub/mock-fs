@@ -3,6 +3,8 @@
 const chai = require('chai');
 const constants = require('constants');
 const semver = require('semver');
+const fs = require('fs');
+const hasPromise = !!fs.promises;
 
 /** @type {boolean} */
 chai.config.includeStack = true;
@@ -13,13 +15,18 @@ chai.config.includeStack = true;
  */
 exports.assert = chai.assert;
 
+const TEST = {it: it, xit: xit, describe: describe, xdescribe: xdescribe};
+const NO_TEST = {it: xit, xit: xit, describe: xdescribe, xdescribe: xdescribe};
+
 exports.inVersion = function(range) {
   if (semver.satisfies(process.version, range)) {
-    return {it: it, describe: describe};
+    return TEST;
   } else {
-    return {it: xit, describe: xdescribe};
+    return NO_TEST;
   }
 };
+
+exports.withPromise = hasPromise ? TEST : NO_TEST;
 
 /**
  * Convert a string to flags for fs.open.
@@ -82,5 +89,13 @@ exports.flags = function(str) {
       );
     default:
       throw new Error('Unsupported flag: ' + str);
+  }
+};
+
+exports.assertEqualPaths = function(actual, expected) {
+  if (process.platform === 'win32') {
+    chai.assert.equal(actual.toLowerCase(), expected.toLowerCase());
+  } else {
+    chai.assert(actual, expected);
   }
 };
