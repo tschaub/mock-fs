@@ -42,7 +42,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
   it('fails for directory', function(done) {
     fs.readFile('path/to', function(err, data) {
       assert.instanceOf(err, Error);
-      assert.equal(err.code, 'EBADF');
+      assert.equal(err.code, 'EISDIR');
       done();
     });
   });
@@ -55,7 +55,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
       },
       function(err) {
         assert.instanceOf(err, Error);
-        assert.equal(err.code, 'EBADF');
+        assert.equal(err.code, 'EISDIR');
         done();
       }
     );
@@ -104,9 +104,13 @@ describe('fs.readFileSync(filename, [options])', function() {
   });
 
   it('fails for directory', function() {
-    assert.throws(function() {
+    try {
       fs.readFileSync('path/to');
-    });
+      assert.fail('should not succeed.');
+    } catch (err) {
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EISDIR');
+    }
   });
 
   it('fails for bad path', function() {
