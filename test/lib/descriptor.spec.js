@@ -1,5 +1,6 @@
 'use strict';
 
+const constants = require('constants');
 const FileDescriptor = require('../../lib/descriptor');
 const helper = require('../helper');
 
@@ -89,6 +90,11 @@ describe('FileDescriptor', function() {
       const fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isAppend());
     });
+
+    it('not opened for appending (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
+      assert.isFalse(fd.isAppend());
+    });
   });
 
   describe('#isTruncate()', function() {
@@ -149,6 +155,11 @@ describe('FileDescriptor', function() {
 
     it('not opened for truncating (ax+)', function() {
       const fd = new FileDescriptor(flags('ax+'));
+      assert.isFalse(fd.isTruncate());
+    });
+
+    it('not opened for truncating (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
       assert.isFalse(fd.isTruncate());
     });
   });
@@ -213,6 +224,11 @@ describe('FileDescriptor', function() {
       const fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isCreate());
     });
+
+    it('opened for creation (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
+      assert.isTrue(fd.isCreate());
+    });
   });
 
   describe('#isRead()', function() {
@@ -273,6 +289,11 @@ describe('FileDescriptor', function() {
 
     it('opened for reading (ax+)', function() {
       const fd = new FileDescriptor(flags('ax+'));
+      assert.isTrue(fd.isRead());
+    });
+
+    it('opened for reading (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
       assert.isTrue(fd.isRead());
     });
   });
@@ -337,6 +358,11 @@ describe('FileDescriptor', function() {
       const fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isWrite());
     });
+
+    it('not opened for writing (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
+      assert.isFalse(fd.isWrite());
+    });
   });
 
   describe('#isExclusive()', function() {
@@ -398,6 +424,11 @@ describe('FileDescriptor', function() {
     it('opened exclusive (ax+)', function() {
       const fd = new FileDescriptor(flags('ax+'));
       assert.isTrue(fd.isExclusive());
+    });
+
+    it('not opened for exclusive (O_CREAT)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT);
+      assert.isFalse(fd.isExclusive());
     });
   });
 });
