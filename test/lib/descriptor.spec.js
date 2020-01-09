@@ -91,8 +91,8 @@ describe('FileDescriptor', function() {
       assert.isTrue(fd.isAppend());
     });
 
-    it('not opened for appending (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('not opened for appending (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isFalse(fd.isAppend());
     });
   });
@@ -158,8 +158,8 @@ describe('FileDescriptor', function() {
       assert.isFalse(fd.isTruncate());
     });
 
-    it('not opened for truncating (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('not opened for truncating (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isFalse(fd.isTruncate());
     });
   });
@@ -225,8 +225,8 @@ describe('FileDescriptor', function() {
       assert.isTrue(fd.isCreate());
     });
 
-    it('opened for creation (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('opened for creation (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isTrue(fd.isCreate());
     });
   });
@@ -292,8 +292,8 @@ describe('FileDescriptor', function() {
       assert.isTrue(fd.isRead());
     });
 
-    it('opened for reading (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('opened for reading (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isTrue(fd.isRead());
     });
   });
@@ -359,8 +359,8 @@ describe('FileDescriptor', function() {
       assert.isTrue(fd.isWrite());
     });
 
-    it('not opened for writing (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('not opened for writing (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isFalse(fd.isWrite());
     });
   });
@@ -426,8 +426,8 @@ describe('FileDescriptor', function() {
       assert.isTrue(fd.isExclusive());
     });
 
-    it('not opened for exclusive (O_CREAT)', function() {
-      const fd = new FileDescriptor(constants.O_CREAT);
+    it('not opened for exclusive (O_CREAT | O_RDONLY)', function() {
+      const fd = new FileDescriptor(constants.O_CREAT | constants.O_RDONLY);
       assert.isFalse(fd.isExclusive());
     });
   });
