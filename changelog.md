@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.11.0
+
+ * Support `withFileTypes` when reading directories (thanks @mrmlnc, see [#287][#287])
+
 ## 4.10.4
 
  * Throw ENOTDIR when trying to open an incorrect path (thanks @niieani, see [#282][#282])
@@ -274,3 +278,4 @@ Detailed changes:
 [#279]: https://github.com/tschaub/mock-fs/pull/279
 [#281]: https://github.com/tschaub/mock-fs/pull/281
 [#282]: https://github.com/tschaub/mock-fs/pull/282
+[#287]: https://github.com/tschaub/mock-fs/pull/287
