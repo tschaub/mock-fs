@@ -253,10 +253,4 @@ describe('fs.readdirSync(path)', function() {
       fs.readdirSync('denied');
     });
   });
-
-  it('throws when access refused', function() {
-    assert.throws(function() {
-      fs.readdirSync('denied');
-    });
-  });
 });
