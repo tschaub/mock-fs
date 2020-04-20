@@ -21,7 +21,15 @@ describe('fs.readdir(path, callback)', function() {
             empty: {}
           }
         }
-      }
+      },
+      denied: mock.directory({
+        mode: 0o000,
+        items: [
+          {
+            'one.txt': 'content'
+          }
+        ]
+      })
     });
   });
   afterEach(mock.restore);
@@ -81,6 +89,29 @@ describe('fs.readdir(path, callback)', function() {
 
   withPromise.it('promise calls with an error for bogus path', function(done) {
     fs.promises.readdir('bogus').then(
+      function() {
+        assert.fail('should not succeed.');
+        done();
+      },
+      function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      }
+    );
+  });
+
+  it('calls with an error for restricted path', function(done) {
+    fs.readdir('denied', function(err, items) {
+      assert.instanceOf(err, Error);
+      assert.isUndefined(items);
+      done();
+    });
+  });
+
+  withPromise.it('promise calls with an error for restricted path', function(
+    done
+  ) {
+    fs.promises.readdir('denied').then(
       function() {
         assert.fail('should not succeed.');
         done();
@@ -214,6 +245,18 @@ describe('fs.readdirSync(path)', function() {
   it('throws for bogus path', function() {
     assert.throws(function() {
       fs.readdirSync('bogus');
+    });
+  });
+
+  it('throws when access refused', function() {
+    assert.throws(function() {
+      fs.readdirSync('denied');
+    });
+  });
+
+  it('throws when access refused', function() {
+    assert.throws(function() {
+      fs.readdirSync('denied');
     });
   });
 });
