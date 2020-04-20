@@ -20,6 +20,10 @@ describe('fs.chown(path, uid, gid, callback)', function() {
     fs.chown('file.txt', 42, 43, done);
   });
 
+  it('supports Buffer input', function(done) {
+    fs.chown(Buffer.from('file.txt'), 42, 43, done);
+  });
+
   withPromise.it('promise changes ownership of a file', function(done) {
     fs.promises.chown('file.txt', 42, 43).then(done, done);
   });

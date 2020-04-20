@@ -34,6 +34,16 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.open(Buffer.from('nested/sub/dir/one.txt'), 'r', function(err, fd) {
+      if (err) {
+        return done(err);
+      }
+      assert.isNumber(fd);
+      done();
+    });
+  });
+
   withPromise.it('promise opens an existing file for reading (r)', function(
     done
   ) {

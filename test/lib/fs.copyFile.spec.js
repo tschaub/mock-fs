@@ -27,6 +27,22 @@ if (fs.copyFile && fs.copyFileSync) {
       });
     });
 
+    it('supports Buffer input', function(done) {
+      fs.copyFile(
+        Buffer.from('path/to/src.txt'),
+        Buffer.from('empty/dest.txt'),
+        function(err) {
+          assert.isTrue(!err);
+          assert.isTrue(fs.existsSync('empty/dest.txt'));
+          assert.equal(
+            String(fs.readFileSync('empty/dest.txt')),
+            'file content'
+          );
+          done();
+        }
+      );
+    });
+
     withPromise.it('promise copies a file to an empty directory', function(
       done
     ) {

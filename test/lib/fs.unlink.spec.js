@@ -31,6 +31,16 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.unlink(Buffer.from('file.txt'), function(err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('file.txt'));
+      done();
+    });
+  });
+
   withPromise.it('promise deletes a file', function(done) {
     fs.promises.unlink('file.txt').then(function() {
       assert.isFalse(fs.existsSync('file.txt'));

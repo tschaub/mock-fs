@@ -34,6 +34,18 @@ describe('fs.lstat(path, callback)', function() {
     });
   });
 
+  it('suports Buffer input', function(done) {
+    fs.lstat(Buffer.from('link'), function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isSymbolicLink());
+      assert.isFalse(stats.isFile());
+      assert.equal(stats.mtime.getTime(), 2);
+      done();
+    });
+  });
+
   withPromise.it('promise stats a symbolic link', function(done) {
     fs.promises.lstat('link').then(function(stats) {
       assert.isTrue(stats.isSymbolicLink());

@@ -35,6 +35,15 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.readdir(Buffer.from(path.join('path', 'to')), function(err, items) {
+      assert.isNull(err);
+      assert.isArray(items);
+      assert.deepEqual(items, ['file.txt']);
+      done();
+    });
+  });
+
   withPromise.it('promise lists directory contents', function(done) {
     fs.promises.readdir(path.join('path', 'to')).then(function(items) {
       assert.isArray(items);
