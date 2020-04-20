@@ -224,4 +224,4 @@ expect(actual).toMatchSnapshot()
 Note: it's safe to call `mock.restore` multiple times, so it can still be called in `afterEach` and then manually
 in test cases which use snapshot testing.
 
-[![Current Status](https://secure.travis-ci.org/tschaub/mock-fs.png?branch=master)](https://travis-ci.org/tschaub/mock-fs)
+[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
