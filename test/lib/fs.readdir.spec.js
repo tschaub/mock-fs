@@ -103,6 +103,7 @@ describe('fs.readdir(path, callback)', function() {
   it('calls with an error for restricted path', function(done) {
     fs.readdir('denied', function(err, items) {
       assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EACCES');
       assert.isUndefined(items);
       done();
     });
@@ -118,6 +119,7 @@ describe('fs.readdir(path, callback)', function() {
       },
       function(err) {
         assert.instanceOf(err, Error);
+        assert.equal(err.code, 'EACCES');
         done();
       }
     );
