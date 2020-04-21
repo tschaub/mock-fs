@@ -26,6 +26,17 @@ describe('fs.chmod(path, mode, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.chmod(Buffer.from('file.txt'), parseInt('0664', 8), function(err) {
+      if (err) {
+        return done(err);
+      }
+      const stats = fs.statSync(Buffer.from('file.txt'));
+      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
+      done();
+    });
+  });
+
   withPromise.it('promise changes permissions of a file', function(done) {
     fs.promises.chmod('file.txt', parseInt('0664', 8)).then(function() {
       const stats = fs.statSync('file.txt');

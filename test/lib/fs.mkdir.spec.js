@@ -35,6 +35,17 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.mkdir(Buffer.from('parent/dir'), function(err) {
+      if (err) {
+        return done(err);
+      }
+      const stats = fs.statSync('parent/dir');
+      assert.isTrue(stats.isDirectory());
+      done();
+    });
+  });
+
   withPromise.it('promise creates a new directory', function(done) {
     fs.promises.mkdir('parent/dir').then(function() {
       const stats = fs.statSync('parent/dir');

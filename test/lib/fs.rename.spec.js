@@ -32,6 +32,19 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.rename(
+      Buffer.from('path/to/a.bin'),
+      Buffer.from('path/to/b.bin'),
+      function(err) {
+        assert.isTrue(!err);
+        assert.isFalse(fs.existsSync('path/to/a.bin'));
+        assert.isTrue(fs.existsSync('path/to/b.bin'));
+        done();
+      }
+    );
+  });
+
   withPromise.it('promise allows files to be renamed', function(done) {
     fs.promises.rename('path/to/a.bin', 'path/to/b.bin').then(function() {
       assert.isFalse(fs.existsSync('path/to/a.bin'));

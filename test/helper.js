@@ -15,8 +15,27 @@ chai.config.includeStack = true;
  */
 exports.assert = chai.assert;
 
-const TEST = {it: it, xit: xit, describe: describe, xdescribe: xdescribe};
-const NO_TEST = {it: xit, xit: xit, describe: xdescribe, xdescribe: xdescribe};
+function run(func) {
+  func();
+}
+
+function noRun() {}
+
+const TEST = {
+  it: it,
+  xit: xit,
+  describe: describe,
+  xdescribe: xdescribe,
+  run: run
+};
+
+const NO_TEST = {
+  it: xit,
+  xit: xit,
+  describe: xdescribe,
+  xdescribe: xdescribe,
+  run: noRun
+};
 
 exports.inVersion = function(range) {
   if (semver.satisfies(process.version, range)) {

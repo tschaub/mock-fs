@@ -52,6 +52,17 @@ describe('fs.stat(path, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.stat(Buffer.from('/path/to/file.txt'), function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isFile());
+      assert.isFalse(stats.isDirectory());
+      done();
+    });
+  });
+
   withPromise.it('promise identifies files', function(done) {
     fs.promises.stat('/path/to/file.txt').then(function(stats) {
       assert.isTrue(stats.isFile());

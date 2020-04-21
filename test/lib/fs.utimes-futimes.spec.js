@@ -28,6 +28,20 @@ describe('fs.utimes(path, atime, mtime, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.utimes(Buffer.from('file.txt'), new Date(100), new Date(200), function(
+      err
+    ) {
+      if (err) {
+        return done(err);
+      }
+      const stats = fs.statSync('file.txt');
+      assert.equal(stats.atime.getTime(), 100);
+      assert.equal(stats.mtime.getTime(), 200);
+      done();
+    });
+  });
+
   withPromise.it('promise updates timestamps for a file', function(done) {
     fs.promises
       .utimes('file.txt', new Date(100), new Date(200))

@@ -26,6 +26,16 @@ describe('fs.readlink(path, callback)', function() {
     });
   });
 
+  it('supports Buffer input', function(done) {
+    fs.readlink(Buffer.from('link'), function(err, srcPath) {
+      if (err) {
+        return done(err);
+      }
+      assert.equal(srcPath, './file.txt');
+      done();
+    });
+  });
+
   withPromise.it('promise reads a symbolic link', function(done) {
     fs.promises.readlink('link').then(function(srcPath) {
       assert.equal(srcPath, './file.txt');

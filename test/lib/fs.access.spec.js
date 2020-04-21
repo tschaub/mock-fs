@@ -63,6 +63,10 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/accessible/file', done);
     });
 
+    it('supports Buffer input', function(done) {
+      fs.access(Buffer.from('path/to/accessible/file'), done);
+    });
+
     withPromise.it('promise works for an accessible file', function(done) {
       fs.promises.access('path/to/accessible/file').then(done, done);
     });
