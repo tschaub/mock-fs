@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.12.0
+
+ * Check permissions in `readdir` and `readdirSync` (thanks @warpdesign, see [#295][#295])
+ * Add support for `Buffer` arg on many `fs` functions (thanks @3cp, see [#293][#293])
+ * Fix checks for read permission (thanks @3cp, see [#289][#289])
+ * Correct error code for `readFile` on a directory (thanks @3cp, see [#286][#286])
+
 ## 4.11.0
 
  * Support `withFileTypes` when reading directories (thanks @mrmlnc, see [#287][#287])
@@ -278,4 +285,8 @@ Detailed changes:
 [#279]: https://github.com/tschaub/mock-fs/pull/279
 [#281]: https://github.com/tschaub/mock-fs/pull/281
 [#282]: https://github.com/tschaub/mock-fs/pull/282
+[#286]: https://github.com/tschaub/mock-fs/pull/286
 [#287]: https://github.com/tschaub/mock-fs/pull/287
+[#289]: https://github.com/tschaub/mock-fs/pull/289
+[#293]: https://github.com/tschaub/mock-fs/pull/293
+[#295]: https://github.com/tschaub/mock-fs/pull/295
