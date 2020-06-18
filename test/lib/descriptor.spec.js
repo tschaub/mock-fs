@@ -15,6 +15,18 @@ describe('FileDescriptor', function() {
     });
   });
 
+  describe('#getPath()', function() {
+    it('returns undefiend if no path was provided', function() {
+      const fd = new FileDescriptor(flags('r'));
+      assert.isUndefined(fd.getPath());
+    });
+
+    it('returns the path the descriptor was opened with', function() {
+      const fd = new FileDescriptor(flags('r'), '/path/to/file');
+      assert.equal(fd.getPath(), '/path/to/file');
+    });
+  });
+
   describe('#getPosition()', function() {
     it('returns zero by default', function() {
       const fd = new FileDescriptor(flags('r'));
