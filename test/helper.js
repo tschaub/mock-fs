@@ -118,3 +118,14 @@ exports.assertEqualPaths = function(actual, expected) {
     chai.assert(actual, expected);
   }
 };
+
+exports.assertEvent = function(action, emitter, eventName, ...args) {
+  const captured = [];
+  const listener = function() {
+    captured.push([...arguments]);
+  };
+  emitter.addListener(eventName, listener);
+  action();
+  emitter.removeListener(eventName, listener);
+  chai.assert.deepEqual([...args], captured[0]);
+};
