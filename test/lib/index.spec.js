@@ -196,6 +196,12 @@ describe('The API', function() {
   describe(`mock.createDirectoryInfoFromPaths()`, () => {
     const assetsPath = path.resolve(__dirname, '../assets');
 
+    it('throws with non-string paths', () => {
+      assert.throws(() => mock.createDirectoryInfoFromPaths(null));
+      assert.throws(() => mock.createDirectoryInfoFromPaths(['a', null]));
+    });
+
+
     it('adds from multiple paths', () => {
       const expectedFile1 = path.join(assetsPath, 'file1.txt');
       const expectedFile2 = path.join(assetsPath, 'dir/subdir/file3.txt');
