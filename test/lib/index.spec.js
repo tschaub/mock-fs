@@ -235,6 +235,7 @@ describe('The API', function() {
       const paths = mock.createDirectoryInfoFromPaths(assetsPath);
 
       const keys = Object.keys(paths);
+      console.log(keys);
       assert.lengthOf(keys, 7);
     });
 
