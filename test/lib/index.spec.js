@@ -201,7 +201,6 @@ describe('The API', function() {
       assert.throws(() => mock.createDirectoryInfoFromPaths(['a', null]));
     });
 
-
     it('adds from multiple paths', () => {
       const expectedFile1 = path.join(assetsPath, 'file1.txt');
       const expectedFile2 = path.join(assetsPath, 'dir/subdir/file3.txt');
