@@ -233,10 +233,18 @@ describe('The API', function() {
 
     it('recursive=true loads all files and directories', () => {
       const paths = mock.createDirectoryInfoFromPaths(assetsPath);
+      const expectedPaths = [
+        '',
+        'file1.txt',
+        'dir',
+        'dir/file2.txt',
+        'dir/subdir',
+        'dir/subdir/file3.txt'
+      ].map(p => path.join(assetsPath, p));
 
       const keys = Object.keys(paths);
-      console.log(keys);
-      assert.lengthOf(keys, 7);
+      assert.lengthOf(keys, 6);
+      assert.deepEqual(expectedPaths.slice().sort(), keys.slice().sort());
     });
 
     describe('lazyLoad=true', () => {
