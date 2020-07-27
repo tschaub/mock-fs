@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
+
 # `mock-fs`
 
 The `mock-fs` module allows Node's built-in [`fs` module](http://nodejs.org/api/fs.html) to be backed temporarily by an in-memory, mock file system.  This lets you run tests against a set of mock files and directories instead of lugging around a bunch of test fixtures.
@@ -279,5 +281,3 @@ expect(actual).toMatchSnapshot()
 
 Note: it's safe to call `mock.restore` multiple times, so it can still be called in `afterEach` and then manually
 in test cases which use snapshot testing.
-
-[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
