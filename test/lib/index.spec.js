@@ -5,6 +5,7 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
+const File = require('../../lib/file');
 
 const assert = helper.assert;
 
@@ -180,7 +181,130 @@ describe('The API', function() {
     });
   });
 
-  xdescribe('mock.fs()', function() {
+  describe(`mock.bypass()`, () => {
+    afterEach(mock.restore);
+
+    it('bypasses mock FS', () => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.throws(() => fs.readFileSync(__filename));
+      assert.doesNotThrow(() => mock.bypass(() => fs.readFileSync(__filename)));
+    });
+  });
+
+  describe(`mock.createDirectoryInfoFromPaths()`, () => {
+    const assetsPath = path.resolve(__dirname, '../assets');
+
+    it('adds from multiple paths', () => {
+      const expectedFile1 = path.join(assetsPath, 'file1.txt');
+      const expectedFile2 = path.join(assetsPath, 'dir/subdir/file3.txt');
+      const paths = mock.createDirectoryInfoFromPaths([
+        expectedFile1,
+        path.dirname(expectedFile2)
+      ]);
+
+      assert.instanceOf(paths[expectedFile1](), File);
+      assert.instanceOf(paths[expectedFile2](), File);
+      assert.deepEqual(paths[path.dirname(expectedFile2)], {});
+    });
+
+    it('adds from single path', () => {
+      const expectedFile = path.join(assetsPath, 'dir/subdir/file3.txt');
+      const paths = mock.createDirectoryInfoFromPaths(
+        path.dirname(expectedFile)
+      );
+
+      assert.instanceOf(paths[expectedFile](), File);
+      assert.deepEqual(paths[path.dirname(expectedFile)], {});
+    });
+
+    it('recursive=false does not go deep', () => {
+      const expectedFile = path.join(assetsPath, 'file1.txt');
+      const paths = mock.createDirectoryInfoFromPaths(assetsPath, {
+        recursive: false
+      });
+
+      const keys = Object.keys(paths);
+      assert.lengthOf(keys, 2);
+      assert.instanceOf(paths[expectedFile](), File);
+      assert.deepEqual(paths[path.dirname(expectedFile)], {});
+    });
+
+    it('recursive=true loads all files and directories', () => {
+      const paths = mock.createDirectoryInfoFromPaths(assetsPath);
+
+      const keys = Object.keys(paths);
+      assert.lengthOf(keys, 7);
+    });
+
+    describe('lazyLoad=true', () => {
+      let paths;
+      const triggeredGetters = [];
+
+      before(() => {
+        paths = mock.createDirectoryInfoFromPaths(assetsPath, {lazyLoad: true});
+
+        for (const p of Object.keys(paths)) {
+          if (typeof paths[p] === 'function') {
+            const file = paths[p]();
+            // Ensure getter was set
+            assert(
+              Object.getOwnPropertyDescriptor(file, '_content').hasOwnProperty(
+                'get'
+              )
+            );
+
+            // Wrap factory & getter so we know when it is fired
+            const originalGetter = Object.getOwnPropertyDescriptor(
+              file,
+              '_content'
+            ).get;
+
+            paths[p] = () =>
+              Object.defineProperty(file, '_content', {
+                get() {
+                  triggeredGetters.push(p);
+                  return originalGetter.call(this);
+                }
+              });
+          }
+        }
+
+        mock(paths);
+      });
+      after(() => {
+        mock.restore();
+        triggeredGetters.splice(0, triggeredGetters.length);
+      });
+
+      it('waits to load files', () => assert.lengthOf(triggeredGetters, 0));
+      it('loads proper data', () => {
+        const expectedFile1 = path.join(assetsPath, 'file1.txt');
+        const expectedFile2 = path.join(assetsPath, 'dir/file2.txt');
+        const expectedFile3 = path.join(assetsPath, 'dir/subdir/file3.txt');
+
+        const res1 = fs.readFileSync(expectedFile1, 'utf8');
+        const res2 = fs.readFileSync(expectedFile2, 'utf8');
+        const res3 = fs.readFileSync(expectedFile3, 'utf8');
+        // Triggering a duplicate read to determine getter was replaced.
+        // If it wasn't, triggeredGetters array will have an extra expectedFile2
+        fs.readFileSync(expectedFile2, 'utf8');
+
+        assert.equal(res1, 'data1');
+        assert.equal(res2, 'data2');
+        assert.equal(res3, 'data3');
+        assert.deepEqual(triggeredGetters, [
+          expectedFile1,
+          expectedFile2,
+          expectedFile3
+        ]);
+        assert.lengthOf(triggeredGetters, 3);
+      });
+    });
+  });
+
+  describe('mock.fs()', function() {
     it('generates a mock fs module with a mock file system', function(done) {
       const mockFs = mock.fs({
         'path/to/file.txt': 'file content'
