@@ -58,7 +58,51 @@ The second (optional) argument may include the properties below.
  * `createCwd` - `boolean` Create a directory for `process.cwd()`.  This is `true` by default.
  * `createTmp` - `boolean` Create a directory for `os.tmpdir()`.  This is `true` by default.
 
-### Creating files
+### Automatically Creating Files & Directories
+
+You can create files and directories automatically by providing paths to `mock.createDirectoryInfoFromPaths()`. This will
+read the filesystem for the paths you provide and automatically create files and directories for them.
+
+### <a id='cdifp'>`mock.createDirectoryInfoFromPaths(paths, options)`</a>
+
+#### <a id='cdifp_paths'>`paths`</a> - `string` or `string[]`
+
+#### <a id='cdifp_options'>`options`</a>
+
+The second (optional) argument may include the properties below.
+
+ * `lazyLoad` - `boolean` File content does not get loaded until explicitly read. This is `true` by default.
+ * `recursive` - `boolean` Load all files and directories recursively.  This is `true` by default.
+ 
+#### Examples
+
+Given the following directory structure
+```
+- /root/
+  - subdir/
+     - file2.txt
+  - file1.txt
+- /lib/
+  - library.js
+  - extra.js
+```
+```js
+// Creates files and dirs for all in `/root` and creates the directory `/lib` and the file `/lib/extra.js`
+// Notes: 
+//        - /lib/library.js is not included
+//        - Files are lazy-loaded
+mock(mock.createDirectoryInfoFromPaths([ '/root', '/lib/extra.js' ]));
+
+// -------------------------------------------------------------------------------------
+
+// Creates `/root` directory and `/root/file1.txt`
+// Notes: 
+//        - subdir and its contents are not loaded (due to recursive=false)
+//        - Files content is loaded into memory immediately (due to lazyLoad=false)
+mock(mock.createDirectoryInfoFromPaths([ '/root' ], { recursive: false, lazyLoad: false }));
+```
+
+### Manually Creating files
 
 When `config` property values are a `string` or `Buffer`, a file is created with the provided content.  For example, the following configuration creates a single file with string content (in addition to the two default directories).
 ```js
@@ -95,7 +139,7 @@ mock({
 
 Note that if you want to create a file with the default properties, you can provide a `string` or `Buffer` directly instead of calling `mock.file()`.
 
-### Creating directories
+### Manually Creating directories
 
 When `config` property values are an `Object`, a directory is created.  The structure of the object is the same as the `config` object itself.  So an empty directory can be created with a simple object literal (`{}`).  The following configuration creates a directory containing two files (in addition to the two default directories):
 ```js
@@ -185,6 +229,18 @@ beforeEach(function() {
   });
 });
 afterEach(mock.restore);
+```
+
+### Bypassing the mock file system
+
+Sometimes you will want to execute calls against the actual file-system. In order to do that, we've provided a helper.
+
+### <a id='mockrestore'>`mock.bypass(fn)`</a>
+
+```js
+// This file exists only on the real FS, not on the mocked FS
+const realFilePath = '/path/to/real/file.txt';
+const myData = mock.bypass(() => fs.readFileSync(realFilePath, 'utf-8'));
 ```
 
 ## Install
