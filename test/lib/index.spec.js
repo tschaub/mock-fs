@@ -256,7 +256,7 @@ describe('The API', function() {
       let paths;
       const triggeredGetters = [];
 
-      before(() => {
+      beforeEach(() => {
         paths = mock.createDirectoryInfoFromPaths(assetsPath, {lazyLoad: true});
 
         for (const p of Object.keys(paths)) {
@@ -287,11 +287,16 @@ describe('The API', function() {
 
         mock(paths);
       });
-      after(() => {
+      afterEach(() => {
         mock.restore();
         triggeredGetters.splice(0, triggeredGetters.length);
       });
 
+      it("can write to lazy-loaded file before it's read", () => {
+        const filePath = path.join(assetsPath, 'file1.txt');
+        fs.writeFileSync(filePath, 'new data');
+        assert.equal(fs.readFileSync(filePath, 'utf8'), 'new data');
+      });
       it('waits to load files', () => assert.lengthOf(triggeredGetters, 0));
       it('loads proper data', () => {
         const expectedFile1 = path.join(assetsPath, 'file1.txt');
