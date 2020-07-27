@@ -6,6 +6,7 @@ const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
 const File = require('../../lib/file');
+const Directory = require('../../lib/directory');
 
 const assert = helper.assert;
 
@@ -211,7 +212,7 @@ describe('The API', function() {
 
       assert.instanceOf(paths[expectedFile1](), File);
       assert.instanceOf(paths[expectedFile2](), File);
-      assert.deepEqual(paths[path.dirname(expectedFile2)], {});
+      assert.instanceOf(paths[path.dirname(expectedFile2)](), Directory);
     });
 
     it('adds from single path', () => {
@@ -221,7 +222,7 @@ describe('The API', function() {
       );
 
       assert.instanceOf(paths[expectedFile](), File);
-      assert.deepEqual(paths[path.dirname(expectedFile)], {});
+      assert.instanceOf(paths[path.dirname(expectedFile)](), Directory);
     });
 
     it('recursive=false does not go deep', () => {
@@ -233,7 +234,7 @@ describe('The API', function() {
       const keys = Object.keys(paths);
       assert.lengthOf(keys, 2);
       assert.instanceOf(paths[expectedFile](), File);
-      assert.deepEqual(paths[path.dirname(expectedFile)], {});
+      assert.instanceOf(paths[path.dirname(expectedFile)](), Directory);
     });
 
     it('recursive=true loads all files and directories', () => {
@@ -250,6 +251,10 @@ describe('The API', function() {
       const keys = Object.keys(paths);
       assert.lengthOf(keys, 6);
       assert.deepEqual(expectedPaths.slice().sort(), keys.slice().sort());
+
+      expectedPaths.forEach(p =>
+        assert.instanceOf(paths[p](), /\.\w+$/.test(p) ? File : Directory)
+      );
     });
 
     describe('lazyLoad=true', () => {
@@ -262,26 +267,30 @@ describe('The API', function() {
         for (const p of Object.keys(paths)) {
           if (typeof paths[p] === 'function') {
             const file = paths[p]();
-            // Ensure getter was set
-            assert(
-              Object.getOwnPropertyDescriptor(file, '_content').hasOwnProperty(
-                'get'
-              )
-            );
 
-            // Wrap factory & getter so we know when it is fired
-            const originalGetter = Object.getOwnPropertyDescriptor(
-              file,
-              '_content'
-            ).get;
+            if (file instanceof File) {
+              // Ensure getter was set
+              assert(
+                Object.getOwnPropertyDescriptor(
+                  file,
+                  '_content'
+                ).hasOwnProperty('get')
+              );
 
-            paths[p] = () =>
-              Object.defineProperty(file, '_content', {
-                get() {
-                  triggeredGetters.push(p);
-                  return originalGetter.call(this);
-                }
-              });
+              // Wrap factory & getter so we know when it is fired
+              const originalGetter = Object.getOwnPropertyDescriptor(
+                file,
+                '_content'
+              ).get;
+
+              paths[p] = () =>
+                Object.defineProperty(file, '_content', {
+                  get() {
+                    triggeredGetters.push(p);
+                    return originalGetter.call(this);
+                  }
+                });
+            }
           }
         }
 
