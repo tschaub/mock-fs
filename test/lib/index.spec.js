@@ -304,7 +304,7 @@ describe('The API', function() {
     });
   });
 
-  describe('mock.fs()', function() {
+  xdescribe('mock.fs()', function() {
     it('generates a mock fs module with a mock file system', function(done) {
       const mockFs = mock.fs({
         'path/to/file.txt': 'file content'
