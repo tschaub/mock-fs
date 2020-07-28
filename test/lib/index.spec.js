@@ -6,9 +6,11 @@ const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
 const File = require('../../lib/file');
+const {fixWin32Permissions} = require('../../lib/item');
 const Directory = require('../../lib/directory');
 
 const assert = helper.assert;
+const assetsPath = path.resolve(__dirname, '../assets');
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -194,140 +196,206 @@ describe('The API', function() {
     });
   });
 
-  describe(`mock.createDirectoryInfoFromPaths()`, () => {
-    const assetsPath = path.resolve(__dirname, '../assets');
+  describe(`Mapping functions`, () => {
+    const statsCompareKeys = [
+      'birthtime',
+      'ctime',
+      'mtime',
+      'gid',
+      'uid',
+      'mtime',
+      'mode'
+    ];
+    const filterStats = stats => {
+      const res = {};
+      for (const key of statsCompareKeys) {
+        const k =
+          (stats.hasOwnProperty(key) && key) ||
+          (stats.hasOwnProperty(`_${key}`) && `_${key}`);
 
-    it('throws with non-string paths', () => {
-      assert.throws(() => mock.createDirectoryInfoFromPaths(null));
-      assert.throws(() => mock.createDirectoryInfoFromPaths(['a', null]));
-    });
-
-    it('adds from multiple paths', () => {
-      const expectedFile1 = path.join(assetsPath, 'file1.txt');
-      const expectedFile2 = path.join(assetsPath, 'dir/subdir/file3.txt');
-      const paths = mock.createDirectoryInfoFromPaths([
-        expectedFile1,
-        path.dirname(expectedFile2)
-      ]);
-
-      assert.instanceOf(paths[expectedFile1](), File);
-      assert.instanceOf(paths[expectedFile2](), File);
-      assert.instanceOf(paths[path.dirname(expectedFile2)](), Directory);
-    });
-
-    it('adds from single path', () => {
-      const expectedFile = path.join(assetsPath, 'dir/subdir/file3.txt');
-      const paths = mock.createDirectoryInfoFromPaths(
-        path.dirname(expectedFile)
-      );
-
-      assert.instanceOf(paths[expectedFile](), File);
-      assert.instanceOf(paths[path.dirname(expectedFile)](), Directory);
-    });
-
-    it('recursive=false does not go deep', () => {
-      const expectedFile = path.join(assetsPath, 'file1.txt');
-      const paths = mock.createDirectoryInfoFromPaths(assetsPath, {
-        recursive: false
-      });
-
-      const keys = Object.keys(paths);
-      assert.lengthOf(keys, 2);
-      assert.instanceOf(paths[expectedFile](), File);
-      assert.instanceOf(paths[path.dirname(expectedFile)](), Directory);
-    });
-
-    it('recursive=true loads all files and directories', () => {
-      const paths = mock.createDirectoryInfoFromPaths(assetsPath);
-      const expectedPaths = [
-        '',
-        'file1.txt',
-        'dir',
-        'dir/file2.txt',
-        'dir/subdir',
-        'dir/subdir/file3.txt'
-      ].map(p => path.join(assetsPath, p));
-
-      const keys = Object.keys(paths);
-      assert.lengthOf(keys, 6);
-      assert.deepEqual(expectedPaths.slice().sort(), keys.slice().sort());
-
-      expectedPaths.forEach(p =>
-        assert.instanceOf(paths[p](), /\.\w+$/.test(p) ? File : Directory)
-      );
-    });
-
-    describe('lazyLoad=true', () => {
-      let paths;
-      const triggeredGetters = [];
-
-      beforeEach(() => {
-        paths = mock.createDirectoryInfoFromPaths(assetsPath, {lazyLoad: true});
-
-        for (const p of Object.keys(paths)) {
-          if (typeof paths[p] === 'function') {
-            const file = paths[p]();
-
-            if (file instanceof File) {
-              // Ensure getter was set
-              assert(
-                Object.getOwnPropertyDescriptor(
-                  file,
-                  '_content'
-                ).hasOwnProperty('get')
-              );
-
-              // Wrap factory & getter so we know when it is fired
-              const originalGetter = Object.getOwnPropertyDescriptor(
-                file,
-                '_content'
-              ).get;
-
-              paths[p] = () =>
-                Object.defineProperty(file, '_content', {
-                  get() {
-                    triggeredGetters.push(p);
-                    return originalGetter.call(this);
-                  }
-                });
-            }
-          }
+        if (k) {
+          res[key] =
+            k === 'mode' && stats.isDirectory()
+              ? fixWin32Permissions(stats[k])
+              : stats[k];
         }
+      }
+      return res;
+    };
 
-        mock(paths);
+    describe(`mock.mapFile()`, () => {
+      const filePath = path.join(assetsPath, 'file1.txt');
+
+      it('throws with non-string path', () =>
+        assert.throws(() => mock.mapFile(null)));
+      it('throws with directory', () =>
+        assert.throws(() => mock.mapFile(path.join(assetsPath))));
+      it('creates a File factory with correct attributes', () => {
+        const file = mock.mapFile(filePath)();
+        const stats = fs.statSync(filePath);
+
+        assert.instanceOf(file, File);
+        assert.deepEqual(filterStats(file), filterStats(stats));
       });
-      afterEach(() => {
-        mock.restore();
-        triggeredGetters.splice(0, triggeredGetters.length);
+      describe('lazyLoad=true', () => {
+        let file;
+        beforeEach(() => (file = mock.mapFile(filePath)()));
+
+        it('creates accessors', () => {
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
+        it('read file loads data and replaces accessors', () => {
+          assert.equal(file._content.toString(), 'data1');
+
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(file, '_content').value,
+            Buffer
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
+        it('write file updates content and replaces accessors', () => {
+          file._content = Buffer.from('new data');
+
+          assert.equal(file._content.toString(), 'new data');
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(file, '_content').value,
+            Buffer
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
       });
 
-      it("can write to lazy-loaded file before it's read", () => {
+      it('lazyLoad=false loads file content', () => {
+        const file = mock.mapFile(path.join(assetsPath, 'file1.txt'), {
+          lazyLoad: false
+        })();
+
+        assert.equal(
+          Object.getOwnPropertyDescriptor(file, '_content').value.toString(),
+          'data1'
+        );
+      });
+    });
+
+    describe(`mock.mapDir()`, () => {
+      it('throws with non-string path', () =>
+        assert.throws(() => mock.mapDir(null)));
+      it('throws with file', () =>
+        assert.throws(() => mock.mapDir(path.join(assetsPath, 'file1.txt'))));
+      it('creates a Directory factory with correct attributes', () => {
+        const dir = mock.mapDir(assetsPath)();
+        const stats = fs.statSync(assetsPath);
+
+        assert.instanceOf(dir, Directory);
+        assert.deepEqual(filterStats(dir), filterStats(stats));
+      });
+      describe('recursive=true', () => {
+        it('creates all files & dirs', () => {
+          const base = mock.mapDir(assetsPath, {recursive: true})();
+          const baseDir = base._items.dir;
+          const baseDirSubdir = baseDir._items.subdir;
+
+          assert.instanceOf(base, Directory);
+          assert.instanceOf(base._items['file1.txt'], File);
+          assert.instanceOf(baseDir, Directory);
+          assert.instanceOf(baseDir._items['file2.txt'], File);
+          assert.instanceOf(baseDirSubdir, Directory);
+          assert.instanceOf(baseDirSubdir._items['file3.txt'], File);
+        });
+        it('respects lazyLoad setting', () => {
+          let dir;
+          const getFile = () =>
+            dir._items.dir._items.subdir._items['file3.txt'];
+
+          dir = mock.mapDir(assetsPath, {recursive: true, lazyLoad: true})();
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(getFile(), '_content').get,
+            'function'
+          );
+
+          dir = mock.mapDir(assetsPath, {recursive: true, lazyLoad: false})();
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(getFile(), '_content').value,
+            Buffer
+          );
+        });
+      });
+
+      it('recursive=false creates files & does not recurse', () => {
+        const base = mock.mapDir(assetsPath, {recursive: false})();
+        assert.instanceOf(base, Directory);
+        assert.instanceOf(base._items['file1.txt'], File);
+        assert.isNotOk(base._items.dir);
+      });
+    });
+
+    describe(`mock.mapPaths()`, () => {
+      it('throws with non-string path', () => {
+        assert.throws(() => mock.mapDir(null));
+        assert.throws(() => mock.mapDir([null]));
+      });
+      it('maps multiple paths', () => {
+        const filePath1 = path.join(assetsPath, 'file1.txt');
+        const filePath2 = path.join(assetsPath, '/dir/file2.txt');
+        const res = mock.mapPaths([filePath1, filePath2]);
+        assert.instanceOf(res[filePath1](), File);
+        assert.instanceOf(res[filePath2](), File);
+      });
+      it('maps single path', () => {
+        const filePath1 = path.join(assetsPath, 'file1.txt');
+        const res = mock.mapPaths(filePath1);
+        assert.instanceOf(res[filePath1](), File);
+      });
+      it('respects lazyLoad setting', () => {
+        let res;
         const filePath = path.join(assetsPath, 'file1.txt');
-        fs.writeFileSync(filePath, 'new data');
-        assert.equal(fs.readFileSync(filePath, 'utf8'), 'new data');
+
+        res = mock.mapPaths(filePath, {lazyLoad: true});
+        assert.typeOf(
+          Object.getOwnPropertyDescriptor(res[filePath](), '_content').get,
+          'function'
+        );
+
+        res = mock.mapPaths(filePath, {lazyLoad: false});
+        assert.instanceOf(
+          Object.getOwnPropertyDescriptor(res[filePath](), '_content').value,
+          Buffer
+        );
       });
-      it('waits to load files', () => assert.lengthOf(triggeredGetters, 0));
-      it('loads proper data', () => {
-        const expectedFile1 = path.join(assetsPath, 'file1.txt');
-        const expectedFile2 = path.join(assetsPath, 'dir/file2.txt');
-        const expectedFile3 = path.join(assetsPath, 'dir/subdir/file3.txt');
+      it('recursive=true loads recursively', () => {
+        const dirPath = path.join(assetsPath, 'dir');
+        const filePath = path.join(assetsPath, 'file1.txt');
+        const res = mock.mapPaths([dirPath, filePath], {recursive: true});
 
-        const res1 = fs.readFileSync(expectedFile1, 'utf8');
-        const res2 = fs.readFileSync(expectedFile2, 'utf8');
-        const res3 = fs.readFileSync(expectedFile3, 'utf8');
-        // Triggering a duplicate read to determine getter was replaced.
-        // If it wasn't, triggeredGetters array will have an extra expectedFile2
-        fs.readFileSync(expectedFile2, 'utf8');
+        const dir = res[dirPath]();
+        const dirSubdir = dir._items.subdir;
 
-        assert.equal(res1, 'data1');
-        assert.equal(res2, 'data2');
-        assert.equal(res3, 'data3');
-        assert.deepEqual(triggeredGetters, [
-          expectedFile1,
-          expectedFile2,
-          expectedFile3
-        ]);
-        assert.lengthOf(triggeredGetters, 3);
+        assert.instanceOf(res[filePath](), File);
+        assert.instanceOf(dir, Directory);
+        assert.instanceOf(dir._items['file2.txt'], File);
+        assert.instanceOf(dirSubdir, Directory);
+        assert.instanceOf(dirSubdir._items['file3.txt'], File);
       });
     });
   });
