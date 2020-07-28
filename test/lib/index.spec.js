@@ -226,10 +226,12 @@ describe('The API', function() {
     describe(`mock.mapFile()`, () => {
       const filePath = path.join(assetsPath, 'file1.txt');
 
-      it('throws with non-string path', () =>
-        assert.throws(() => mock.mapFile(null)));
-      it('throws with directory', () =>
-        assert.throws(() => mock.mapFile(path.join(assetsPath))));
+      it('throws with non-string path', () => {
+        assert.throws(() => mock.mapFile(null));
+      });
+      it('throws with directory', () => {
+        assert.throws(() => mock.mapFile(path.join(assetsPath)));
+      });
       it('creates a File factory with correct attributes', () => {
         const file = mock.mapFile(filePath)();
         const stats = fs.statSync(filePath);
@@ -296,13 +298,21 @@ describe('The API', function() {
           'data1'
         );
       });
+
+      it('can read file from mocked FS', () => {
+        mock({'/file': mock.mapFile(filePath)});
+        assert.equal(fs.readFileSync('/file'), 'data1');
+        mock.restore();
+      });
     });
 
     describe(`mock.mapDir()`, () => {
-      it('throws with non-string path', () =>
-        assert.throws(() => mock.mapDir(null)));
-      it('throws with file', () =>
-        assert.throws(() => mock.mapDir(path.join(assetsPath, 'file1.txt'))));
+      it('throws with non-string path', () => {
+        assert.throws(() => mock.mapDir(null));
+      });
+      it('throws with file', () => {
+        assert.throws(() => mock.mapDir(path.join(assetsPath, 'file1.txt')));
+      });
       it('creates a Directory factory with correct attributes', () => {
         const dir = mock.mapDir(assetsPath)();
         const stats = fs.statSync(assetsPath);
@@ -347,6 +357,12 @@ describe('The API', function() {
         assert.instanceOf(base, Directory);
         assert.instanceOf(base._items['file1.txt'], File);
         assert.isNotOk(base._items.dir);
+      });
+
+      it('can read file from mocked FS', () => {
+        mock({'/dir': mock.mapDir(assetsPath, {recursive: true})});
+        assert.equal(fs.readFileSync('/dir/file1.txt'), 'data1');
+        mock.restore();
       });
     });
 
@@ -397,6 +413,13 @@ describe('The API', function() {
         assert.instanceOf(dirSubdir, Directory);
         assert.instanceOf(dirSubdir._items['file3.txt'], File);
       });
+    });
+    it('can read file from mocked FS', () => {
+      const filePath1 = path.join(assetsPath, 'file1.txt');
+      const filePath2 = path.join(assetsPath, '/dir/file2.txt');
+      mock(mock.mapPaths([filePath1, filePath2]));
+      assert.equal(fs.readFileSync(filePath2), 'data2');
+      mock.restore();
     });
   });
 
