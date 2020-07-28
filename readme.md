@@ -60,51 +60,71 @@ The second (optional) argument may include the properties below.
  * `createCwd` - `boolean` Create a directory for `process.cwd()`.  This is `true` by default.
  * `createTmp` - `boolean` Create a directory for `os.tmpdir()`.  This is `true` by default.
 
-### Automatically Creating Files & Directories
+### Mapping real files & directories
 
-You can create files and directories automatically by providing paths to `mock.createDirectoryInfoFromPaths()`. This will
-read the filesystem for the paths you provide and automatically create files and directories for them.
+If you want to add files from your real filesystem to the mocked FS, there are several mapping methods to help. 
 
-### <a id='cdifp'>`mock.createDirectoryInfoFromPaths(paths, options)`</a>
+#### Notes
 
-#### <a id='cdifp_paths'>`paths`</a> - `string` or `string[]`
+- Each mapper function duplicates all stat information (dates, permissions, etc) 
+- By default, all files are lazy-loaded, unless you specify the `{ lazyLoad: false }` option, which makes it reasonable 
+to expose large areas of the filesystem to your mocked FS.
 
-#### <a id='cdifp_options'>`options`</a>
+#### <a id='mappingoptions'>options</a>
 
-The second (optional) argument may include the properties below.
-
- * `lazyLoad` - `boolean` File content does not get loaded until explicitly read. This is `true` by default.
- * `recursive` - `boolean` Load all files and directories recursively.  This is `true` by default.
+| Option    | Type    | Default | Description |
+| --------- | ------- | ------- | ------------
+| lazyLoad  | boolean | true    | File content isn't loaded until explicitly read
+| recursive | boolean | true    | Load all files and directories recursively (applies to `mock.mapDir()` & `mock.mapPaths()`)
  
-#### Examples
+#### `mock.mapPaths(path, options)`
 
-Given the following directory structure
-```
-- /root/
-  - subdir/
-     - file2.txt
-  - file1.txt
-- /lib/
-  - library.js
-  - extra.js
-```
+Quickly map one or more paths. 
+
+_Note: Mapping a path makes its absolute path available in the Mock Filesystem. It is a good way to 'mount' sections of your 
+real filesystem, without allowing changes to affect the real files._
+
 ```js
-// Creates files and dirs for all in `/root` and creates the directory `/lib` and the file `/lib/extra.js`
-// Notes: 
-//        - /lib/library.js is not included
-//        - Files are lazy-loaded
-mock(mock.createDirectoryInfoFromPaths([ '/root', '/lib/extra.js' ]));
+// Mock FS, with single dir
+mock(mock.mapPaths('/path/to/dir'));
 
-// -------------------------------------------------------------------------------------
-
-// Creates `/root` directory and `/root/file1.txt`
-// Notes: 
-//        - subdir and its contents are not loaded (due to recursive=false)
-//        - Files content is loaded into memory immediately (due to lazyLoad=false)
-mock(mock.createDirectoryInfoFromPaths([ '/root' ], { recursive: false, lazyLoad: false }));
+// Mock FS, with two dirs and a file (do not recurse and pre-load all content)
+mock(mock.mapPaths([ '/path/to/dir', '/path/to/anotherdir', '/srv/some-file.txt' ], { recursive: false, lazyLoad: false }));
 ```
 
-### Manually Creating files
+#### `mock.mapDir(dirPath, options)`
+
+Create a `Directory` for a real dir.
+
+```js
+mock({
+  // Recursively loads all node_modules
+  'node_modules': mock.mapDir(path.resolve(__dirname, '../node_modules')),
+
+  // Creates a directory named /tmp with only the files in /tmp/special_tmp_files (no subdirectories), pre-loading all content
+  '/tmp': mock.mapDir('/tmp/special_tmp_files', { recursive: false, lazyLoad:false }),
+
+  'fakefile.txt': 'content here'
+});
+```
+
+#### `mock.mapFile(filePath, options)`
+
+Create a `File` for a real file.
+
+```js
+mock({
+  // Lazy-load file
+  'my-file.txt': mock.mapDir(path.resolve(__dirname, 'assets/special-file.txt')),
+  
+  // Pre-load js file
+  'ready.js': mock.mapDir(path.resolve(__dirname, 'scripts/ready.js'), { lazyLoad: false }),
+
+  'fakefile.txt': 'content here'
+});
+```
+
+### Creating files
 
 When `config` property values are a `string` or `Buffer`, a file is created with the provided content.  For example, the following configuration creates a single file with string content (in addition to the two default directories).
 ```js
@@ -141,7 +161,7 @@ mock({
 
 Note that if you want to create a file with the default properties, you can provide a `string` or `Buffer` directly instead of calling `mock.file()`.
 
-### Manually Creating directories
+### Creating directories
 
 When `config` property values are an `Object`, a directory is created.  The structure of the object is the same as the `config` object itself.  So an empty directory can be created with a simple object literal (`{}`).  The following configuration creates a directory containing two files (in addition to the two default directories):
 ```js
