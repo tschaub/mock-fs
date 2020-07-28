@@ -115,10 +115,10 @@ Create a `File` for a real file.
 ```js
 mock({
   // Lazy-load file
-  'my-file.txt': mock.mapDir(path.resolve(__dirname, 'assets/special-file.txt')),
+  'my-file.txt': mock.mapFile(path.resolve(__dirname, 'assets/special-file.txt')),
   
   // Pre-load js file
-  'ready.js': mock.mapDir(path.resolve(__dirname, 'scripts/ready.js'), { lazyLoad: false }),
+  'ready.js': mock.mapFile(path.resolve(__dirname, 'scripts/ready.js'), { lazyLoad: false }),
 
   'fakefile.txt': 'content here'
 });
