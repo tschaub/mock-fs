@@ -255,14 +255,34 @@ afterEach(mock.restore);
 
 ### Bypassing the mock file system
 
-Sometimes you will want to execute calls against the actual file-system. In order to do that, we've provided a helper.
+#### <a id='mockbypass'>`mock.bypass(fn)`</a>
 
-### <a id='mockrestore'>`mock.bypass(fn)`</a>
+Execute _synchronous calls_ to the real filesystem with mock.bypass()
 
 ```js
 // This file exists only on the real FS, not on the mocked FS
 const realFilePath = '/path/to/real/file.txt';
 const myData = mock.bypass(() => fs.readFileSync(realFilePath, 'utf-8'));
+```
+
+#### <a id='advancedbypass'>Advanced Bypassing</a>
+
+Asynchronous calls are not recommended as they could produce unintended consequences if anything else tries to access the
+mocked filesystem before they've completed.
+
+However, if you know what you're doing, you can selectively disable and re-enable the mock filesystem.
+
+```js
+async function getFileInfo(fileName) {
+  mock.disable();
+  try {
+    const stats = await fs.promises.stat(fileName);
+    const data = await fs.promises.readFile(fileName);
+    return { stats, data };
+  } finally {
+    mock.enable();
+  }
+}
 ```
 
 ## Install

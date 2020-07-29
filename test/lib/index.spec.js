@@ -194,6 +194,14 @@ describe('The API', function() {
       assert.throws(() => fs.readFileSync(__filename));
       assert.doesNotThrow(() => mock.bypass(() => fs.readFileSync(__filename)));
     });
+
+    it('restores mock FS after bypass', () => {
+      mock({'/path/to/file': 'content'});
+
+      assert.throws(() => fs.readFileSync(__filename));
+      assert.doesNotThrow(() => mock.bypass(() => fs.readFileSync(__filename)));
+      assert.throws(() => fs.readFileSync(__filename));
+    });
   });
 
   describe(`Mapping functions`, () => {
