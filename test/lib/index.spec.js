@@ -191,16 +191,16 @@ describe('The API', function() {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
-      assert.throws(() => fs.readFileSync(__filename));
-      assert.doesNotThrow(() => mock.bypass(() => fs.readFileSync(__filename)));
+      assert.isNotOk(fs.existsSync(__filename));
+      assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
     });
 
     it('restores mock FS after bypass', () => {
-      mock({'/path/to/file': 'content'});
+      mock({});
 
-      assert.throws(() => fs.readFileSync(__filename));
-      assert.doesNotThrow(() => mock.bypass(() => fs.readFileSync(__filename)));
-      assert.throws(() => fs.readFileSync(__filename));
+      assert.isNotOk(fs.existsSync(__filename));
+      assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
+      assert.isNotOk(fs.existsSync(__filename));
     });
   });
 
