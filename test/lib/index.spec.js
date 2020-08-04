@@ -187,24 +187,34 @@ describe('The API', function() {
   describe(`mock.bypass()`, () => {
     afterEach(mock.restore);
 
-    it('bypasses mock FS', () => {
+    it('(synchronous) bypasses mock FS & restores after', () => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
       assert.isNotOk(fs.existsSync(__filename));
       assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
-    });
-
-    it('restores mock FS after bypass', () => {
-      mock({});
 
       assert.isNotOk(fs.existsSync(__filename));
-      assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
+    });
+
+    it('(async) bypasses mock FS & restores after', async () => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.isNotOk(fs.existsSync(__filename));
+
+      await mock.bypass(async () => {
+        let stat = await fs.promises.stat(__filename);
+        assert.isTrue(stat.isFile());
+        stat = await fs.promises.stat(__filename);
+        assert.isTrue(stat.isFile());
+      });
+
       assert.isNotOk(fs.existsSync(__filename));
     });
   });
 
-  describe(`Mapping functions`, () => {
+  describe(`mock.load()`, () => {
     const statsCompareKeys = [
       'birthtime',
       'ctime',
@@ -231,17 +241,11 @@ describe('The API', function() {
       return res;
     };
 
-    describe(`mock.mapFile()`, () => {
+    describe(`File`, () => {
       const filePath = path.join(assetsPath, 'file1.txt');
 
-      it('throws with non-string path', () => {
-        assert.throws(() => mock.mapFile(null));
-      });
-      it('throws with directory', () => {
-        assert.throws(() => mock.mapFile(path.join(assetsPath)));
-      });
       it('creates a File factory with correct attributes', () => {
-        const file = mock.mapFile(filePath)();
+        const file = mock.load(filePath)();
         const stats = fs.statSync(filePath);
 
         assert.instanceOf(file, File);
@@ -249,7 +253,7 @@ describe('The API', function() {
       });
       describe('lazyLoad=true', () => {
         let file;
-        beforeEach(() => (file = mock.mapFile(filePath)()));
+        beforeEach(() => (file = mock.load(filePath)()));
 
         it('creates accessors', () => {
           assert.typeOf(
@@ -297,7 +301,7 @@ describe('The API', function() {
       });
 
       it('lazyLoad=false loads file content', () => {
-        const file = mock.mapFile(path.join(assetsPath, 'file1.txt'), {
+        const file = mock.load(path.join(assetsPath, 'file1.txt'), {
           lazyLoad: false
         })();
 
@@ -308,21 +312,15 @@ describe('The API', function() {
       });
 
       it('can read file from mocked FS', () => {
-        mock({'/file': mock.mapFile(filePath)});
+        mock({'/file': mock.load(filePath)});
         assert.equal(fs.readFileSync('/file'), 'data1');
         mock.restore();
       });
     });
 
-    describe(`mock.mapDir()`, () => {
-      it('throws with non-string path', () => {
-        assert.throws(() => mock.mapDir(null));
-      });
-      it('throws with file', () => {
-        assert.throws(() => mock.mapDir(path.join(assetsPath, 'file1.txt')));
-      });
+    describe(`Dir`, () => {
       it('creates a Directory factory with correct attributes', () => {
-        const dir = mock.mapDir(assetsPath)();
+        const dir = mock.load(assetsPath)();
         const stats = fs.statSync(assetsPath);
 
         assert.instanceOf(dir, Directory);
@@ -330,7 +328,7 @@ describe('The API', function() {
       });
       describe('recursive=true', () => {
         it('creates all files & dirs', () => {
-          const base = mock.mapDir(assetsPath, {recursive: true})();
+          const base = mock.load(assetsPath, {recursive: true})();
           const baseDir = base._items.dir;
           const baseDirSubdir = baseDir._items.subdir;
 
@@ -346,13 +344,13 @@ describe('The API', function() {
           const getFile = () =>
             dir._items.dir._items.subdir._items['file3.txt'];
 
-          dir = mock.mapDir(assetsPath, {recursive: true, lazyLoad: true})();
+          dir = mock.load(assetsPath, {recursive: true, lazyLoad: true})();
           assert.typeOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').get,
             'function'
           );
 
-          dir = mock.mapDir(assetsPath, {recursive: true, lazyLoad: false})();
+          dir = mock.load(assetsPath, {recursive: true, lazyLoad: false})();
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').value,
             Buffer
@@ -361,73 +359,17 @@ describe('The API', function() {
       });
 
       it('recursive=false creates files & does not recurse', () => {
-        const base = mock.mapDir(assetsPath, {recursive: false})();
+        const base = mock.load(assetsPath, {recursive: false})();
         assert.instanceOf(base, Directory);
         assert.instanceOf(base._items['file1.txt'], File);
         assert.isNotOk(base._items.dir);
       });
 
       it('can read file from mocked FS', () => {
-        mock({'/dir': mock.mapDir(assetsPath, {recursive: true})});
+        mock({'/dir': mock.load(assetsPath, {recursive: true})});
         assert.equal(fs.readFileSync('/dir/file1.txt'), 'data1');
         mock.restore();
       });
-    });
-
-    describe(`mock.mapPaths()`, () => {
-      it('throws with non-string path', () => {
-        assert.throws(() => mock.mapDir(null));
-        assert.throws(() => mock.mapDir([null]));
-      });
-      it('maps multiple paths', () => {
-        const filePath1 = path.join(assetsPath, 'file1.txt');
-        const filePath2 = path.join(assetsPath, '/dir/file2.txt');
-        const res = mock.mapPaths([filePath1, filePath2]);
-        assert.instanceOf(res[filePath1](), File);
-        assert.instanceOf(res[filePath2](), File);
-      });
-      it('maps single path', () => {
-        const filePath1 = path.join(assetsPath, 'file1.txt');
-        const res = mock.mapPaths(filePath1);
-        assert.instanceOf(res[filePath1](), File);
-      });
-      it('respects lazyLoad setting', () => {
-        let res;
-        const filePath = path.join(assetsPath, 'file1.txt');
-
-        res = mock.mapPaths(filePath, {lazyLoad: true});
-        assert.typeOf(
-          Object.getOwnPropertyDescriptor(res[filePath](), '_content').get,
-          'function'
-        );
-
-        res = mock.mapPaths(filePath, {lazyLoad: false});
-        assert.instanceOf(
-          Object.getOwnPropertyDescriptor(res[filePath](), '_content').value,
-          Buffer
-        );
-      });
-      it('recursive=true loads recursively', () => {
-        const dirPath = path.join(assetsPath, 'dir');
-        const filePath = path.join(assetsPath, 'file1.txt');
-        const res = mock.mapPaths([dirPath, filePath], {recursive: true});
-
-        const dir = res[dirPath]();
-        const dirSubdir = dir._items.subdir;
-
-        assert.instanceOf(res[filePath](), File);
-        assert.instanceOf(dir, Directory);
-        assert.instanceOf(dir._items['file2.txt'], File);
-        assert.instanceOf(dirSubdir, Directory);
-        assert.instanceOf(dirSubdir._items['file3.txt'], File);
-      });
-    });
-    it('can read file from mocked FS', () => {
-      const filePath1 = path.join(assetsPath, 'file1.txt');
-      const filePath2 = path.join(assetsPath, '/dir/file2.txt');
-      mock(mock.mapPaths([filePath1, filePath2]));
-      assert.equal(fs.readFileSync(filePath2), 'data2');
-      mock.restore();
     });
   });
 
