@@ -8,6 +8,7 @@ const path = require('path');
 const File = require('../../lib/file');
 const {fixWin32Permissions} = require('../../lib/item');
 const Directory = require('../../lib/directory');
+const withPromise = helper.withPromise;
 
 const assert = helper.assert;
 const assetsPath = path.resolve(__dirname, '../assets');
@@ -197,7 +198,7 @@ describe('The API', function() {
       assert.isNotOk(fs.existsSync(__filename));
     });
 
-    it('(async) bypasses mock FS & restores after', done => {
+    withPromise.it('(async) bypasses mock FS & restores after', done => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
