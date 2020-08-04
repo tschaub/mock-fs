@@ -197,20 +197,27 @@ describe('The API', function() {
       assert.isNotOk(fs.existsSync(__filename));
     });
 
-    it('(async) bypasses mock FS & restores after', async () => {
+    it('(async) bypasses mock FS & restores after', (done) => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
       assert.isNotOk(fs.existsSync(__filename));
 
-      await mock.bypass(async () => {
-        let stat = await fs.promises.stat(__filename);
-        assert.isTrue(stat.isFile());
-        stat = await fs.promises.stat(__filename);
-        assert.isTrue(stat.isFile());
-      });
-
-      assert.isNotOk(fs.existsSync(__filename));
+      mock.bypass(() =>
+        fs.promises.stat(__filename)
+          .then(stat => {
+            assert.isTrue(stat.isFile());
+            return fs.promises.stat(__filename);
+          })
+          .then(stat => assert.isTrue(stat.isFile()))
+          .then(() => {
+            setTimeout(() => {
+              assert.isNotOk(fs.existsSync(__filename));
+              done();
+            }, 0);
+          })
+          .catch(err => done(err))
+      );
     });
   });
 
