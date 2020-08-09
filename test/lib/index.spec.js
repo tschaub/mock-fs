@@ -5,8 +5,13 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 const os = require('os');
 const path = require('path');
+const File = require('../../lib/file');
+const {fixWin32Permissions} = require('../../lib/item');
+const Directory = require('../../lib/directory');
+const withPromise = helper.withPromise;
 
 const assert = helper.assert;
+const assetsPath = path.resolve(__dirname, '../assets');
 
 describe('The API', function() {
   describe('mock()', function() {
@@ -177,6 +182,203 @@ describe('The API', function() {
       const stats = fs.statSync('path/to/link');
       assert.isTrue(stats.isFile());
       assert.equal(String(fs.readFileSync('path/to/link')), 'content');
+    });
+  });
+
+  describe(`mock.bypass()`, () => {
+    afterEach(mock.restore);
+
+    it('(synchronous) bypasses mock FS & restores after', () => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.isNotOk(fs.existsSync(__filename));
+      assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
+
+      assert.isNotOk(fs.existsSync(__filename));
+    });
+
+    withPromise.it('(async) bypasses mock FS & restores after', done => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.isNotOk(fs.existsSync(__filename));
+
+      mock.bypass(() =>
+        fs.promises
+          .stat(__filename)
+          .then(stat => {
+            assert.isTrue(stat.isFile());
+            return fs.promises.stat(__filename);
+          })
+          .then(stat => assert.isTrue(stat.isFile()))
+          .then(() => {
+            setTimeout(() => {
+              assert.isNotOk(fs.existsSync(__filename));
+              done();
+            }, 0);
+          })
+          .catch(err => done(err))
+      );
+    });
+  });
+
+  describe(`mock.load()`, () => {
+    const statsCompareKeys = [
+      'birthtime',
+      'ctime',
+      'mtime',
+      'gid',
+      'uid',
+      'mtime',
+      'mode'
+    ];
+    const filterStats = stats => {
+      const res = {};
+      for (const key of statsCompareKeys) {
+        const k =
+          (stats.hasOwnProperty(key) && key) ||
+          (stats.hasOwnProperty(`_${key}`) && `_${key}`);
+
+        if (k) {
+          res[key] =
+            k === 'mode' && stats.isDirectory()
+              ? fixWin32Permissions(stats[k])
+              : stats[k];
+        }
+      }
+      return res;
+    };
+
+    describe(`File`, () => {
+      const filePath = path.join(assetsPath, 'file1.txt');
+
+      it('creates a File factory with correct attributes', () => {
+        const file = mock.load(filePath)();
+        const stats = fs.statSync(filePath);
+
+        assert.instanceOf(file, File);
+        assert.deepEqual(filterStats(file), filterStats(stats));
+      });
+      describe('lazyLoad=true', () => {
+        let file;
+        beforeEach(() => (file = mock.load(filePath)()));
+
+        it('creates accessors', () => {
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
+        it('read file loads data and replaces accessors', () => {
+          assert.equal(file._content.toString(), 'data1');
+
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(file, '_content').value,
+            Buffer
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
+        it('write file updates content and replaces accessors', () => {
+          file._content = Buffer.from('new data');
+
+          assert.equal(file._content.toString(), 'new data');
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(file, '_content').value,
+            Buffer
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').get,
+            'function'
+          );
+          assert.isNotOk(
+            Object.getOwnPropertyDescriptor(file, '_content').set,
+            'function'
+          );
+        });
+      });
+
+      it('lazyLoad=false loads file content', () => {
+        const file = mock.load(path.join(assetsPath, 'file1.txt'), {
+          lazyLoad: false
+        })();
+
+        assert.equal(
+          Object.getOwnPropertyDescriptor(file, '_content').value.toString(),
+          'data1'
+        );
+      });
+
+      it('can read file from mocked FS', () => {
+        mock({'/file': mock.load(filePath)});
+        assert.equal(fs.readFileSync('/file'), 'data1');
+        mock.restore();
+      });
+    });
+
+    describe(`Dir`, () => {
+      it('creates a Directory factory with correct attributes', () => {
+        const dir = mock.load(assetsPath)();
+        const stats = fs.statSync(assetsPath);
+
+        assert.instanceOf(dir, Directory);
+        assert.deepEqual(filterStats(dir), filterStats(stats));
+      });
+      describe('recursive=true', () => {
+        it('creates all files & dirs', () => {
+          const base = mock.load(assetsPath, {recursive: true})();
+          const baseDir = base._items.dir;
+          const baseDirSubdir = baseDir._items.subdir;
+
+          assert.instanceOf(base, Directory);
+          assert.instanceOf(base._items['file1.txt'], File);
+          assert.instanceOf(baseDir, Directory);
+          assert.instanceOf(baseDir._items['file2.txt'], File);
+          assert.instanceOf(baseDirSubdir, Directory);
+          assert.instanceOf(baseDirSubdir._items['file3.txt'], File);
+        });
+        it('respects lazyLoad setting', () => {
+          let dir;
+          const getFile = () =>
+            dir._items.dir._items.subdir._items['file3.txt'];
+
+          dir = mock.load(assetsPath, {recursive: true, lazyLoad: true})();
+          assert.typeOf(
+            Object.getOwnPropertyDescriptor(getFile(), '_content').get,
+            'function'
+          );
+
+          dir = mock.load(assetsPath, {recursive: true, lazyLoad: false})();
+          assert.instanceOf(
+            Object.getOwnPropertyDescriptor(getFile(), '_content').value,
+            Buffer
+          );
+        });
+      });
+
+      it('recursive=false creates files & does not recurse', () => {
+        const base = mock.load(assetsPath, {recursive: false})();
+        assert.instanceOf(base, Directory);
+        assert.instanceOf(base._items['file1.txt'], File);
+        assert.isNotOk(base._items.dir);
+      });
+
+      it('can read file from mocked FS', () => {
+        mock({'/dir': mock.load(assetsPath, {recursive: true})});
+        assert.equal(fs.readFileSync('/dir/file1.txt'), 'data1');
+        mock.restore();
+      });
     });
   });
 
