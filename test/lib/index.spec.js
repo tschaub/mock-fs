@@ -295,7 +295,7 @@ describe('The API', function() {
         assert.instanceOf(file, File);
         assert.deepEqual(filterStats(file), filterStats(stats));
       });
-      describe('lazyLoad=true', () => {
+      describe('lazy=true', () => {
         let file;
         beforeEach(() => (file = mock.load(filePath)()));
 
@@ -344,9 +344,9 @@ describe('The API', function() {
         });
       });
 
-      it('lazyLoad=false loads file content', () => {
+      it('lazy=false loads file content', () => {
         const file = mock.load(path.join(assetsPath, 'file1.txt'), {
-          lazyLoad: false
+          lazy: false
         })();
 
         assert.equal(
@@ -383,18 +383,18 @@ describe('The API', function() {
           assert.instanceOf(baseDirSubdir, Directory);
           assert.instanceOf(baseDirSubdir._items['file3.txt'], File);
         });
-        it('respects lazyLoad setting', () => {
+        it('respects lazy setting', () => {
           let dir;
           const getFile = () =>
             dir._items.dir._items.subdir._items['file3.txt'];
 
-          dir = mock.load(assetsPath, {recursive: true, lazyLoad: true})();
+          dir = mock.load(assetsPath, {recursive: true, lazy: true})();
           assert.typeOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').get,
             'function'
           );
 
-          dir = mock.load(assetsPath, {recursive: true, lazyLoad: false})();
+          dir = mock.load(assetsPath, {recursive: true, lazy: false})();
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').value,
             Buffer
