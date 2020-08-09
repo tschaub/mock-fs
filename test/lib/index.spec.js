@@ -188,7 +188,7 @@ describe('The API', function() {
   describe(`mock.bypass()`, () => {
     afterEach(mock.restore);
 
-    it('(synchronous) bypasses mock FS & restores after', () => {
+    it('runs a synchronous function using the real filesystem', () => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -198,28 +198,63 @@ describe('The API', function() {
       assert.isNotOk(fs.existsSync(__filename));
     });
 
-    withPromise.it('(async) bypasses mock FS & restores after', done => {
+    it('handles functions that throw', () => {
+      mock({'/path/to/file': 'content'});
+
+      const error = new Error('oops');
+
+      assert.throws(() => {
+        mock.bypass(() => {
+          assert.isFalse(fs.existsSync('/path/to/file'));
+          throw error;
+        });
+      }, error);
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+    });
+
+    withPromise.it('runs an async function using the real filesystem', done => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
-      assert.isNotOk(fs.existsSync(__filename));
+      assert.isFalse(fs.existsSync(__filename));
 
-      mock.bypass(() =>
-        fs.promises
-          .stat(__filename)
-          .then(stat => {
-            assert.isTrue(stat.isFile());
-            return fs.promises.stat(__filename);
-          })
-          .then(stat => assert.isTrue(stat.isFile()))
-          .then(() => {
-            setTimeout(() => {
-              assert.isNotOk(fs.existsSync(__filename));
-              done();
-            }, 0);
-          })
-          .catch(err => done(err))
-      );
+      const promise = mock.bypass(() => fs.promises.stat(__filename));
+      assert.instanceOf(promise, Promise);
+
+      promise
+        .then(stat => {
+          assert.isTrue(stat.isFile());
+          assert.isFalse(fs.existsSync(__filename));
+          done();
+        })
+        .catch(done);
+    });
+
+    withPromise.it('handles promise rejection', done => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.isFalse(fs.existsSync(__filename));
+
+      const error = new Error('oops');
+
+      const promise = mock.bypass(() => {
+        assert.isTrue(fs.existsSync(__filename));
+        return Promise.reject(error);
+      });
+      assert.instanceOf(promise, Promise);
+
+      promise
+        .then(() => {
+          done(new Error('expected rejection'));
+        })
+        .catch(err => {
+          assert.equal(err, error);
+
+          assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+          done();
+        });
     });
   });
 

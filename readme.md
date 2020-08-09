@@ -237,6 +237,8 @@ const realFilePath = '/path/to/real/file.txt';
 const myData = mock.bypass(() => fs.readFileSync(realFilePath, 'utf-8'));
 ```
 
+If you pass an asynchronous function or a promise-returning function to `bypass()`, a promise will be returned.
+
 #### <a id='bypassasync'>Async Warning</a>
 
 Asynchronous calls are supported, however, they are not recommended as they could produce unintended consequences if 
@@ -247,7 +249,7 @@ async function getFileInfo(fileName) {
   return await mock.bypass(async () => {
     const stats = await fs.promises.stat(fileName);
     const data = await fs.promises.readFile(fileName);
-    return { stats, data };
+    return {stats, data};
   });
 }
 ```
