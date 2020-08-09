@@ -67,13 +67,13 @@ You can load real files and directories into the mock system using `mock.load()`
 #### Notes
 
 - All stat information is duplicated (dates, permissions, etc) 
-- By default, all files are lazy-loaded, unless you specify the `{ lazyLoad: false }` option
+- By default, all files are lazy-loaded, unless you specify the `{lazy: false}` option
 
 #### <a id='mappingoptions'>options</a>
 
 | Option    | Type    | Default | Description |
 | --------- | ------- | ------- | ------------
-| lazyLoad  | boolean | true    | File content isn't loaded until explicitly read
+| lazy      | boolean | true    | File content isn't loaded until explicitly read
 | recursive | boolean | true    | Load all files and directories recursively
  
 #### `mock.load(path, options)`
@@ -84,13 +84,13 @@ mock({
   'my-file.txt': mock.load(path.resolve(__dirname, 'assets/special-file.txt')),
   
   // Pre-load js file
-  'ready.js': mock.load(path.resolve(__dirname, 'scripts/ready.js'), { lazyLoad: false }),
+  'ready.js': mock.load(path.resolve(__dirname, 'scripts/ready.js'), {lazy: false}),
 
   // Recursively loads all node_modules
   'node_modules': mock.load(path.resolve(__dirname, '../node_modules')),
 
   // Creates a directory named /tmp with only the files in /tmp/special_tmp_files (no subdirectories), pre-loading all content
-  '/tmp': mock.load('/tmp/special_tmp_files', { recursive: false, lazyLoad:false }),
+  '/tmp': mock.load('/tmp/special_tmp_files', {recursive: false, lazy:false}),
 
   'fakefile.txt': 'content here'
 });
@@ -237,6 +237,8 @@ const realFilePath = '/path/to/real/file.txt';
 const myData = mock.bypass(() => fs.readFileSync(realFilePath, 'utf-8'));
 ```
 
+If you pass an asynchronous function or a promise-returning function to `bypass()`, a promise will be returned.
+
 #### <a id='bypassasync'>Async Warning</a>
 
 Asynchronous calls are supported, however, they are not recommended as they could produce unintended consequences if 
@@ -247,7 +249,7 @@ async function getFileInfo(fileName) {
   return await mock.bypass(async () => {
     const stats = await fs.promises.stat(fileName);
     const data = await fs.promises.readFile(fileName);
-    return { stats, data };
+    return {stats, data};
   });
 }
 ```

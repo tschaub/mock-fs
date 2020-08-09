@@ -188,7 +188,7 @@ describe('The API', function() {
   describe(`mock.bypass()`, () => {
     afterEach(mock.restore);
 
-    it('(synchronous) bypasses mock FS & restores after', () => {
+    it('runs a synchronous function using the real filesystem', () => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -198,28 +198,63 @@ describe('The API', function() {
       assert.isNotOk(fs.existsSync(__filename));
     });
 
-    withPromise.it('(async) bypasses mock FS & restores after', done => {
+    it('handles functions that throw', () => {
+      mock({'/path/to/file': 'content'});
+
+      const error = new Error('oops');
+
+      assert.throws(() => {
+        mock.bypass(() => {
+          assert.isFalse(fs.existsSync('/path/to/file'));
+          throw error;
+        });
+      }, error);
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+    });
+
+    withPromise.it('runs an async function using the real filesystem', done => {
       mock({'/path/to/file': 'content'});
 
       assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
-      assert.isNotOk(fs.existsSync(__filename));
+      assert.isFalse(fs.existsSync(__filename));
 
-      mock.bypass(() =>
-        fs.promises
-          .stat(__filename)
-          .then(stat => {
-            assert.isTrue(stat.isFile());
-            return fs.promises.stat(__filename);
-          })
-          .then(stat => assert.isTrue(stat.isFile()))
-          .then(() => {
-            setTimeout(() => {
-              assert.isNotOk(fs.existsSync(__filename));
-              done();
-            }, 0);
-          })
-          .catch(err => done(err))
-      );
+      const promise = mock.bypass(() => fs.promises.stat(__filename));
+      assert.instanceOf(promise, Promise);
+
+      promise
+        .then(stat => {
+          assert.isTrue(stat.isFile());
+          assert.isFalse(fs.existsSync(__filename));
+          done();
+        })
+        .catch(done);
+    });
+
+    withPromise.it('handles promise rejection', done => {
+      mock({'/path/to/file': 'content'});
+
+      assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+      assert.isFalse(fs.existsSync(__filename));
+
+      const error = new Error('oops');
+
+      const promise = mock.bypass(() => {
+        assert.isTrue(fs.existsSync(__filename));
+        return Promise.reject(error);
+      });
+      assert.instanceOf(promise, Promise);
+
+      promise
+        .then(() => {
+          done(new Error('expected rejection'));
+        })
+        .catch(err => {
+          assert.equal(err, error);
+
+          assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+          done();
+        });
     });
   });
 
@@ -260,7 +295,7 @@ describe('The API', function() {
         assert.instanceOf(file, File);
         assert.deepEqual(filterStats(file), filterStats(stats));
       });
-      describe('lazyLoad=true', () => {
+      describe('lazy=true', () => {
         let file;
         beforeEach(() => (file = mock.load(filePath)()));
 
@@ -309,9 +344,9 @@ describe('The API', function() {
         });
       });
 
-      it('lazyLoad=false loads file content', () => {
+      it('lazy=false loads file content', () => {
         const file = mock.load(path.join(assetsPath, 'file1.txt'), {
-          lazyLoad: false
+          lazy: false
         })();
 
         assert.equal(
@@ -348,18 +383,18 @@ describe('The API', function() {
           assert.instanceOf(baseDirSubdir, Directory);
           assert.instanceOf(baseDirSubdir._items['file3.txt'], File);
         });
-        it('respects lazyLoad setting', () => {
+        it('respects lazy setting', () => {
           let dir;
           const getFile = () =>
             dir._items.dir._items.subdir._items['file3.txt'];
 
-          dir = mock.load(assetsPath, {recursive: true, lazyLoad: true})();
+          dir = mock.load(assetsPath, {recursive: true, lazy: true})();
           assert.typeOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').get,
             'function'
           );
 
-          dir = mock.load(assetsPath, {recursive: true, lazyLoad: false})();
+          dir = mock.load(assetsPath, {recursive: true, lazy: false})();
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').value,
             Buffer
