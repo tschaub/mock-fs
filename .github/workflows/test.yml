@@ -28,6 +28,11 @@ jobs:
           - 8
           - 10
           - 12
+        exclude:
+          # Temporarily excludes node 12 on windows
+          # Wait for https://github.com/nodejs/node/issues/34514
+          - os: windows-latest
+            node: 12
 
     steps:
       - name: Clone repository
