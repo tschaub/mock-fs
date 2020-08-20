@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.13.0
+
+ * Make `process.chdir()`, `process.cwd()`, and `fs.createWriteStream()` work with `bypass()` (thanks @3cp, see [#307][#307])
+ * Fix memory leak associated with Node 10 (thanks #3cp, see [#303][#303])
+ * Async function handling in `bypass()` (see [#306][#306])
+ * Big new feature!  Temporarily bypass the mocked filesystem with the `bypass()` function (thanks @nonara, see [#304][#304])
+
 ## 4.12.0
 
  * Check permissions in `readdir` and `readdirSync` (thanks @warpdesign, see [#295][#295])
@@ -290,3 +297,7 @@ Detailed changes:
 [#289]: https://github.com/tschaub/mock-fs/pull/289
 [#293]: https://github.com/tschaub/mock-fs/pull/293
 [#295]: https://github.com/tschaub/mock-fs/pull/295
+[#303]: https://github.com/tschaub/mock-fs/pull/303
+[#304]: https://github.com/tschaub/mock-fs/pull/304
+[#306]: https://github.com/tschaub/mock-fs/pull/306
+[#307]: https://github.com/tschaub/mock-fs/pull/307
