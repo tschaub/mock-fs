@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
+
 # `mock-fs`
 
 The `mock-fs` module allows Node's built-in [`fs` module](http://nodejs.org/api/fs.html) to be backed temporarily by an in-memory, mock file system.  This lets you run tests against a set of mock files and directories instead of lugging around a bunch of test fixtures.
@@ -57,6 +59,42 @@ The second (optional) argument may include the properties below.
 
  * `createCwd` - `boolean` Create a directory for `process.cwd()`.  This is `true` by default.
  * `createTmp` - `boolean` Create a directory for `os.tmpdir()`.  This is `true` by default.
+
+### Loading real files & directories
+
+You can load real files and directories into the mock system using `mock.load()`
+
+#### Notes
+
+- All stat information is duplicated (dates, permissions, etc) 
+- By default, all files are lazy-loaded, unless you specify the `{lazy: false}` option
+
+#### <a id='mappingoptions'>options</a>
+
+| Option    | Type    | Default | Description |
+| --------- | ------- | ------- | ------------
+| lazy      | boolean | true    | File content isn't loaded until explicitly read
+| recursive | boolean | true    | Load all files and directories recursively
+ 
+#### `mock.load(path, options)`
+
+```js
+mock({
+  // Lazy-load file
+  'my-file.txt': mock.load(path.resolve(__dirname, 'assets/special-file.txt')),
+  
+  // Pre-load js file
+  'ready.js': mock.load(path.resolve(__dirname, 'scripts/ready.js'), {lazy: false}),
+
+  // Recursively loads all node_modules
+  'node_modules': mock.load(path.resolve(__dirname, '../node_modules')),
+
+  // Creates a directory named /tmp with only the files in /tmp/special_tmp_files (no subdirectories), pre-loading all content
+  '/tmp': mock.load('/tmp/special_tmp_files', {recursive: false, lazy:false}),
+
+  'fakefile.txt': 'content here'
+});
+```
 
 ### Creating files
 
@@ -187,6 +225,35 @@ beforeEach(function() {
 afterEach(mock.restore);
 ```
 
+### Bypassing the mock file system
+
+#### <a id='mockbypass'>`mock.bypass(fn)`</a>
+
+Execute calls to the real filesystem with mock.bypass()
+
+```js
+// This file exists only on the real FS, not on the mocked FS
+const realFilePath = '/path/to/real/file.txt';
+const myData = mock.bypass(() => fs.readFileSync(realFilePath, 'utf-8'));
+```
+
+If you pass an asynchronous function or a promise-returning function to `bypass()`, a promise will be returned.
+
+#### <a id='bypassasync'>Async Warning</a>
+
+Asynchronous calls are supported, however, they are not recommended as they could produce unintended consequences if 
+anything else tries to access the mocked filesystem before they've completed.
+
+```js
+async function getFileInfo(fileName) {
+  return await mock.bypass(async () => {
+    const stats = await fs.promises.stat(fileName);
+    const data = await fs.promises.readFile(fileName);
+    return {stats, data};
+  });
+}
+```
+
 ## Install
 
 Using `npm`:
@@ -223,5 +290,3 @@ expect(actual).toMatchSnapshot()
 
 Note: it's safe to call `mock.restore` multiple times, so it can still be called in `afterEach` and then manually
 in test cases which use snapshot testing.
-
-[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
