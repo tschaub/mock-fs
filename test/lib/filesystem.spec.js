@@ -1,6 +1,6 @@
 'use strict';
 
-const os = require('os');
+const tmpdir = require('temp-dir');
 const path = require('path');
 
 const Directory = require('../../lib/directory');
@@ -25,12 +25,11 @@ describe('FileSystem', function() {
     });
 
     it('accepts a createTmp option', function() {
-      const tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
       const withTmp = new FileSystem({createTmp: true});
       const withoutTmp = new FileSystem({createTmp: false});
 
-      assert.instanceOf(withTmp.getItem(tmp), Directory);
-      assert.isNull(withoutTmp.getItem(tmp));
+      assert.instanceOf(withTmp.getItem(tmpdir), Directory);
+      assert.isNull(withoutTmp.getItem(tmpdir));
     });
   });
 
@@ -167,15 +166,14 @@ describe('FileSystem.create', function() {
 
   it('passes options to the FileSystem constructor', function() {
     const cwd = process.cwd();
-    const tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
 
     const withoutCwd = FileSystem.create({}, {createCwd: false});
     const withoutTmp = FileSystem.create({}, {createTmp: false});
 
     assert.isNull(withoutCwd.getItem(cwd));
-    assert.instanceOf(withoutCwd.getItem(tmp), Directory);
+    assert.instanceOf(withoutCwd.getItem(tmpdir), Directory);
 
-    assert.isNull(withoutTmp.getItem(tmp));
+    assert.isNull(withoutTmp.getItem(tmpdir));
     assert.instanceOf(withoutTmp.getItem(cwd), Directory);
   });
 
