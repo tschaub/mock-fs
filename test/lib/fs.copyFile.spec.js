@@ -105,8 +105,7 @@ if (fs.copyFile && fs.copyFileSync) {
         )
         .then(
           function() {
-            assert.fail('should not succeed.');
-            done();
+            done(new Error('should not succeed.'));
           },
           function(err) {
             assert.instanceOf(err, Error);
@@ -127,8 +126,7 @@ if (fs.copyFile && fs.copyFileSync) {
     withPromise.it('promise fails if src does not exist', function(done) {
       fs.promises.copyFile('path/to/bogus.txt', 'empty/dest.txt').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -149,8 +147,7 @@ if (fs.copyFile && fs.copyFileSync) {
     withPromise.it('promise fails if dest path does not exist', function(done) {
       fs.promises.copyFile('path/to/src.txt', 'path/nope/dest.txt').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -171,8 +168,7 @@ if (fs.copyFile && fs.copyFileSync) {
     withPromise.it('promise fails if dest is a directory', function(done) {
       fs.promises.copyFile('path/to/src.txt', 'empty').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

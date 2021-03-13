@@ -186,8 +186,7 @@ if (fs.mkdtemp) {
     withPromise.it('promise fails if parent does not exist', function(done) {
       fs.promises.mkdtemp('unknown/child').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -213,8 +212,7 @@ if (fs.mkdtemp) {
     withPromise.it('promise fails if parent is a file', function(done) {
       fs.promises.mkdtemp('file/child').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -243,8 +241,7 @@ if (fs.mkdtemp) {
       ) {
         fs.promises.mkdtemp('unwriteable/child').then(
           function() {
-            assert.fail('should not succeed.');
-            done();
+            done(new Error('should not succeed.'));
           },
           function(err) {
             assert.instanceOf(err, Error);

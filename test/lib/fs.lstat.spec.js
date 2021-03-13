@@ -87,8 +87,7 @@ describe('fs.lstat(path, callback)', function() {
   withPromise.it('promise fails on file not exist', function(done) {
     fs.promises.lstat('bogus').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

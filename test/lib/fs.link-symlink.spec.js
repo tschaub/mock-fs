@@ -121,8 +121,7 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
   withPromise.it('promise fails if original is a directory', function(done) {
     fs.promises.link('dir', 'link').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

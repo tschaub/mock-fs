@@ -259,8 +259,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -525,8 +524,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

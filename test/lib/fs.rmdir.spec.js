@@ -84,8 +84,7 @@ describe('fs.rmdir(path, callback)', function() {
   withPromise.it('promise fails if not empty', function(done) {
     fs.promises.rmdir('path/to').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -106,8 +105,7 @@ describe('fs.rmdir(path, callback)', function() {
   withPromise.it('promise fails if file', function(done) {
     fs.promises.rmdir('file.txt').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -179,8 +177,7 @@ describe('fs.rmdir(path, callback)', function() {
     withPromise.it('promise fails if parent is not writeable', function(done) {
       fs.promises.rmdir('unwriteable/child').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

@@ -64,8 +64,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
   withPromise.it('promise fails if file does not exist (r)', function(done) {
     fs.promises.open('bogus.txt', 'r').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -128,8 +127,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
   withPromise.it('promise fails if file exists (wx)', function(done) {
     fs.promises.open('path/to/file.txt', 'wx', parseInt('0666', 8)).then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -232,8 +230,7 @@ describe('fs.close(fd, callback)', function() {
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

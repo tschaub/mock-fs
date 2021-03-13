@@ -38,8 +38,7 @@ describe('fs.chown(path, uid, gid, callback)', function() {
   withPromise.it('promise fails if file does not exist', function(done) {
     fs.promises.chown('bogus.txt', 42, 43).then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

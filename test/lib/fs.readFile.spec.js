@@ -50,8 +50,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
   withPromise.it('promise fails for directory', function(done) {
     fs.promises.readFile('path/to').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -73,8 +72,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
   withPromise.it('promise fails for bad path', function(done) {
     fs.promises.readFile('path/to/bogus').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
