@@ -92,7 +92,7 @@ describe('mock.bypass()', () => {
 
     promise
       .then(() => {
-        done(new Error('expected rejection'));
+        done(new Error('should not succeed'));
       })
       .catch(err => {
         assert.equal(err, error);
