@@ -247,8 +247,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -275,8 +274,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

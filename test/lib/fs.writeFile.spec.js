@@ -84,8 +84,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
   withPromise.it('promise fails if directory does not exist', function(done) {
     fs.promises.writeFile('foo/bar', 'baz').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

@@ -90,8 +90,7 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
     function(done) {
       fs.promises.rename('bogus', 'empty').then(
         function() {
-          assert.fail('Should not succeed.');
-          done();
+          done(new Error('Should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -149,8 +148,7 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
     function(done) {
       fs.promises.rename('path', 'nested').then(
         function() {
-          assert.fail('Should not succeed.');
-          done();
+          done(new Error('Should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

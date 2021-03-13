@@ -90,8 +90,7 @@ describe('fs.readdir(path, callback)', function() {
   withPromise.it('promise calls with an error for bogus path', function(done) {
     fs.promises.readdir('bogus').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -114,8 +113,7 @@ describe('fs.readdir(path, callback)', function() {
   ) {
     fs.promises.readdir('denied').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

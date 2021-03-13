@@ -83,8 +83,7 @@ describe('fs.unlink(path, callback)', function() {
   withPromise.it('promise fails for a directory', function(done) {
     fs.promises.unlink('dir').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

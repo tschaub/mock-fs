@@ -53,8 +53,7 @@ describe('fs.readlink(path, callback)', function() {
   withPromise.it('promise fails for regular files', function(done) {
     fs.promises.readlink('file.txt').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

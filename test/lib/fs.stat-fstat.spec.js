@@ -306,8 +306,7 @@ describe('fs.fstat(fd, callback)', function() {
       })
       .then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

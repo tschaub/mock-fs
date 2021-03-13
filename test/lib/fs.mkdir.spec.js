@@ -158,8 +158,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
   withPromise.it('promise fails if parent does not exist', function(done) {
     fs.promises.mkdir('parent/bogus/dir').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -184,8 +183,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     function(done) {
       fs.promises.mkdir('file.txt/bogus/dir', {recursive: true}).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -219,8 +217,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
         })
         .then(
           function() {
-            assert.fail('should not succeed.');
-            done();
+            done(new Error('should not succeed.'));
           },
           function(err) {
             assert.instanceOf(err, Error);
@@ -241,8 +238,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
   withPromise.it('promise fails if directory already exists', function(done) {
     fs.promises.mkdir('parent').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -263,8 +259,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
   withPromise.it('promise fails if file already exists', function(done) {
     fs.promises.mkdir('file.txt').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
@@ -290,8 +285,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     function(done) {
       fs.promises.mkdir('parent/file.md', {recursive: true}).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -331,8 +325,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     withPromise.it('promise fails if parent is not writeable', function(done) {
       fs.promises.mkdir('unwriteable/child').then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);

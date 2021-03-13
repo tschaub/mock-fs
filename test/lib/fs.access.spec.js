@@ -98,8 +98,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for R_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.R_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -120,8 +119,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for W_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.W_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -142,8 +140,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for X_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.X_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -188,8 +185,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for R_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.R_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -210,8 +206,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for W_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.W_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -256,8 +251,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for R_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.R_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -278,8 +272,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for X_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.X_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -340,8 +333,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for R_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.R_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -386,8 +378,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for W_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.W_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -408,8 +399,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for X_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.X_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -470,8 +460,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for W_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.W_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -532,8 +521,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
     withPromise.it('promise generates EACCES for X_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.X_OK).then(
         function() {
-          assert.fail('should not succeed.');
-          done();
+          done(new Error('should not succeed.'));
         },
         function(err) {
           assert.instanceOf(err, Error);
@@ -630,8 +618,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       function(done) {
         fs.promises.access('unreadable/readable-child').then(
           function() {
-            assert.fail('should not succeed.');
-            done();
+            done(new Error('should not succeed.'));
           },
           function(err) {
             assert.instanceOf(err, Error);

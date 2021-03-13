@@ -85,8 +85,7 @@ describe('fs.utimes(path, atime, mtime, callback)', function() {
   withPromise.it('promise fails for a bogus path', function(done) {
     fs.promises.utimes('bogus.txt', new Date(100), new Date(200)).then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);

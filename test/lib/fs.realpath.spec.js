@@ -65,8 +65,7 @@ describe('fs.realpath(path, [cache], callback)', function() {
   withPromise.it('promise fails on file not exist', function(done) {
     fs.promises.realpath('bogus').then(
       function() {
-        assert.fail('should not succeed.');
-        done();
+        done(new Error('should not succeed.'));
       },
       function(err) {
         assert.instanceOf(err, Error);
