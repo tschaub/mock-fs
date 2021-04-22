@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.14.0
+
+ * Attempt to fix logging when using `mock-fs` with `tape` (see [#322][#322])
+ * Minor fix for `bypass()` (thanks @3cp, see [#320][#320])
+
 ## 4.13.0
 
  * Make `process.chdir()`, `process.cwd()`, and `fs.createWriteStream()` work with `bypass()` (thanks @3cp, see [#307][#307])
@@ -301,3 +306,5 @@ Detailed changes:
 [#304]: https://github.com/tschaub/mock-fs/pull/304
 [#306]: https://github.com/tschaub/mock-fs/pull/306
 [#307]: https://github.com/tschaub/mock-fs/pull/307
+[#320]: https://github.com/tschaub/mock-fs/pull/320
+[#322]: https://github.com/tschaub/mock-fs/pull/322
