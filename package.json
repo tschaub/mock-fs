@@ -1,7 +1,7 @@
 {
   "name": "mock-fs",
   "description": "A configurable mock file system.  You know, for testing.",
-  "version": "4.13.0",
+  "version": "4.14.0",
   "main": "lib/index.js",
   "homepage": "https://github.com/tschaub/mock-fs",
   "author": {
