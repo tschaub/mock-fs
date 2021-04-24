@@ -3,7 +3,7 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const os = require('os');
+const tmpdir = require('temp-dir');
 const path = require('path');
 const File = require('../../lib/file');
 const {fixWin32Permissions} = require('../../lib/item');
@@ -36,15 +36,7 @@ describe('The API', function() {
       mock();
 
       assert.isTrue(fs.statSync(process.cwd()).isDirectory());
-      let tmp;
-      if (os.tmpdir) {
-        tmp = os.tmpdir();
-      } else if (os.tmpDir) {
-        tmp = os.tmpDir();
-      }
-      if (tmp) {
-        assert.isTrue(fs.statSync(tmp).isDirectory());
-      }
+      assert.isTrue(fs.statSync(tmpdir).isDirectory());
 
       mock.restore();
     });
@@ -60,15 +52,7 @@ describe('The API', function() {
     it('passes the createTmp option to the FileSystem constructor', function() {
       mock({}, {createTmp: false});
 
-      let tmp;
-      if (os.tmpdir) {
-        tmp = os.tmpdir();
-      } else if (os.tmpDir) {
-        tmp = os.tmpDir();
-      }
-      if (tmp) {
-        assert.isFalse(fs.existsSync(tmp));
-      }
+      assert.isFalse(fs.existsSync(tmpdir));
 
       mock.restore();
     });

@@ -47,7 +47,7 @@ Some of these breaking changes may be restored in a future release.
 
 Configure the `fs` module so it is backed by an in-memory file system.
 
-Calling `mock` sets up a mock file system with two directories by default: `process.cwd()` and `os.tmpdir()` (or `os.tmpDir()` for older Node).  When called with no arguments, just these two directories are created.  When called with a `config` object, additional files, directories, and symlinks are created.  To avoid creating a directory for `process.cwd()` and `os.tmpdir()`, see the [`options`](#options) below.
+Calling `mock` sets up a mock file system with two directories by default: `process.cwd()` and `os.tmpdir()` (using [`temp-dir`](https://www.npmjs.com/package/temp-dir) to get the real path, not a symlink).  When called with no arguments, just these two directories are created.  When called with a `config` object, additional files, directories, and symlinks are created.  To avoid creating a directory for `process.cwd()` and `os.tmpdir()`, see the [`options`](#options) below.
 
 Property names of the `config` object are interpreted as relative paths to resources (relative from `process.cwd()`).  Property values of the `config` object are interpreted as content or configuration for the generated resources.
 
