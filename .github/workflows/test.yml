@@ -29,6 +29,7 @@ jobs:
           - 10
           - 12
           - 14
+          - 16
         exclude:
           # Excludes nodejs v12 and v14 on windows
           # https://github.com/nodejs/node/issues/34514
