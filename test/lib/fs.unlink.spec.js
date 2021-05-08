@@ -41,7 +41,7 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise deletes a file', function(done) {
+  it('promise deletes a file', function(done) {
     fs.promises.unlink('file.txt').then(function() {
       assert.isFalse(fs.existsSync('file.txt'));
       done();
@@ -61,7 +61,7 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  withPromise.it('updates mtime of parent', function(done) {
+  it('updates mtime of parent', function(done) {
     const oldTime = fs.statSync('dir2').mtime;
     fs.promises.unlink('dir2/file').then(function() {
       assert.isFalse(fs.existsSync('dir2/file'));
@@ -80,7 +80,7 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails for a directory', function(done) {
+  it('promise fails for a directory', function(done) {
     fs.promises.unlink('dir').then(
       function() {
         done(new Error('should not succeed.'));
@@ -110,7 +110,7 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  withPromise.it(
+  it(
     'promise respects previously opened file descriptors',
     function(done) {
       const fd = fs.openSync('file.txt', 'r');

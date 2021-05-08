@@ -29,7 +29,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise allows a file to be read asynchronously', function(
+  it('promise allows a file to be read asynchronously', function(
     done
   ) {
     fs.promises.readFile('path/to/file.txt').then(function(data) {
@@ -47,7 +47,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails for directory', function(done) {
+  it('promise fails for directory', function(done) {
     fs.promises.readFile('path/to').then(
       function() {
         done(new Error('should not succeed.'));
@@ -69,7 +69,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails for bad path', function(done) {
+  it('promise fails for bad path', function(done) {
     fs.promises.readFile('path/to/bogus').then(
       function() {
         done(new Error('should not succeed.'));

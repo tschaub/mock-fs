@@ -42,7 +42,7 @@ describe('fs.utimes(path, atime, mtime, callback)', function() {
     });
   });
 
-  withPromise.it('promise updates timestamps for a file', function(done) {
+  it('promise updates timestamps for a file', function(done) {
     fs.promises
       .utimes('file.txt', new Date(100), new Date(200))
       .then(function() {
@@ -65,7 +65,7 @@ describe('fs.utimes(path, atime, mtime, callback)', function() {
     });
   });
 
-  withPromise.it('promise updates timestamps for a directory', function(done) {
+  it('promise updates timestamps for a directory', function(done) {
     fs.promises.utimes('dir', new Date(300), new Date(400)).then(function() {
       const stats = fs.statSync('dir');
       assert.equal(stats.atime.getTime(), 300);
@@ -82,7 +82,7 @@ describe('fs.utimes(path, atime, mtime, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails for a bogus path', function(done) {
+  it('promise fails for a bogus path', function(done) {
     fs.promises.utimes('bogus.txt', new Date(100), new Date(200)).then(
       function() {
         done(new Error('should not succeed.'));
@@ -134,7 +134,7 @@ describe('fs.futimes(fd, atime, mtime, callback)', function() {
     });
   });
 
-  withPromise.it('promise updates timestamps for a file', function(done) {
+  it('promise updates timestamps for a file', function(done) {
     fs.promises
       .open('file.txt', 'r')
       .then(function(fd) {
@@ -161,7 +161,7 @@ describe('fs.futimes(fd, atime, mtime, callback)', function() {
     });
   });
 
-  withPromise.it('promise updates timestamps for a directory', function(done) {
+  it('promise updates timestamps for a directory', function(done) {
     fs.promises
       .open('dir', 'r')
       .then(function(fd) {

@@ -24,7 +24,7 @@ describe('fs.chown(path, uid, gid, callback)', function() {
     fs.chown(Buffer.from('file.txt'), 42, 43, done);
   });
 
-  withPromise.it('promise changes ownership of a file', function(done) {
+  it('promise changes ownership of a file', function(done) {
     fs.promises.chown('file.txt', 42, 43).then(done, done);
   });
 
@@ -35,7 +35,7 @@ describe('fs.chown(path, uid, gid, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file does not exist', function(done) {
+  it('promise fails if file does not exist', function(done) {
     fs.promises.chown('bogus.txt', 42, 43).then(
       function() {
         done(new Error('should not succeed.'));
@@ -83,7 +83,7 @@ describe('fs.fchown(fd, uid, gid, callback)', function() {
     fs.fchown(fd, 42, 43, done);
   });
 
-  withPromise.it('promise changes ownership of a file', function(done) {
+  it('promise changes ownership of a file', function(done) {
     fs.promises
       .open('file.txt', 'r')
       .then(function(fd) {

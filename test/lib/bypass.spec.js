@@ -58,7 +58,7 @@ describe('mock.bypass()', () => {
     assert.equal(process.cwd(), originalCwd);
   });
 
-  withPromise.it('runs an async function using the real filesystem', done => {
+  it('runs an async function using the real filesystem', done => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -74,7 +74,7 @@ describe('mock.bypass()', () => {
       .catch(done);
   });
 
-  withPromise.it('handles promise rejection', done => {
+  it('handles promise rejection', done => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');

@@ -27,7 +27,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise writes a string to a new file', function(done) {
+  it('promise writes a string to a new file', function(done) {
     fs.promises.appendFile('foo', 'bar').then(function() {
       assert.equal(String(fs.readFileSync('foo')), 'bar');
       done();
@@ -44,7 +44,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise appends a string to an existing file', function(
+  it('promise appends a string to an existing file', function(
     done
   ) {
     fs.promises.appendFile('dir/file.txt', ' bar').then(function() {
@@ -63,7 +63,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise appends a buffer to a file', function(done) {
+  it('promise appends a buffer to a file', function(done) {
     fs.promises.appendFile('dir/file.txt', bufferFrom(' bar')).then(function() {
       assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
       done();
@@ -80,7 +80,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise appends via a symbolic link file', function(done) {
+  it('promise appends via a symbolic link file', function(done) {
     fs.promises.appendFile('link.txt', ' bar').then(function() {
       assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
       done();
@@ -94,7 +94,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if directory does not exist', function(done) {
+  it('promise fails if directory does not exist', function(done) {
     fs.promises.appendFile('foo/bar', 'baz').then(
       function() {
         done(new Error('should not succeed.'));

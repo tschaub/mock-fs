@@ -30,7 +30,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it('promise writes a buffer to a file', function(done) {
+  it('promise writes a buffer to a file', function(done) {
     const buffer = bufferFrom('new file');
     fs.promises
       .open('path/new-file.txt', 'w')
@@ -59,7 +59,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it(
+  it(
     'promise writes a buffer to a file with implicit offset, length, position',
     function(done) {
       const buffer = bufferFrom('new file');
@@ -98,7 +98,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it('promise can write a portion of a buffer to a file', function(
+  it('promise can write a portion of a buffer to a file', function(
     done
   ) {
     const buffer = bufferFrom('new file');
@@ -136,7 +136,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it(
+  it(
     'promise can write a portion of a buffer to a file position',
     function(done) {
       const buffer = bufferFrom('new file');
@@ -178,7 +178,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it(
+  it(
     'promise can write a portion of a buffer to a file position and enlarge the file',
     function(done) {
       const buffer = bufferFrom('new file');
@@ -220,7 +220,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it('promise can append to a file', function(done) {
+  it('promise can append to a file', function(done) {
     const buffer = bufferFrom(' more');
     fs.promises
       .open('path/to/file.txt', 'a')
@@ -251,7 +251,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  withPromise.it('fails if file not open for writing', function(done) {
+  it('fails if file not open for writing', function(done) {
     fs.promises
       .open('path/to/file.txt', 'r')
       .then(function(fd) {
@@ -339,7 +339,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it('promise writes a string to a file', function(done) {
+  it('promise writes a string to a file', function(done) {
     const string = 'new file';
     fs.promises
       .open('path/new-file.txt', 'w')
@@ -372,7 +372,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it(
+  it(
     'promise writes a string to a file with implicit position and encoding',
     function(done) {
       const string = 'new file';
@@ -411,7 +411,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it('promise can append to a file', function(done) {
+  it('promise can append to a file', function(done) {
     const string = ' more';
     fs.promises
       .open('path/to/file.txt', 'a')
@@ -447,7 +447,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it('promise can write to a position of a file', function(done) {
+  it('promise can write to a position of a file', function(done) {
     const string = ' more';
     fs.promises
       .open('path/to/file.txt', 'a')
@@ -483,7 +483,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it(
+  it(
     'promise can write to a position of a file and enlarge it',
     function(done) {
       const string = ' more';
@@ -516,7 +516,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file not open for writing', function(done) {
+  it('promise fails if file not open for writing', function(done) {
     fs.promises
       .open('path/to/file.txt', 'r')
       .then(function(fd) {

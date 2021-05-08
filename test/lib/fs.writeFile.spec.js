@@ -28,7 +28,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise writes a string to a file', function(done) {
+  it('promise writes a string to a file', function(done) {
     fs.promises.writeFile('dir/foo', 'bar').then(function() {
       assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
       done();
@@ -47,7 +47,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise updates mtime of parent directory', function(done) {
+  it('promise updates mtime of parent directory', function(done) {
     const oldTime = fs.statSync('dir').mtime;
     fs.promises.writeFile('dir/foo', 'bar').then(function() {
       const newTime = fs.statSync('dir').mtime;
@@ -66,7 +66,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise writes a buffer to a file', function(done) {
+  it('promise writes a buffer to a file', function(done) {
     fs.promises.writeFile('dir/foo', bufferFrom('bar')).then(function() {
       assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
       done();
@@ -81,7 +81,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if directory does not exist', function(done) {
+  it('promise fails if directory does not exist', function(done) {
     fs.promises.writeFile('foo/bar', 'baz').then(
       function() {
         done(new Error('should not succeed.'));

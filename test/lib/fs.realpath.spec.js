@@ -28,7 +28,7 @@ describe('fs.realpath(path, [cache], callback)', function() {
     });
   });
 
-  withPromise.it('promise resolves the real path for a symbolic link', function(
+  it('promise resolves the real path for a symbolic link', function(
     done
   ) {
     fs.promises.realpath('link').then(function(resolved) {
@@ -47,7 +47,7 @@ describe('fs.realpath(path, [cache], callback)', function() {
     });
   });
 
-  withPromise.it('promise resolves the real path regular file', function(done) {
+  it('promise resolves the real path regular file', function(done) {
     fs.promises.realpath('dir/file.txt').then(function(resolved) {
       assertEqualPaths(resolved, path.resolve('dir/file.txt'));
       done();
@@ -62,7 +62,7 @@ describe('fs.realpath(path, [cache], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails on file not exist', function(done) {
+  it('promise fails on file not exist', function(done) {
     fs.promises.realpath('bogus').then(
       function() {
         done(new Error('should not succeed.'));

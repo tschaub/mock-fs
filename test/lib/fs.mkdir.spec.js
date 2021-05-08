@@ -46,7 +46,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise creates a new directory', function(done) {
+  it('promise creates a new directory', function(done) {
     fs.promises.mkdir('parent/dir').then(function() {
       const stats = fs.statSync('parent/dir');
       assert.isTrue(stats.isDirectory());
@@ -54,7 +54,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }, done);
   });
 
-  inVersion('>=10.12').it('creates a new directory recursively', function(
+  it('creates a new directory recursively', function(
     done
   ) {
     fs.mkdir('parent/foo/bar/dir', {recursive: true}, function(err) {
@@ -71,7 +71,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise creates a new directory recursively', function(done) {
+  it('promise creates a new directory recursively', function(done) {
     fs.promises.mkdir('parent/foo/bar/dir', {recursive: true}).then(function() {
       let stats = fs.statSync('parent/foo/bar/dir');
       assert.isTrue(stats.isDirectory());
@@ -95,7 +95,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise accepts dir mode', function(done) {
+  it('promise accepts dir mode', function(done) {
     fs.promises.mkdir('parent/dir', parseInt('0755', 8)).then(function() {
       const stats = fs.statSync('parent/dir');
       assert.isTrue(stats.isDirectory());
@@ -104,7 +104,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }, done);
   });
 
-  inVersion('>=10.12').it('accepts dir mode recursively', function(done) {
+  it('accepts dir mode recursively', function(done) {
     fs.mkdir(
       'parent/foo/bar/dir',
       {recursive: true, mode: parseInt('0755', 8)},
@@ -128,7 +128,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     );
   });
 
-  withPromise.it('promise accepts dir mode recursively', function(done) {
+  it('promise accepts dir mode recursively', function(done) {
     fs.promises
       .mkdir('parent/foo/bar/dir', {recursive: true, mode: parseInt('0755', 8)})
       .then(function() {
@@ -155,7 +155,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if parent does not exist', function(done) {
+  it('promise fails if parent does not exist', function(done) {
     fs.promises.mkdir('parent/bogus/dir').then(
       function() {
         done(new Error('should not succeed.'));
@@ -168,7 +168,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     );
   });
 
-  inVersion('>=10.12').it(
+  it(
     'fails if one parent is not a folder in recursive creation',
     function(done) {
       fs.mkdir('file.txt/bogus/dir', {recursive: true}, function(err) {
@@ -178,7 +178,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  withPromise.it(
+  it(
     'promise fails if one parent is not a folder in recursive creation',
     function(done) {
       fs.promises.mkdir('file.txt/bogus/dir', {recursive: true}).then(
@@ -193,7 +193,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  inVersion('>=10.12').it(
+  it(
     'fails if permission does not allow recursive creation',
     function(done) {
       fs.mkdir(
@@ -207,7 +207,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  withPromise.it(
+  it(
     'promise fails if permission does not allow recursive creation',
     function(done) {
       fs.promises
@@ -235,7 +235,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if directory already exists', function(done) {
+  it('promise fails if directory already exists', function(done) {
     fs.promises.mkdir('parent').then(
       function() {
         done(new Error('should not succeed.'));
@@ -256,7 +256,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file already exists', function(done) {
+  it('promise fails if file already exists', function(done) {
     fs.promises.mkdir('file.txt').then(
       function() {
         done(new Error('should not succeed.'));
@@ -269,7 +269,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     );
   });
 
-  inVersion('>=10.12').it(
+  it(
     'fails in recursive mode if file already exists',
     function(done) {
       fs.mkdir('parent/file.md', {recursive: true}, function(err) {
@@ -280,7 +280,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  withPromise.it(
+  it(
     'promise fails in recursive mode if file already exists',
     function(done) {
       fs.promises.mkdir('parent/file.md', {recursive: true}).then(
@@ -296,7 +296,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  inVersion('>=10.12').it(
+  it(
     'passes in recursive mode if directory already exists',
     function(done) {
       fs.mkdir('parent/child', {recursive: true}, function(err) {
@@ -306,7 +306,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }
   );
 
-  withPromise.it(
+  it(
     'promise passes in recursive mode if directory already exists',
     function(done) {
       fs.promises.mkdir('parent/child', {recursive: true}).then(done, done);
@@ -322,7 +322,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
       });
     });
 
-    withPromise.it('promise fails if parent is not writeable', function(done) {
+    it('promise fails if parent is not writeable', function(done) {
       fs.promises.mkdir('unwriteable/child').then(
         function() {
           done(new Error('should not succeed.'));
@@ -370,7 +370,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     assert.isTrue(stats.isDirectory());
   });
 
-  inVersion('>=10.12').it('creates a new directory recursively', function() {
+  it('creates a new directory recursively', function() {
     fs.mkdirSync('parent/foo/bar/dir', {recursive: true});
     let stats = fs.statSync('parent/foo/bar/dir');
     assert.isTrue(stats.isDirectory());
@@ -387,7 +387,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
   });
 
-  inVersion('>=10.12').it('accepts dir mode recursively', function() {
+  it('accepts dir mode recursively', function() {
     fs.mkdirSync('parent/foo/bar/dir', {
       recursive: true,
       mode: parseInt('0755', 8)
@@ -411,7 +411,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     });
   });
 
-  inVersion('>=10.12').it(
+  it(
     'fails if one parent is not a folder in recursive creation',
     function() {
       assert.throws(function() {
@@ -420,7 +420,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     }
   );
 
-  inVersion('>=10.12').it(
+  it(
     'fails if permission does not allow recursive creation',
     function() {
       assert.throws(function() {
@@ -444,7 +444,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     });
   });
 
-  inVersion('>=10.12').it(
+  it(
     'fails in recursive mode if file already exists',
     function() {
       assert.throws(function() {
@@ -453,7 +453,7 @@ describe('fs.mkdirSync(path, [mode])', function() {
     }
   );
 
-  inVersion('>=10.12').it(
+  it(
     'passes in recursive mode if directory already exists',
     function() {
       assert.doesNotThrow(function() {

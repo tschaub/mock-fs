@@ -45,7 +45,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise opens an existing file for reading (r)', function(
+  it('promise opens an existing file for reading (r)', function(
     done
   ) {
     fs.promises.open('nested/sub/dir/one.txt', 'r').then(function(fd) {
@@ -62,7 +62,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file does not exist (r)', function(done) {
+  it('promise fails if file does not exist (r)', function(done) {
     fs.promises.open('bogus.txt', 'r').then(
       function() {
         done(new Error('should not succeed.'));
@@ -86,7 +86,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise creates a new file for writing (w)', function(done) {
+  it('promise creates a new file for writing (w)', function(done) {
     fs.promises
       .open('path/to/new.txt', 'w', parseInt('0666', 8))
       .then(function(fd) {
@@ -106,7 +106,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise opens an existing file for writing (w)', function(
+  it('promise opens an existing file for writing (w)', function(
     done
   ) {
     fs.promises
@@ -125,7 +125,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file exists (wx)', function(done) {
+  it('promise fails if file exists (wx)', function(done) {
     fs.promises.open('path/to/file.txt', 'wx', parseInt('0666', 8)).then(
       function() {
         done(new Error('should not succeed.'));
@@ -198,7 +198,7 @@ describe('fs.close(fd, callback)', function() {
     });
   });
 
-  withPromise.it('promise closes a file descriptor', function(done) {
+  it('promise closes a file descriptor', function(done) {
     fs.promises
       .open('dir/file.txt', 'w')
       .then(function(fd) {
@@ -221,7 +221,7 @@ describe('fs.close(fd, callback)', function() {
     });
   });
 
-  inVersion('>=10.0.0 <14.0.0').it(
+  inVersion('<14.0.0').it(
     'promise fails for closed file descriptors',
     function(done) {
       fs.promises
