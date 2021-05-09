@@ -260,12 +260,12 @@ describe('fs.stat(path, options, callback)', function() {
       if (process.getuid) {
         assert.isNumber(stats.uid);
       } else {
-        assert.isNaN(stats.uid);
+        assert.strictEqual(stats.uid, 0);
       }
       if (process.getgid) {
         assert.isNumber(stats.gid);
       } else {
-        assert.isNaN(stats.gid);
+        assert.strictEqual(stats.gid, 0);
       }
       assert.equal(stats.nlink, 3);
       assert.isNumber(stats.rdev);
@@ -286,12 +286,12 @@ describe('fs.stat(path, options, callback)', function() {
       if (process.getuid) {
         assert.equal(typeof stats.uid, 'bigint');
       } else {
-        assert.isNaN(stats.uid);
+        assert.strictEqual(stats.uid, 0n);
       }
       if (process.getgid) {
         assert.equal(typeof stats.gid, 'bigint');
       } else {
-        assert.isNaN(stats.gid);
+        assert.strictEqual(stats.gid, 0n);
       }
       assert.equal(typeof stats.nlink, 'bigint');
       assert.equal(typeof stats.rdev, 'bigint');
@@ -307,12 +307,12 @@ describe('fs.stat(path, options, callback)', function() {
       if (process.getuid) {
         assert.isNumber(stats.uid);
       } else {
-        assert.isNaN(stats.uid);
+        assert.strictEqual(stats.uid, 0);
       }
       if (process.getgid) {
         assert.isNumber(stats.gid);
       } else {
-        assert.isNaN(stats.gid);
+        assert.strictEqual(stats.gid, 0);
       }
       assert.equal(stats.nlink, 3);
       assert.isNumber(stats.rdev);
@@ -330,12 +330,12 @@ describe('fs.stat(path, options, callback)', function() {
         if (process.getuid) {
           assert.equal(typeof stats.uid, 'bigint');
         } else {
-          assert.isNaN(stats.uid);
+          assert.strictEqual(stats.uid, 0n);
         }
         if (process.getgid) {
           assert.equal(typeof stats.gid, 'bigint');
         } else {
-          assert.isNaN(stats.gid);
+          assert.strictEqual(stats.gid, 0n);
         }
         assert.equal(typeof stats.nlink, 'bigint');
         assert.equal(typeof stats.rdev, 'bigint');
@@ -374,7 +374,7 @@ describe('fs.stat(path, options, callback)', function() {
   }
 });
 
-describe('fs.fstat(fd, callback)', function() {
+describe('fs.fstat(fd, options, callback)', function() {
   beforeEach(function() {
     mock({
       'path/to/file.txt': 'file content',
@@ -531,7 +531,7 @@ describe('fs.fstat(fd, callback)', function() {
   });
 });
 
-describe('fs.fstatSync(fd)', function() {
+describe('fs.fstatSync(fd, options)', function() {
   beforeEach(function() {
     mock({
       'path/to/file.txt': 'file content',

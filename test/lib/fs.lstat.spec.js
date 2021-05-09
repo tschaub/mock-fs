@@ -8,7 +8,7 @@ const assert = helper.assert;
 const inVersion = helper.inVersion;
 const withPromise = helper.withPromise;
 
-describe('fs.lstat(path, callback)', function() {
+describe('fs.lstat(path, options, callback)', function() {
   beforeEach(function() {
     mock({
       'file.txt': mock.file({
@@ -158,7 +158,7 @@ describe('fs.lstat(path, callback)', function() {
   });
 });
 
-describe('fs.lstatSync(path)', function() {
+describe('fs.lstatSync(path, options)', function() {
   beforeEach(function() {
     mock({
       'file.txt': mock.file({
