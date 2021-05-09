@@ -27,14 +27,6 @@ jobs:
           - 12
           - 14
           - 16
-        exclude:
-          # Excludes nodejs v12 and v14 on windows
-          # https://github.com/nodejs/node/issues/34514
-          # It was patched in nodejs v15+.
-          - os: windows-latest
-            node: 12
-          - os: windows-latest
-            node: 14
 
     steps:
       - name: Clone repository
