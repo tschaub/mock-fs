@@ -43,7 +43,7 @@ if (fs.copyFile && fs.copyFileSync) {
       );
     });
 
-    withPromise.it('promise copies a file to an empty directory', function(
+    it('promise copies a file to an empty directory', function(
       done
     ) {
       fs.promises
@@ -69,7 +69,7 @@ if (fs.copyFile && fs.copyFileSync) {
       });
     });
 
-    withPromise.it('promise truncates dest file if it exists', function(done) {
+    it('promise truncates dest file if it exists', function(done) {
       fs.promises
         .copyFile('path/to/src.txt', 'path/to/other.txt')
         .then(function() {
@@ -94,7 +94,7 @@ if (fs.copyFile && fs.copyFileSync) {
       );
     });
 
-    withPromise.it('promise throws if dest exists and exclusive', function(
+    it('promise throws if dest exists and exclusive', function(
       done
     ) {
       fs.promises
@@ -123,7 +123,7 @@ if (fs.copyFile && fs.copyFileSync) {
       });
     });
 
-    withPromise.it('promise fails if src does not exist', function(done) {
+    it('promise fails if src does not exist', function(done) {
       fs.promises.copyFile('path/to/bogus.txt', 'empty/dest.txt').then(
         function() {
           done(new Error('should not succeed.'));
@@ -144,7 +144,7 @@ if (fs.copyFile && fs.copyFileSync) {
       });
     });
 
-    withPromise.it('promise fails if dest path does not exist', function(done) {
+    it('promise fails if dest path does not exist', function(done) {
       fs.promises.copyFile('path/to/src.txt', 'path/nope/dest.txt').then(
         function() {
           done(new Error('should not succeed.'));
@@ -165,7 +165,7 @@ if (fs.copyFile && fs.copyFileSync) {
       });
     });
 
-    withPromise.it('promise fails if dest is a directory', function(done) {
+    it('promise fails if dest is a directory', function(done) {
       fs.promises.copyFile('path/to/src.txt', 'empty').then(
         function() {
           done(new Error('should not succeed.'));

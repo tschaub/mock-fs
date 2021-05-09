@@ -5,6 +5,7 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
+const inVersion = helper.inVersion;
 const withPromise = helper.withPromise;
 
 describe('fs.link(srcpath, dstpath, callback)', function() {
@@ -46,7 +47,7 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
     });
   });
 
-  withPromise.it('promise creates a link to a file', function(done) {
+  it('promise creates a link to a file', function(done) {
     assert.equal(fs.statSync('file.txt').nlink, 1);
 
     fs.promises.link('file.txt', 'link.txt').then(function() {
@@ -70,7 +71,7 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
     });
   });
 
-  withPromise.it('promise works if original is renamed', function(done) {
+  it('promise works if original is renamed', function(done) {
     fs.promises.link('file.txt', 'link.txt').then(function() {
       fs.renameSync('file.txt', 'renamed.txt');
       assert.isTrue(fs.statSync('link.txt').isFile());
@@ -96,7 +97,7 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
     });
   });
 
-  withPromise.it('promise works if original is removed', function(done) {
+  it('promise works if original is removed', function(done) {
     assert.equal(fs.statSync('file.txt').nlink, 1);
 
     fs.promises.link('file.txt', 'link.txt').then(function() {
@@ -118,7 +119,7 @@ describe('fs.link(srcpath, dstpath, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if original is a directory', function(done) {
+  it('promise fails if original is a directory', function(done) {
     fs.promises.link('dir', 'link').then(
       function() {
         done(new Error('should not succeed.'));
@@ -187,22 +188,40 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
     });
   });
 
-  it('supports Buffer input', function(done) {
-    fs.symlink(
-      Buffer.from('../file.txt'),
-      Buffer.from('dir/link.txt'),
-      function(err) {
-        if (err) {
-          return done(err);
+  // https://github.com/nodejs/node/issues/34514
+  if (process.platform === 'win32') {
+    inVersion('>=15.0.0').it('supports Buffer input', function(done) {
+      fs.symlink(
+        Buffer.from('../file.txt'),
+        Buffer.from('dir/link.txt'),
+        function(err) {
+          if (err) {
+            return done(err);
+          }
+          assert.isTrue(fs.statSync('dir/link.txt').isFile());
+          assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+          done();
         }
-        assert.isTrue(fs.statSync('dir/link.txt').isFile());
-        assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
-        done();
-      }
-    );
-  });
+      );
+    });
+  } else {
+    it('supports Buffer input', function(done) {
+      fs.symlink(
+        Buffer.from('../file.txt'),
+        Buffer.from('dir/link.txt'),
+        function(err) {
+          if (err) {
+            return done(err);
+          }
+          assert.isTrue(fs.statSync('dir/link.txt').isFile());
+          assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+          done();
+        }
+      );
+    });
+  }
 
-  withPromise.it('promise creates a symbolic link to a file', function(done) {
+  it('promise creates a symbolic link to a file', function(done) {
     fs.promises.symlink('../file.txt', 'dir/link.txt').then(function() {
       assert.isTrue(fs.statSync('dir/link.txt').isFile());
       assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
@@ -222,7 +241,7 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
     });
   });
 
-  withPromise.it('promise breaks if original is renamed', function(done) {
+  it('promise breaks if original is renamed', function(done) {
     fs.promises.symlink('file.txt', 'link.txt').then(function() {
       assert.isTrue(fs.existsSync('link.txt'));
       fs.renameSync('file.txt', 'renamed.txt');
@@ -241,7 +260,7 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
     });
   });
 
-  withPromise.it('promise works if original is a directory', function(done) {
+  it('promise works if original is a directory', function(done) {
     fs.promises.symlink('dir', 'link').then(function() {
       assert.isTrue(fs.statSync('link').isDirectory());
       done();

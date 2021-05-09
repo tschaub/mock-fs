@@ -58,16 +58,14 @@ describe('mock.bypass()', () => {
     assert.equal(process.cwd(), originalCwd);
   });
 
-  withPromise.it('runs an async function using the real filesystem', done => {
+  it('runs an async function using the real filesystem', done => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
     assert.isFalse(fs.existsSync(__filename));
 
-    const promise = mock.bypass(() => fs.promises.stat(__filename));
-    assert.instanceOf(promise, Promise);
-
-    promise
+    mock
+      .bypass(() => fs.promises.stat(__filename))
       .then(stat => {
         assert.isTrue(stat.isFile());
         assert.isFalse(fs.existsSync(__filename));
@@ -76,7 +74,7 @@ describe('mock.bypass()', () => {
       .catch(done);
   });
 
-  withPromise.it('handles promise rejection', done => {
+  it('handles promise rejection', done => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -84,13 +82,11 @@ describe('mock.bypass()', () => {
 
     const error = new Error('oops');
 
-    const promise = mock.bypass(() => {
-      assert.isTrue(fs.existsSync(__filename));
-      return Promise.reject(error);
-    });
-    assert.instanceOf(promise, Promise);
-
-    promise
+    mock
+      .bypass(() => {
+        assert.isTrue(fs.existsSync(__filename));
+        return Promise.reject(error);
+      })
       .then(() => {
         done(new Error('should not succeed'));
       })

@@ -52,7 +52,7 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise lists directory contents', function(done) {
+  it('promise lists directory contents', function(done) {
     fs.promises.readdir(path.join('path', 'to')).then(function(items) {
       assert.isArray(items);
       assert.deepEqual(items, ['file.txt']);
@@ -69,7 +69,7 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise lists nested directory contents', function(done) {
+  it('promise lists nested directory contents', function(done) {
     fs.promises
       .readdir(path.join('nested', 'sub', 'dir'))
       .then(function(items) {
@@ -87,7 +87,7 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise calls with an error for bogus path', function(done) {
+  it('promise calls with an error for bogus path', function(done) {
     fs.promises.readdir('bogus').then(
       function() {
         done(new Error('should not succeed.'));
@@ -108,7 +108,7 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise calls with an error for restricted path', function(
+  it('promise calls with an error for restricted path', function(
     done
   ) {
     fs.promises.readdir('denied').then(
@@ -123,7 +123,7 @@ describe('fs.readdir(path, callback)', function() {
     );
   });
 
-  inVersion('>=10.10').it('should support "withFileTypes" option', function(
+  it('should support "withFileTypes" option', function(
     done
   ) {
     fs.readdir(
@@ -132,10 +132,10 @@ describe('fs.readdir(path, callback)', function() {
       function(err, items) {
         assert.isNull(err);
         assert.isArray(items);
-        assert.deepEqual(items, [
-          {name: 'empty'},
-          {name: 'one.txt'},
-          {name: 'two.txt'}
+        assert.deepEqual(items.map(i => i.name), [
+          'empty',
+          'one.txt',
+          'two.txt'
         ]);
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
@@ -145,15 +145,15 @@ describe('fs.readdir(path, callback)', function() {
     );
   });
 
-  withPromise.it('should support "withFileTypes" option', function(done) {
+  it('should support "withFileTypes" option', function(done) {
     fs.promises
       .readdir(path.join('nested', 'sub', 'dir'), {withFileTypes: true})
       .then(function(items) {
         assert.isArray(items);
-        assert.deepEqual(items, [
-          {name: 'empty'},
-          {name: 'one.txt'},
-          {name: 'two.txt'}
+        assert.deepEqual(items.map(i => i.name), [
+          'empty',
+          'one.txt',
+          'two.txt'
         ]);
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
@@ -162,7 +162,7 @@ describe('fs.readdir(path, callback)', function() {
       }, done);
   });
 
-  inVersion('>=10.10').it(
+  it(
     'should support "withFileTypes" option with "encoding" option',
     function(done) {
       fs.readdir(
@@ -187,7 +187,7 @@ describe('fs.readdir(path, callback)', function() {
     }
   );
 
-  withPromise.it(
+  it(
     'should support "withFileTypes" option with "encoding" option',
     function(done) {
       fs.promises

@@ -37,7 +37,7 @@ describe('fs.chmod(path, mode, callback)', function() {
     });
   });
 
-  withPromise.it('promise changes permissions of a file', function(done) {
+  it('promise changes permissions of a file', function(done) {
     fs.promises.chmod('file.txt', parseInt('0664', 8)).then(function() {
       const stats = fs.statSync('file.txt');
       assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
@@ -53,7 +53,7 @@ describe('fs.chmod(path, mode, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file does not exist', function(done) {
+  it('promise fails if file does not exist', function(done) {
     fs.promises.chmod('bogus.txt', parseInt('0664', 8)).then(
       function() {
         done(new Error('should not succeed.'));
@@ -108,7 +108,7 @@ describe('fs.fchmod(fd, mode, callback)', function() {
     });
   });
 
-  withPromise.it('promise changes permissions of a file', function(done) {
+  it('promise changes permissions of a file', function(done) {
     fs.promises
       .open('file.txt', 'r')
       .then(function(fd) {

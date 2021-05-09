@@ -67,7 +67,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access(Buffer.from('path/to/accessible/file'), done);
     });
 
-    withPromise.it('promise works for an accessible file', function(done) {
+    it('promise works for an accessible file', function(done) {
       fs.promises.access('path/to/accessible/file').then(done, done);
     });
 
@@ -75,7 +75,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/000', done);
     });
 
-    withPromise.it('promise works 000 (and no mode arg)', function(done) {
+    it('promise works 000 (and no mode arg)', function(done) {
       fs.promises.access('path/to/000').then(done, done);
     });
 
@@ -83,7 +83,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/000', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 000', function(done) {
+    it('promise works F_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.F_OK).then(done, done);
     });
 
@@ -95,7 +95,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for R_OK and 000', function(done) {
+    it('promise generates EACCES for R_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.R_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -116,7 +116,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for W_OK and 000', function(done) {
+    it('promise generates EACCES for W_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.W_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -137,7 +137,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for X_OK and 000', function(done) {
+    it('promise generates EACCES for X_OK and 000', function(done) {
       fs.promises.access('path/to/000', fs.X_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -154,7 +154,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/111', done);
     });
 
-    withPromise.it('promise works 111 (and no mode arg)', function(done) {
+    it('promise works 111 (and no mode arg)', function(done) {
       fs.promises.access('path/to/111').then(done, done);
     });
 
@@ -162,7 +162,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/111', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 111', function(done) {
+    it('promise works F_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.F_OK).then(done, done);
     });
 
@@ -170,7 +170,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/111', fs.X_OK, done);
     });
 
-    withPromise.it('promise works X_OK and 111', function(done) {
+    it('promise works X_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.X_OK).then(done, done);
     });
 
@@ -182,7 +182,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for R_OK and 111', function(done) {
+    it('promise generates EACCES for R_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.R_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -203,7 +203,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for W_OK and 111', function(done) {
+    it('promise generates EACCES for W_OK and 111', function(done) {
       fs.promises.access('path/to/111', fs.W_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -220,7 +220,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/write/only', done);
     });
 
-    withPromise.it('promise works for 222 (and no mode arg)', function(done) {
+    it('promise works for 222 (and no mode arg)', function(done) {
       fs.promises.access('path/to/write/only').then(done, done);
     });
 
@@ -228,7 +228,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/write/only', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 222', function(done) {
+    it('promise works F_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.F_OK).then(done, done);
     });
 
@@ -236,7 +236,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/write/only', fs.W_OK, done);
     });
 
-    withPromise.it('promise works W_OK and 222', function(done) {
+    it('promise works W_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.W_OK).then(done, done);
     });
 
@@ -248,7 +248,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for R_OK and 222', function(done) {
+    it('promise generates EACCES for R_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.R_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -269,7 +269,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for X_OK and 222', function(done) {
+    it('promise generates EACCES for X_OK and 222', function(done) {
       fs.promises.access('path/to/write/only', fs.X_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -286,7 +286,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/333', done);
     });
 
-    withPromise.it('promise works for 333 (and no mode arg)', function(done) {
+    it('promise works for 333 (and no mode arg)', function(done) {
       fs.promises.access('path/to/333').then(done, done);
     });
 
@@ -294,7 +294,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/333', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 333', function(done) {
+    it('promise works F_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.F_OK).then(done, done);
     });
 
@@ -302,7 +302,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/333', fs.W_OK, done);
     });
 
-    withPromise.it('promise works W_OK and 333', function(done) {
+    it('promise works W_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.W_OK).then(done, done);
     });
 
@@ -310,7 +310,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/333', fs.X_OK, done);
     });
 
-    withPromise.it('promise works X_OK and 333', function(done) {
+    it('promise works X_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.X_OK).then(done, done);
     });
 
@@ -318,7 +318,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/333', fs.X_OK | fs.W_OK, done);
     });
 
-    withPromise.it('promise works X_OK | W_OK and 333', function(done) {
+    it('promise works X_OK | W_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.X_OK | fs.W_OK).then(done, done);
     });
 
@@ -330,7 +330,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for R_OK and 333', function(done) {
+    it('promise generates EACCES for R_OK and 333', function(done) {
       fs.promises.access('path/to/333', fs.R_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -347,7 +347,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/444', done);
     });
 
-    withPromise.it('promise works for 444 (and no mode arg)', function(done) {
+    it('promise works for 444 (and no mode arg)', function(done) {
       fs.promises.access('path/to/444').then(done, done);
     });
 
@@ -355,7 +355,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/444', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 444', function(done) {
+    it('promise works F_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.F_OK).then(done, done);
     });
 
@@ -363,7 +363,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/444', fs.R_OK, done);
     });
 
-    withPromise.it('promise works R_OK and 444', function(done) {
+    it('promise works R_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.R_OK).then(done, done);
     });
 
@@ -375,7 +375,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for W_OK and 444', function(done) {
+    it('promise generates EACCES for W_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.W_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -396,7 +396,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for X_OK and 444', function(done) {
+    it('promise generates EACCES for X_OK and 444', function(done) {
       fs.promises.access('path/to/444', fs.X_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -413,7 +413,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/555', done);
     });
 
-    withPromise.it('promise works for 555 (and no mode arg)', function(done) {
+    it('promise works for 555 (and no mode arg)', function(done) {
       fs.promises.access('path/to/555').then(done, done);
     });
 
@@ -421,7 +421,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/555', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 555', function(done) {
+    it('promise works F_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.F_OK).then(done, done);
     });
 
@@ -429,7 +429,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/555', fs.R_OK, done);
     });
 
-    withPromise.it('promise works R_OK and 555', function(done) {
+    it('promise works R_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.R_OK).then(done, done);
     });
 
@@ -437,7 +437,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/555', fs.X_OK, done);
     });
 
-    withPromise.it('promise works X_OK and 555', function(done) {
+    it('promise works X_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.X_OK).then(done, done);
     });
 
@@ -445,7 +445,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/555', fs.R_OK | fs.X_OK, done);
     });
 
-    withPromise.it('promise works R_OK | X_OK and 555', function(done) {
+    it('promise works R_OK | X_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.R_OK | fs.X_OK).then(done, done);
     });
 
@@ -457,7 +457,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for W_OK and 555', function(done) {
+    it('promise generates EACCES for W_OK and 555', function(done) {
       fs.promises.access('path/to/555', fs.W_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -474,7 +474,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/666', done);
     });
 
-    withPromise.it('promise works for 666 (and no mode arg)', function(done) {
+    it('promise works for 666 (and no mode arg)', function(done) {
       fs.promises.access('path/to/666').then(done, done);
     });
 
@@ -482,7 +482,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/666', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 666', function(done) {
+    it('promise works F_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.F_OK).then(done, done);
     });
 
@@ -490,7 +490,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/666', fs.R_OK, done);
     });
 
-    withPromise.it('promise works R_OK and 666', function(done) {
+    it('promise works R_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.R_OK).then(done, done);
     });
 
@@ -498,7 +498,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/666', fs.W_OK, done);
     });
 
-    withPromise.it('promise works W_OK and 666', function(done) {
+    it('promise works W_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.W_OK).then(done, done);
     });
 
@@ -506,7 +506,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/666', fs.R_OK | fs.W_OK, done);
     });
 
-    withPromise.it('promise works R_OK | W_OK and 666', function(done) {
+    it('promise works R_OK | W_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.R_OK | fs.W_OK).then(done, done);
     });
 
@@ -518,7 +518,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it('promise generates EACCES for X_OK and 666', function(done) {
+    it('promise generates EACCES for X_OK and 666', function(done) {
       fs.promises.access('path/to/666', fs.X_OK).then(
         function() {
           done(new Error('should not succeed.'));
@@ -535,7 +535,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', done);
     });
 
-    withPromise.it('promise works for 777 (and no mode arg)', function(done) {
+    it('promise works for 777 (and no mode arg)', function(done) {
       fs.promises.access('path/to/777').then(done, done);
     });
 
@@ -543,7 +543,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.F_OK, done);
     });
 
-    withPromise.it('promise works F_OK and 777', function(done) {
+    it('promise works F_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.F_OK).then(done, done);
     });
 
@@ -551,7 +551,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.R_OK, done);
     });
 
-    withPromise.it('promise works R_OK and 777', function(done) {
+    it('promise works R_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.R_OK).then(done, done);
     });
 
@@ -559,7 +559,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.W_OK, done);
     });
 
-    withPromise.it('promise works W_OK and 777', function(done) {
+    it('promise works W_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.W_OK).then(done, done);
     });
 
@@ -567,7 +567,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.X_OK, done);
     });
 
-    withPromise.it('promise works X_OK and 777', function(done) {
+    it('promise works X_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.X_OK).then(done, done);
     });
 
@@ -575,7 +575,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.X_OK | fs.W_OK, done);
     });
 
-    withPromise.it('promise works X_OK | W_OK and 777', function(done) {
+    it('promise works X_OK | W_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.X_OK | fs.W_OK).then(done, done);
     });
 
@@ -583,7 +583,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.X_OK | fs.R_OK, done);
     });
 
-    withPromise.it('promise works X_OK | R_OK and 777', function(done) {
+    it('promise works X_OK | R_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.X_OK | fs.R_OK).then(done, done);
     });
 
@@ -591,7 +591,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.R_OK | fs.W_OK, done);
     });
 
-    withPromise.it('promise works R_OK | W_OK and 777', function(done) {
+    it('promise works R_OK | W_OK and 777', function(done) {
       fs.promises.access('path/to/777', fs.R_OK | fs.W_OK).then(done, done);
     });
 
@@ -599,7 +599,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       fs.access('path/to/777', fs.R_OK | fs.W_OK | fs.X_OK, done);
     });
 
-    withPromise.it('promise works R_OK | W_OK | X_OK and 777', function(done) {
+    it('promise works R_OK | W_OK | X_OK and 777', function(done) {
       fs.promises
         .access('path/to/777', fs.R_OK | fs.W_OK | fs.X_OK)
         .then(done, done);
@@ -613,7 +613,7 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    withPromise.it(
+    it(
       'promise generates EACCESS for F_OK and an unreadable parent',
       function(done) {
         fs.promises.access('unreadable/readable-child').then(

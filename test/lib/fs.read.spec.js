@@ -34,7 +34,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise allows file contents to be read', function(done) {
+  it('promise allows file contents to be read', function(done) {
     const buffer = bufferAlloc(12);
     fs.promises
       .open('path/to/file.txt', 'r')
@@ -67,7 +67,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise allows file contents to be read w/ offset', function(
+  it('promise allows file contents to be read w/ offset', function(
     done
   ) {
     const buffer = bufferAlloc(12);
@@ -102,7 +102,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise allows file contents to be read w/ length', function(
+  it('promise allows file contents to be read w/ length', function(
     done
   ) {
     const buffer = bufferAlloc(12);
@@ -137,7 +137,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it(
+  it(
     'promise allows file contents to be read w/ offset & length',
     function(done) {
       const buffer = bufferAlloc(12);
@@ -173,7 +173,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it(
+  it(
     'promise allows file contents to be read w/ position',
     function(done) {
       const buffer = bufferAlloc(7);
@@ -209,7 +209,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise allows read w/ offset, length, & position', function(
+  it('promise allows read w/ offset, length, & position', function(
     done
   ) {
     const buffer = bufferAlloc(12);
@@ -237,7 +237,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails for closed file descriptor', function(done) {
+  it('promise fails for closed file descriptor', function(done) {
     fs.promises
       .open('path/to/file.txt', 'r')
       .then(function(fd) {
@@ -266,7 +266,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if not open for reading', function(done) {
+  it('promise fails if not open for reading', function(done) {
     fs.promises
       .open('path/to/file.txt', 'w')
       .then(function(fd) {

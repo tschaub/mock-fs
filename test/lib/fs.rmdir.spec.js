@@ -63,7 +63,7 @@ describe('fs.rmdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise removes an empty directory', function(done) {
+  it('promise removes an empty directory', function(done) {
     assert.equal(fs.statSync('path/to').nlink, 3);
 
     fs.promises.rmdir('path/to/empty').then(function() {
@@ -81,7 +81,7 @@ describe('fs.rmdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if not empty', function(done) {
+  it('promise fails if not empty', function(done) {
     fs.promises.rmdir('path/to').then(
       function() {
         done(new Error('should not succeed.'));
@@ -102,7 +102,7 @@ describe('fs.rmdir(path, callback)', function() {
     });
   });
 
-  withPromise.it('promise fails if file', function(done) {
+  it('promise fails if file', function(done) {
     fs.promises.rmdir('file.txt').then(
       function() {
         done(new Error('should not succeed.'));
@@ -174,7 +174,7 @@ describe('fs.rmdir(path, callback)', function() {
       });
     });
 
-    withPromise.it('promise fails if parent is not writeable', function(done) {
+    it('promise fails if parent is not writeable', function(done) {
       fs.promises.rmdir('unwriteable/child').then(
         function() {
           done(new Error('should not succeed.'));

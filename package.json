@@ -36,11 +36,11 @@
     "extends": "tschaub"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "eslint": "^5.16.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.26.0",
     "eslint-config-tschaub": "^13.1.0",
-    "mocha": "^6.1.4",
-    "rimraf": "^2.6.3",
-    "semver": "^6.0.0"
+    "mocha": "^8.4.0",
+    "rimraf": "^3.0.2",
+    "semver": "^7.3.5"
   }
 }
