@@ -5,6 +5,7 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
+const inVersion = helper.inVersion;
 const withPromise = helper.withPromise;
 
 describe('fs.link(srcpath, dstpath, callback)', function() {
@@ -187,20 +188,38 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function() {
     });
   });
 
-  it('supports Buffer input', function(done) {
-    fs.symlink(
-      Buffer.from('../file.txt'),
-      Buffer.from('dir/link.txt'),
-      function(err) {
-        if (err) {
-          return done(err);
+  // https://github.com/nodejs/node/issues/34514
+  if (process.platform === 'win32') {
+    inVersion('>=15.0.0').it('supports Buffer input', function(done) {
+      fs.symlink(
+        Buffer.from('../file.txt'),
+        Buffer.from('dir/link.txt'),
+        function(err) {
+          if (err) {
+            return done(err);
+          }
+          assert.isTrue(fs.statSync('dir/link.txt').isFile());
+          assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+          done();
         }
-        assert.isTrue(fs.statSync('dir/link.txt').isFile());
-        assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
-        done();
-      }
-    );
-  });
+      );
+    });
+  } else {
+    it('supports Buffer input', function(done) {
+      fs.symlink(
+        Buffer.from('../file.txt'),
+        Buffer.from('dir/link.txt'),
+        function(err) {
+          if (err) {
+            return done(err);
+          }
+          assert.isTrue(fs.statSync('dir/link.txt').isFile());
+          assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+          done();
+        }
+      );
+    });
+  }
 
   it('promise creates a symbolic link to a file', function(done) {
     fs.promises.symlink('../file.txt', 'dir/link.txt').then(function() {
