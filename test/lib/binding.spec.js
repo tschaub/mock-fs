@@ -76,7 +76,7 @@ describe('Binding', function() {
   describe('#stat()', function() {
     it('calls callback with a Stats instance', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'one.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -87,13 +87,13 @@ describe('Binding', function() {
 
     it('returns a Stats instance when called synchronously', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'one.txt'));
+      const stats = binding.stat(path.join('mock-dir', 'one.txt'), false);
       assert.instanceOf(stats, Float64Array);
     });
 
     it('identifies files (async)', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'one.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -104,13 +104,13 @@ describe('Binding', function() {
 
     it('identifies files (sync)', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'one.txt'));
+      const stats = binding.stat(path.join('mock-dir', 'one.txt'), false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
     });
 
     it('identifies directories (async)', function(done) {
       const binding = new Binding(system);
-      binding.stat('mock-dir', function(err, stats) {
+      binding.stat('mock-dir', false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -121,13 +121,13 @@ describe('Binding', function() {
 
     it('identifies directories (sync)', function() {
       const binding = new Binding(system);
-      const stats = binding.stat('mock-dir');
+      const stats = binding.stat('mock-dir', false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFDIR);
     });
 
     it('includes atime, ctime, mtime and birthtime', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'two.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -141,7 +141,7 @@ describe('Binding', function() {
 
     it('includes mode with file permissions (default)', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'one.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -152,7 +152,7 @@ describe('Binding', function() {
 
     it('includes mode with file permissions (custom)', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'two.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -163,7 +163,7 @@ describe('Binding', function() {
 
     it('includes size in bytes (async)', function(done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), function(err, stats) {
+      binding.stat(path.join('mock-dir', 'two.txt'), false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -174,20 +174,20 @@ describe('Binding', function() {
 
     it('includes size in bytes (sync)', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'three.bin'));
+      const stats = binding.stat(path.join('mock-dir', 'three.bin'), false);
       assert.equal(stats[8], 3);
     });
 
     it('includes non-zero size for directories', function() {
       const binding = new Binding(system);
-      const stats = binding.stat('mock-dir');
+      const stats = binding.stat('mock-dir', false);
       assert.isNumber(stats[8]);
       assert.isTrue(stats[8] > 0);
     });
 
     it('includes uid for files', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'two.txt'));
+      const stats = binding.stat(path.join('mock-dir', 'two.txt'), false);
       if (process.getuid) {
         assert.equal(stats[3], process.getuid());
       }
@@ -195,7 +195,7 @@ describe('Binding', function() {
 
     it('includes uid for directories', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'empty'));
+      const stats = binding.stat(path.join('mock-dir', 'empty'), false);
       if (process.getuid) {
         assert.equal(stats[3], process.getuid());
       }
@@ -203,7 +203,7 @@ describe('Binding', function() {
 
     it('includes gid for files', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'two.txt'));
+      const stats = binding.stat(path.join('mock-dir', 'two.txt'), false);
       if (process.getgid) {
         assert.equal(stats[4], process.getgid());
       }
@@ -211,7 +211,7 @@ describe('Binding', function() {
 
     it('includes gid for directories', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'empty'));
+      const stats = binding.stat(path.join('mock-dir', 'empty'), false);
       if (process.getgid) {
         assert.equal(stats[4], process.getgid());
       }
@@ -219,7 +219,7 @@ describe('Binding', function() {
 
     it('retrieves stats of files relative to symbolic linked directories', function() {
       const binding = new Binding(system);
-      const stats = binding.stat(path.join('mock-dir', 'dir-link', 'a.txt'));
+      const stats = binding.stat(path.join('mock-dir', 'dir-link', 'a.txt'), false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
       assert.equal(stats[1] & 0x1ff, parseInt('0644', 8));
       if (process.getuid) {
@@ -374,7 +374,7 @@ describe('Binding', function() {
     it('calls callback with a Stats instance', function(done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      binding.fstat(fd, function(err, stats) {
+      binding.fstat(fd, false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -386,14 +386,14 @@ describe('Binding', function() {
     it('returns a Stats instance when called synchronously', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      const stats = binding.fstat(fd);
+      const stats = binding.fstat(fd, false);
       assert.instanceOf(stats, Float64Array);
     });
 
     it('identifies files (async)', function(done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      binding.fstat(fd, function(err, stats) {
+      binding.fstat(fd, false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -405,7 +405,7 @@ describe('Binding', function() {
     it('identifies directories (async)', function(done) {
       const binding = new Binding(system);
       const fd = binding.open('mock-dir', flags('r'));
-      binding.fstat(fd, function(err, stats) {
+      binding.fstat(fd, false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -417,7 +417,7 @@ describe('Binding', function() {
     it('includes size in bytes (async)', function(done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
-      binding.fstat(fd, function(err, stats) {
+      binding.fstat(fd, false, function(err, stats) {
         if (err) {
           return done(err);
         }
@@ -429,14 +429,14 @@ describe('Binding', function() {
     it('includes size in bytes (sync)', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'three.bin'), flags('r'));
-      const stats = binding.fstat(fd);
+      const stats = binding.fstat(fd, false);
       assert.equal(stats[8], 3);
     });
 
     it('includes non-zero size for directories', function() {
       const binding = new Binding(system);
       const fd = binding.open('mock-dir', flags('r'));
-      const stats = binding.fstat(fd);
+      const stats = binding.fstat(fd, false);
       assert.isNumber(stats[8]);
       assert.isTrue(stats[8] > 0);
     });
@@ -1621,7 +1621,7 @@ describe('Binding', function() {
     it('stats symbolic links', function() {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one-link.txt');
-      const stats = binding.lstat(pathname);
+      const stats = binding.lstat(pathname, false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFLNK);
       assert.equal(stats[8], binding.readlink(pathname).length);
     });
