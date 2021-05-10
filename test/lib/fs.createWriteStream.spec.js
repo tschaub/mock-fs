@@ -4,7 +4,6 @@ const Writable = require('stream').Writable;
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
@@ -29,10 +28,10 @@ describe('fs.createWriteStream(path[, options])', function() {
 
     // if output._writev is available, buffered multiple writes will hit _writev.
     // otherwise, hit multiple _write.
-    output.write(bufferFrom('lots '));
-    output.write(bufferFrom('of '));
-    output.write(bufferFrom('source '));
-    output.end(bufferFrom('content'));
+    output.write(Buffer.from('lots '));
+    output.write(Buffer.from('of '));
+    output.write(Buffer.from('source '));
+    output.end(Buffer.from('content'));
   });
 
   it('provides a write stream for a file', function(done) {
@@ -48,13 +47,13 @@ describe('fs.createWriteStream(path[, options])', function() {
     });
     output.on('error', done);
 
-    output.write(bufferFrom('lots '));
+    output.write(Buffer.from('lots '));
     setTimeout(function() {
-      output.write(bufferFrom('of '));
+      output.write(Buffer.from('of '));
       setTimeout(function() {
-        output.write(bufferFrom('source '));
+        output.write(Buffer.from('source '));
         setTimeout(function() {
-          output.end(bufferFrom('content'));
+          output.end(Buffer.from('content'));
         }, 50);
       }, 50);
     }, 50);
@@ -75,10 +74,10 @@ describe('fs.createWriteStream(path[, options])', function() {
       output.on('error', done);
 
       output.cork();
-      output.write(bufferFrom('lots '));
-      output.write(bufferFrom('of '));
-      output.write(bufferFrom('source '));
-      output.end(bufferFrom('content'));
+      output.write(Buffer.from('lots '));
+      output.write(Buffer.from('of '));
+      output.write(Buffer.from('source '));
+      output.end(Buffer.from('content'));
       output.uncork();
     });
   }

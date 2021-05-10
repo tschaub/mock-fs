@@ -268,11 +268,9 @@ When you require `mock-fs`, Node's own `fs` module is patched to allow the bindi
 
 **Note** `mock-fs` is not compatible with `graceful-fs@3.x` but works with `graceful-fs@4.x`.
 
-Mock `fs.Stats` objects have the following properties: `dev`, `ino`, `nlink`, `mode`, `size`, `rdev`, `blksize`, `blocks`, `atime`, `ctime`, `mtime`, `birthtime`, `uid`, and `gid`.  In addition, all of the `is*()` method are provided (e.g. `isDirectory()`, `isFile()`, et al.).
-
 Mock file access is controlled based on file mode where `process.getuid()` and `process.getgid()` are available (POSIX systems).  On other systems (e.g. Windows) the file mode has no effect.
 
-Tested on Linux, OSX, and Windows using Node 6 through 11.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
+Tested on Linux, OSX, and Windows using Node 12 through 16.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
 ### Using with Jest Snapshot Testing
 

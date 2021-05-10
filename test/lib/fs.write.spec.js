@@ -3,7 +3,6 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
@@ -17,7 +16,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
 
   it('writes a buffer to a file', function(done) {
     const fd = fs.openSync('path/new-file.txt', 'w');
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.write(fd, buffer, 0, buffer.length, null, function(err, written, buf) {
       if (err) {
         return done(err);
@@ -30,7 +29,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise writes a buffer to a file', function(done) {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.promises
       .open('path/new-file.txt', 'w')
       .then(function(fd) {
@@ -46,7 +45,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
 
   it('writes a buffer to a file with implicit offset, length, position', function(done) {
     const fd = fs.openSync('path/new-file.txt', 'w');
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.write(fd, buffer, function(err, written, buf) {
       if (err) {
         return done(err);
@@ -59,7 +58,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise writes a buffer to a file with implicit offset, length, position', function(done) {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.promises
       .open('path/new-file.txt', 'w')
       .then(function(fd) {
@@ -78,7 +77,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       if (err) {
         return done(err);
       }
-      const buffer = bufferFrom('new file');
+      const buffer = Buffer.from('new file');
       fs.write(fd, buffer, 1, 5, null, function(err2, written, buf) {
         if (err2) {
           return done(err2);
@@ -92,7 +91,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise can write a portion of a buffer to a file', function(done) {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.promises
       .open('path/new-file.txt', 'w')
       .then(function(fd) {
@@ -111,7 +110,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       if (err) {
         return done(err);
       }
-      const buffer = bufferFrom('new file');
+      const buffer = Buffer.from('new file');
       fs.write(fd, buffer, 1, 5, 2, function(err2, written, buf) {
         if (err2) {
           return done(err2);
@@ -128,7 +127,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise can write a portion of a buffer to a file position', function(done) {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.promises
       .open('path/to/file.txt', 'a')
       .then(function(fd) {
@@ -150,7 +149,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       if (err) {
         return done(err);
       }
-      const buffer = bufferFrom('new file');
+      const buffer = Buffer.from('new file');
       fs.write(fd, buffer, 1, 5, 8, function(err2, written, buf) {
         if (err2) {
           return done(err2);
@@ -167,7 +166,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise can write a portion of a buffer to a file position and enlarge the file', function(done) {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     fs.promises
       .open('path/to/file.txt', 'a')
       .then(function(fd) {
@@ -189,7 +188,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       if (err) {
         return done(err);
       }
-      const buffer = bufferFrom(' more');
+      const buffer = Buffer.from(' more');
       fs.write(fd, buffer, 0, 5, null, function(err2, written, buf) {
         if (err2) {
           return done(err2);
@@ -206,7 +205,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
   });
 
   it('promise can append to a file', function(done) {
-    const buffer = bufferFrom(' more');
+    const buffer = Buffer.from(' more');
     fs.promises
       .open('path/to/file.txt', 'a')
       .then(function(fd) {
@@ -228,7 +227,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
       if (err) {
         return done(err);
       }
-      fs.write(fd, bufferFrom('oops'), 0, 4, null, function(err2) {
+      fs.write(fd, Buffer.from('oops'), 0, 4, null, function(err2) {
         assert.instanceOf(err2, Error);
         assert.equal(err2.code, 'EBADF');
         done();
@@ -240,7 +239,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     fs.promises
       .open('path/to/file.txt', 'r')
       .then(function(fd) {
-        return fd.write(bufferFrom('oops'), 0, 4);
+        return fd.write(Buffer.from('oops'), 0, 4);
       })
       .then(
         function() {
@@ -264,7 +263,7 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
   afterEach(mock.restore);
 
   it('writes a buffer to a file', function() {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     const fd = fs.openSync('path/new-file.txt', 'w');
     const written = fs.writeSync(fd, buffer, 0, buffer.length);
     assert.equal(written, 8);
@@ -272,7 +271,7 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
   });
 
   it('can write a portion of a buffer to a file', function() {
-    const buffer = bufferFrom('new file');
+    const buffer = Buffer.from('new file');
     const fd = fs.openSync('path/new-file.txt', 'w');
     const written = fs.writeSync(fd, buffer, 1, 5);
     assert.equal(written, 5);
@@ -280,7 +279,7 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
   });
 
   it('can append to a file', function() {
-    const buffer = bufferFrom(' more');
+    const buffer = Buffer.from(' more');
     const fd = fs.openSync('path/to/file.txt', 'a');
     const written = fs.writeSync(fd, buffer, 0, 5);
     assert.equal(written, 5);
@@ -293,7 +292,7 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function() {
   it('fails if file not open for writing', function() {
     const fd = fs.openSync('path/to/file.txt', 'r');
     assert.throws(function() {
-      fs.writeSync(fd, bufferFrom('oops'), 0, 4);
+      fs.writeSync(fd, Buffer.from('oops'), 0, 4);
     });
   });
 });

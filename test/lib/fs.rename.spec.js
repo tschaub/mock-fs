@@ -3,14 +3,13 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
 describe('fs.rename(oldPath, newPath, callback)', function() {
   beforeEach(function() {
     mock({
-      'path/to/a.bin': bufferFrom([1, 2, 3]),
+      'path/to/a.bin': Buffer.from([1, 2, 3]),
       empty: {},
       nested: {
         dir: mock.directory({
@@ -155,7 +154,7 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
 describe('fs.renameSync(oldPath, newPath)', function() {
   beforeEach(function() {
     mock({
-      'path/to/a.bin': bufferFrom([1, 2, 3]),
+      'path/to/a.bin': Buffer.from([1, 2, 3]),
       empty: {},
       nested: {
         dir: {
