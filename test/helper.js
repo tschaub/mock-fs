@@ -3,7 +3,6 @@
 const chai = require('chai');
 const constants = require('constants');
 const semver = require('semver');
-const fs = require('fs');
 
 /** @type {boolean} */
 chai.config.includeStack = true;

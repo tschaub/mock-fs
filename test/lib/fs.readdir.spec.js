@@ -6,8 +6,6 @@ const mock = require('../../lib/index');
 const path = require('path');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
-const inVersion = helper.inVersion;
 
 describe('fs.readdir(path, callback)', function() {
   beforeEach(function() {
@@ -108,9 +106,7 @@ describe('fs.readdir(path, callback)', function() {
     });
   });
 
-  it('promise calls with an error for restricted path', function(
-    done
-  ) {
+  it('promise calls with an error for restricted path', function(done) {
     fs.promises.readdir('denied').then(
       function() {
         done(new Error('should not succeed.'));
@@ -123,20 +119,17 @@ describe('fs.readdir(path, callback)', function() {
     );
   });
 
-  it('should support "withFileTypes" option', function(
-    done
-  ) {
+  it('should support "withFileTypes" option', function(done) {
     fs.readdir(
       path.join('nested', 'sub', 'dir'),
       {withFileTypes: true},
       function(err, items) {
         assert.isNull(err);
         assert.isArray(items);
-        assert.deepEqual(items.map(i => i.name), [
-          'empty',
-          'one.txt',
-          'two.txt'
-        ]);
+        assert.deepEqual(
+          items.map(i => i.name),
+          ['empty', 'one.txt', 'two.txt']
+        );
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
         assert.ok(items[2].isFile());
@@ -150,11 +143,10 @@ describe('fs.readdir(path, callback)', function() {
       .readdir(path.join('nested', 'sub', 'dir'), {withFileTypes: true})
       .then(function(items) {
         assert.isArray(items);
-        assert.deepEqual(items.map(i => i.name), [
-          'empty',
-          'one.txt',
-          'two.txt'
-        ]);
+        assert.deepEqual(
+          items.map(i => i.name),
+          ['empty', 'one.txt', 'two.txt']
+        );
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
         assert.ok(items[2].isFile());
@@ -162,55 +154,49 @@ describe('fs.readdir(path, callback)', function() {
       }, done);
   });
 
-  it(
-    'should support "withFileTypes" option with "encoding" option',
-    function(done) {
-      fs.readdir(
-        path.join('nested', 'sub', 'dir'),
-        {withFileTypes: true, encoding: 'buffer'},
-        function(err, items) {
-          assert.isNull(err);
-          assert.isArray(items);
-          items.forEach(function(item) {
-            assert.equal(Buffer.isBuffer(item.name), true);
-          });
-          const names = items.map(function(item) {
-            return item.name.toString();
-          });
-          assert.deepEqual(names, ['empty', 'one.txt', 'two.txt']);
-          assert.ok(items[0].isDirectory());
-          assert.ok(items[1].isFile());
-          assert.ok(items[2].isFile());
-          done();
-        }
-      );
-    }
-  );
-
-  it(
-    'should support "withFileTypes" option with "encoding" option',
-    function(done) {
-      fs.promises
-        .readdir(path.join('nested', 'sub', 'dir'), {
-          withFileTypes: true,
-          encoding: 'buffer'
-        })
-        .then(function(items) {
-          assert.isArray(items);
-          items.forEach(function(item) {
-            assert.equal(Buffer.isBuffer(item.name), true);
-          });
-          const names = items.map(function(item) {
-            return item.name.toString();
-          });
-          assert.deepEqual(names, ['empty', 'one.txt', 'two.txt']);
-          assert.ok(items[0].isDirectory());
-          assert.ok(items[1].isFile());
-          assert.ok(items[2].isFile());
-          done();
+  it('should support "withFileTypes" option with "encoding" option', function(done) {
+    fs.readdir(
+      path.join('nested', 'sub', 'dir'),
+      {withFileTypes: true, encoding: 'buffer'},
+      function(err, items) {
+        assert.isNull(err);
+        assert.isArray(items);
+        items.forEach(function(item) {
+          assert.equal(Buffer.isBuffer(item.name), true);
         });
-    }
-  );
+        const names = items.map(function(item) {
+          return item.name.toString();
+        });
+        assert.deepEqual(names, ['empty', 'one.txt', 'two.txt']);
+        assert.ok(items[0].isDirectory());
+        assert.ok(items[1].isFile());
+        assert.ok(items[2].isFile());
+        done();
+      }
+    );
+  });
+
+  it('should support "withFileTypes" option with "encoding" option', function(done) {
+    fs.promises
+      .readdir(path.join('nested', 'sub', 'dir'), {
+        withFileTypes: true,
+        encoding: 'buffer'
+      })
+      .then(function(items) {
+        assert.isArray(items);
+        items.forEach(function(item) {
+          assert.equal(Buffer.isBuffer(item.name), true);
+        });
+        const names = items.map(function(item) {
+          return item.name.toString();
+        });
+        assert.deepEqual(names, ['empty', 'one.txt', 'two.txt']);
+        assert.ok(items[0].isDirectory());
+        assert.ok(items[1].isFile());
+        assert.ok(items[2].isFile());
+        done();
+      });
+  });
 });
 
 describe('fs.readdirSync(path)', function() {

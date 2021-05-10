@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.appendFile(filename, data, [options], callback)', function() {
   beforeEach(function() {
@@ -44,9 +43,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
     });
   });
 
-  it('promise appends a string to an existing file', function(
-    done
-  ) {
+  it('promise appends a string to an existing file', function(done) {
     fs.promises.appendFile('dir/file.txt', ' bar').then(function() {
       assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
       done();

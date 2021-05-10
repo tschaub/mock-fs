@@ -7,7 +7,6 @@ const mock = require('../../lib/index');
 
 const assert = helper.assert;
 const assertEqualPaths = helper.assertEqualPaths;
-const withPromise = helper.withPromise;
 
 describe('fs.realpath(path, [cache], callback)', function() {
   beforeEach(function() {
@@ -28,9 +27,7 @@ describe('fs.realpath(path, [cache], callback)', function() {
     });
   });
 
-  it('promise resolves the real path for a symbolic link', function(
-    done
-  ) {
+  it('promise resolves the real path for a symbolic link', function(done) {
     fs.promises.realpath('link').then(function(resolved) {
       assertEqualPaths(resolved, path.resolve('dir/file.txt'));
       done();

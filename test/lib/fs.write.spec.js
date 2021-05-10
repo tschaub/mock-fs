@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.write(fd, buffer, offset, length, position, callback)', function() {
   beforeEach(function() {
@@ -59,26 +58,20 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  it(
-    'promise writes a buffer to a file with implicit offset, length, position',
-    function(done) {
-      const buffer = bufferFrom('new file');
-      fs.promises
-        .open('path/new-file.txt', 'w')
-        .then(function(fd) {
-          return fd.write(buffer);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesWritten, 8);
-          assert.equal(result.buffer, buffer);
-          assert.equal(
-            String(fs.readFileSync('path/new-file.txt')),
-            'new file'
-          );
-          done();
-        }, done);
-    }
-  );
+  it('promise writes a buffer to a file with implicit offset, length, position', function(done) {
+    const buffer = bufferFrom('new file');
+    fs.promises
+      .open('path/new-file.txt', 'w')
+      .then(function(fd) {
+        return fd.write(buffer);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesWritten, 8);
+        assert.equal(result.buffer, buffer);
+        assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
+        done();
+      }, done);
+  });
 
   it('can write a portion of a buffer to a file', function(done) {
     fs.open('path/new-file.txt', 'w', function(err, fd) {
@@ -98,9 +91,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  it('promise can write a portion of a buffer to a file', function(
-    done
-  ) {
+  it('promise can write a portion of a buffer to a file', function(done) {
     const buffer = bufferFrom('new file');
     fs.promises
       .open('path/new-file.txt', 'w')
@@ -136,26 +127,23 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  it(
-    'promise can write a portion of a buffer to a file position',
-    function(done) {
-      const buffer = bufferFrom('new file');
-      fs.promises
-        .open('path/to/file.txt', 'a')
-        .then(function(fd) {
-          return fd.write(buffer, 1, 5, 2);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesWritten, 5);
-          assert.equal(result.buffer, buffer);
-          assert.equal(
-            String(fs.readFileSync('path/to/file.txt')),
-            'fiew fintent'
-          );
-          done();
-        }, done);
-    }
-  );
+  it('promise can write a portion of a buffer to a file position', function(done) {
+    const buffer = bufferFrom('new file');
+    fs.promises
+      .open('path/to/file.txt', 'a')
+      .then(function(fd) {
+        return fd.write(buffer, 1, 5, 2);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesWritten, 5);
+        assert.equal(result.buffer, buffer);
+        assert.equal(
+          String(fs.readFileSync('path/to/file.txt')),
+          'fiew fintent'
+        );
+        done();
+      }, done);
+  });
 
   it('can write a portion of a buffer to a file position and enlarge the file', function(done) {
     fs.open('path/to/file.txt', 'a', function(err, fd) {
@@ -178,26 +166,23 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function() 
     });
   });
 
-  it(
-    'promise can write a portion of a buffer to a file position and enlarge the file',
-    function(done) {
-      const buffer = bufferFrom('new file');
-      fs.promises
-        .open('path/to/file.txt', 'a')
-        .then(function(fd) {
-          return fd.write(buffer, 1, 5, 8);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesWritten, 5);
-          assert.equal(result.buffer, buffer);
-          assert.equal(
-            String(fs.readFileSync('path/to/file.txt')),
-            'file conew fi'
-          );
-          done();
-        }, done);
-    }
-  );
+  it('promise can write a portion of a buffer to a file position and enlarge the file', function(done) {
+    const buffer = bufferFrom('new file');
+    fs.promises
+      .open('path/to/file.txt', 'a')
+      .then(function(fd) {
+        return fd.write(buffer, 1, 5, 8);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesWritten, 5);
+        assert.equal(result.buffer, buffer);
+        assert.equal(
+          String(fs.readFileSync('path/to/file.txt')),
+          'file conew fi'
+        );
+        done();
+      }, done);
+  });
 
   it('can append to a file', function(done) {
     fs.open('path/to/file.txt', 'a', function(err, fd) {
@@ -372,26 +357,20 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  it(
-    'promise writes a string to a file with implicit position and encoding',
-    function(done) {
-      const string = 'new file';
-      fs.promises
-        .open('path/new-file.txt', 'w')
-        .then(function(fd) {
-          return fd.write(string);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesWritten, 8);
-          assert.equal(String(result.buffer), string);
-          assert.equal(
-            String(fs.readFileSync('path/new-file.txt')),
-            'new file'
-          );
-          done();
-        }, done);
-    }
-  );
+  it('promise writes a string to a file with implicit position and encoding', function(done) {
+    const string = 'new file';
+    fs.promises
+      .open('path/new-file.txt', 'w')
+      .then(function(fd) {
+        return fd.write(string);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesWritten, 8);
+        assert.equal(String(result.buffer), string);
+        assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
+        done();
+      }, done);
+  });
 
   it('can append to a file', function(done) {
     fs.open('path/to/file.txt', 'a', function(err, fd) {
@@ -483,26 +462,23 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function() {
     });
   });
 
-  it(
-    'promise can write to a position of a file and enlarge it',
-    function(done) {
-      const string = ' more';
-      fs.promises
-        .open('path/to/file.txt', 'a')
-        .then(function(fd) {
-          return fd.write(string, 9);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesWritten, 5);
-          assert.equal(String(result.buffer), string);
-          assert.equal(
-            String(fs.readFileSync('path/to/file.txt')),
-            'file cont more'
-          );
-          done();
-        }, done);
-    }
-  );
+  it('promise can write to a position of a file and enlarge it', function(done) {
+    const string = ' more';
+    fs.promises
+      .open('path/to/file.txt', 'a')
+      .then(function(fd) {
+        return fd.write(string, 9);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesWritten, 5);
+        assert.equal(String(result.buffer), string);
+        assert.equal(
+          String(fs.readFileSync('path/to/file.txt')),
+          'file cont more'
+        );
+        done();
+      }, done);
+  });
 
   it('fails if file not open for writing', function(done) {
     fs.open('path/to/file.txt', 'r', function(err, fd) {

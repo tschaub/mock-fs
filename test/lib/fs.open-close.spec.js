@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 const inVersion = helper.inVersion;
 
 describe('fs.open(path, flags, [mode], callback)', function() {
@@ -45,9 +44,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  it('promise opens an existing file for reading (r)', function(
-    done
-  ) {
+  it('promise opens an existing file for reading (r)', function(done) {
     fs.promises.open('nested/sub/dir/one.txt', 'r').then(function(fd) {
       assert.isNumber(fd.fd);
       done();
@@ -106,9 +103,7 @@ describe('fs.open(path, flags, [mode], callback)', function() {
     });
   });
 
-  it('promise opens an existing file for writing (w)', function(
-    done
-  ) {
+  it('promise opens an existing file for writing (w)', function(done) {
     fs.promises
       .open('path/to/file.txt', 'w', parseInt('0666', 8))
       .then(function(fd) {
@@ -221,29 +216,28 @@ describe('fs.close(fd, callback)', function() {
     });
   });
 
-  inVersion('<14.0.0').it(
-    'promise fails for closed file descriptors',
-    function(done) {
-      fs.promises
-        .open('dir/file.txt', 'w')
-        .then(function(fd) {
-          return fd.close().then(function() {
-            // in Nodejs v14+, closing on closed file descriptor is silently ignored.
-            return fd.close();
-          });
-        })
-        .then(
-          function() {
-            done(new Error('should not succeed.'));
-          },
-          function(err) {
-            assert.instanceOf(err, Error);
-            assert.equal(err.code, 'EBADF');
-            done();
-          }
-        );
-    }
-  );
+  inVersion('<14.0.0').it('promise fails for closed file descriptors', function(
+    done
+  ) {
+    fs.promises
+      .open('dir/file.txt', 'w')
+      .then(function(fd) {
+        return fd.close().then(function() {
+          // in Nodejs v14+, closing on closed file descriptor is silently ignored.
+          return fd.close();
+        });
+      })
+      .then(
+        function() {
+          done(new Error('should not succeed.'));
+        },
+        function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'EBADF');
+          done();
+        }
+      );
+  });
 });
 
 describe('fs.closeSync(fd)', function() {

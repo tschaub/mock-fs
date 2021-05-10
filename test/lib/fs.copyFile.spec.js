@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 if (fs.copyFile && fs.copyFileSync) {
   describe('fs.copyFile(src, dest[, flags], callback)', function() {
@@ -43,9 +42,7 @@ if (fs.copyFile && fs.copyFileSync) {
       );
     });
 
-    it('promise copies a file to an empty directory', function(
-      done
-    ) {
+    it('promise copies a file to an empty directory', function(done) {
       fs.promises
         .copyFile('path/to/src.txt', 'empty/dest.txt')
         .then(function() {
@@ -94,9 +91,7 @@ if (fs.copyFile && fs.copyFileSync) {
       );
     });
 
-    it('promise throws if dest exists and exclusive', function(
-      done
-    ) {
+    it('promise throws if dest exists and exclusive', function(done) {
       fs.promises
         .copyFile(
           'path/to/src.txt',

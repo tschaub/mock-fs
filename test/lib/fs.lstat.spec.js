@@ -5,8 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
-const withPromise = helper.withPromise;
 
 describe('fs.lstat(path, options, callback)', function() {
   beforeEach(function() {
@@ -80,17 +78,14 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it(
-    'promise stats a symbolic link with bigint',
-    function(done) {
-      fs.promises.lstat('link', {bigint: true}).then(function(stats) {
-        assert.isTrue(stats.isSymbolicLink());
-        assert.isFalse(stats.isFile());
-        assert.equal(typeof stats.mtimeMs, 'bigint');
-        done();
-      }, done);
-    }
-  );
+  it('promise stats a symbolic link with bigint', function(done) {
+    fs.promises.lstat('link', {bigint: true}).then(function(stats) {
+      assert.isTrue(stats.isSymbolicLink());
+      assert.isFalse(stats.isFile());
+      assert.equal(typeof stats.mtimeMs, 'bigint');
+      done();
+    }, done);
+  });
 
   it('stats a regular file', function(done) {
     fs.lstat('file.txt', function(err, stats) {
@@ -125,9 +120,7 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it('promise stats a regular file with bigint', function(
-    done
-  ) {
+  it('promise stats a regular file with bigint', function(done) {
     fs.promises.lstat('file.txt', {bigint: true}).then(function(stats) {
       assert.isTrue(stats.isFile());
       assert.isFalse(stats.isSymbolicLink());

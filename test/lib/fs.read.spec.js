@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
   beforeEach(function() {
@@ -67,9 +66,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  it('promise allows file contents to be read w/ offset', function(
-    done
-  ) {
+  it('promise allows file contents to be read w/ offset', function(done) {
     const buffer = bufferAlloc(12);
     fs.promises
       .open('path/to/file.txt', 'r')
@@ -102,9 +99,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  it('promise allows file contents to be read w/ length', function(
-    done
-  ) {
+  it('promise allows file contents to be read w/ length', function(done) {
     const buffer = bufferAlloc(12);
     fs.promises
       .open('path/to/file.txt', 'r')
@@ -137,23 +132,20 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  it(
-    'promise allows file contents to be read w/ offset & length',
-    function(done) {
-      const buffer = bufferAlloc(12);
-      fs.promises
-        .open('path/to/file.txt', 'r')
-        .then(function(fd) {
-          return fd.read(buffer, 2, 4, 0);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesRead, 4);
-          assert.equal(result.buffer, buffer);
-          assert.equal(String(buffer.slice(2, 6)), 'file');
-          done();
-        }, done);
-    }
-  );
+  it('promise allows file contents to be read w/ offset & length', function(done) {
+    const buffer = bufferAlloc(12);
+    fs.promises
+      .open('path/to/file.txt', 'r')
+      .then(function(fd) {
+        return fd.read(buffer, 2, 4, 0);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesRead, 4);
+        assert.equal(result.buffer, buffer);
+        assert.equal(String(buffer.slice(2, 6)), 'file');
+        done();
+      }, done);
+  });
 
   it('allows file contents to be read w/ position', function(done) {
     fs.open('path/to/file.txt', 'r', function(err, fd) {
@@ -173,23 +165,20 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  it(
-    'promise allows file contents to be read w/ position',
-    function(done) {
-      const buffer = bufferAlloc(7);
-      fs.promises
-        .open('path/to/file.txt', 'r')
-        .then(function(fd) {
-          return fd.read(buffer, 0, 7, 5);
-        })
-        .then(function(result) {
-          assert.equal(result.bytesRead, 7);
-          assert.equal(result.buffer, buffer);
-          assert.equal(String(buffer), 'content');
-          done();
-        }, done);
-    }
-  );
+  it('promise allows file contents to be read w/ position', function(done) {
+    const buffer = bufferAlloc(7);
+    fs.promises
+      .open('path/to/file.txt', 'r')
+      .then(function(fd) {
+        return fd.read(buffer, 0, 7, 5);
+      })
+      .then(function(result) {
+        assert.equal(result.bytesRead, 7);
+        assert.equal(result.buffer, buffer);
+        assert.equal(String(buffer), 'content');
+        done();
+      }, done);
+  });
 
   it('allows read w/ offset, length, & position', function(done) {
     fs.open('path/to/file.txt', 'r', function(err, fd) {
@@ -209,9 +198,7 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function() {
     });
   });
 
-  it('promise allows read w/ offset, length, & position', function(
-    done
-  ) {
+  it('promise allows read w/ offset, length, & position', function(done) {
     const buffer = bufferAlloc(12);
     fs.promises
       .open('path/to/file.txt', 'r')

@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 
 const assert = helper.assert;
 const inVersion = helper.inVersion;
-const withPromise = helper.withPromise;
 
 describe('fs.link(srcpath, dstpath, callback)', function() {
   beforeEach(function() {

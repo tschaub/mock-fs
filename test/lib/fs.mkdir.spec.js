@@ -5,8 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
-const withPromise = helper.withPromise;
 
 const testParentPerms =
   fs.access && fs.accessSync && process.getuid && process.getgid;
@@ -54,9 +52,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     }, done);
   });
 
-  it('creates a new directory recursively', function(
-    done
-  ) {
+  it('creates a new directory recursively', function(done) {
     fs.mkdir('parent/foo/bar/dir', {recursive: true}, function(err) {
       if (err) {
         return done(err);
@@ -168,20 +164,43 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     );
   });
 
-  it(
-    'fails if one parent is not a folder in recursive creation',
-    function(done) {
-      fs.mkdir('file.txt/bogus/dir', {recursive: true}, function(err) {
+  it('fails if one parent is not a folder in recursive creation', function(done) {
+    fs.mkdir('file.txt/bogus/dir', {recursive: true}, function(err) {
+      assert.instanceOf(err, Error);
+      done();
+    });
+  });
+
+  it('promise fails if one parent is not a folder in recursive creation', function(done) {
+    fs.promises.mkdir('file.txt/bogus/dir', {recursive: true}).then(
+      function() {
+        done(new Error('should not succeed.'));
+      },
+      function(err) {
         assert.instanceOf(err, Error);
         done();
-      });
-    }
-  );
+      }
+    );
+  });
 
-  it(
-    'promise fails if one parent is not a folder in recursive creation',
-    function(done) {
-      fs.promises.mkdir('file.txt/bogus/dir', {recursive: true}).then(
+  it('fails if permission does not allow recursive creation', function(done) {
+    fs.mkdir(
+      'parent/foo/bar/dir',
+      {recursive: true, mode: parseInt('0400', 8)},
+      function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      }
+    );
+  });
+
+  it('promise fails if permission does not allow recursive creation', function(done) {
+    fs.promises
+      .mkdir('parent/foo/bar/dir', {
+        recursive: true,
+        mode: parseInt('0400', 8)
+      })
+      .then(
         function() {
           done(new Error('should not succeed.'));
         },
@@ -190,42 +209,7 @@ describe('fs.mkdir(path, [mode], callback)', function() {
           done();
         }
       );
-    }
-  );
-
-  it(
-    'fails if permission does not allow recursive creation',
-    function(done) {
-      fs.mkdir(
-        'parent/foo/bar/dir',
-        {recursive: true, mode: parseInt('0400', 8)},
-        function(err) {
-          assert.instanceOf(err, Error);
-          done();
-        }
-      );
-    }
-  );
-
-  it(
-    'promise fails if permission does not allow recursive creation',
-    function(done) {
-      fs.promises
-        .mkdir('parent/foo/bar/dir', {
-          recursive: true,
-          mode: parseInt('0400', 8)
-        })
-        .then(
-          function() {
-            done(new Error('should not succeed.'));
-          },
-          function(err) {
-            assert.instanceOf(err, Error);
-            done();
-          }
-        );
-    }
-  );
+  });
 
   it('fails if directory already exists', function(done) {
     fs.mkdir('parent', function(err) {
@@ -269,49 +253,37 @@ describe('fs.mkdir(path, [mode], callback)', function() {
     );
   });
 
-  it(
-    'fails in recursive mode if file already exists',
-    function(done) {
-      fs.mkdir('parent/file.md', {recursive: true}, function(err) {
+  it('fails in recursive mode if file already exists', function(done) {
+    fs.mkdir('parent/file.md', {recursive: true}, function(err) {
+      assert.instanceOf(err, Error);
+      assert.equal(err.code, 'EEXIST');
+      done();
+    });
+  });
+
+  it('promise fails in recursive mode if file already exists', function(done) {
+    fs.promises.mkdir('parent/file.md', {recursive: true}).then(
+      function() {
+        done(new Error('should not succeed.'));
+      },
+      function(err) {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EEXIST');
         done();
-      });
-    }
-  );
+      }
+    );
+  });
 
-  it(
-    'promise fails in recursive mode if file already exists',
-    function(done) {
-      fs.promises.mkdir('parent/file.md', {recursive: true}).then(
-        function() {
-          done(new Error('should not succeed.'));
-        },
-        function(err) {
-          assert.instanceOf(err, Error);
-          assert.equal(err.code, 'EEXIST');
-          done();
-        }
-      );
-    }
-  );
+  it('passes in recursive mode if directory already exists', function(done) {
+    fs.mkdir('parent/child', {recursive: true}, function(err) {
+      assert.isNotOk(err, Error);
+      done();
+    });
+  });
 
-  it(
-    'passes in recursive mode if directory already exists',
-    function(done) {
-      fs.mkdir('parent/child', {recursive: true}, function(err) {
-        assert.isNotOk(err, Error);
-        done();
-      });
-    }
-  );
-
-  it(
-    'promise passes in recursive mode if directory already exists',
-    function(done) {
-      fs.promises.mkdir('parent/child', {recursive: true}).then(done, done);
-    }
-  );
+  it('promise passes in recursive mode if directory already exists', function(done) {
+    fs.promises.mkdir('parent/child', {recursive: true}).then(done, done);
+  });
 
   if (testParentPerms) {
     it('fails if parent is not writeable', function(done) {
@@ -411,26 +383,20 @@ describe('fs.mkdirSync(path, [mode])', function() {
     });
   });
 
-  it(
-    'fails if one parent is not a folder in recursive creation',
-    function() {
-      assert.throws(function() {
-        fs.mkdirSync('file.txt/bogus/dir', {recursive: true});
-      });
-    }
-  );
+  it('fails if one parent is not a folder in recursive creation', function() {
+    assert.throws(function() {
+      fs.mkdirSync('file.txt/bogus/dir', {recursive: true});
+    });
+  });
 
-  it(
-    'fails if permission does not allow recursive creation',
-    function() {
-      assert.throws(function() {
-        fs.mkdirSync('parent/foo/bar/dir', {
-          recursive: true,
-          mode: parseInt('0400', 8)
-        });
+  it('fails if permission does not allow recursive creation', function() {
+    assert.throws(function() {
+      fs.mkdirSync('parent/foo/bar/dir', {
+        recursive: true,
+        mode: parseInt('0400', 8)
       });
-    }
-  );
+    });
+  });
 
   it('fails if directory already exists', function() {
     assert.throws(function() {
@@ -444,23 +410,17 @@ describe('fs.mkdirSync(path, [mode])', function() {
     });
   });
 
-  it(
-    'fails in recursive mode if file already exists',
-    function() {
-      assert.throws(function() {
-        fs.mkdirSync('parent/file.md', {recursive: true});
-      });
-    }
-  );
+  it('fails in recursive mode if file already exists', function() {
+    assert.throws(function() {
+      fs.mkdirSync('parent/file.md', {recursive: true});
+    });
+  });
 
-  it(
-    'passes in recursive mode if directory already exists',
-    function() {
-      assert.doesNotThrow(function() {
-        fs.mkdirSync('parent/child', {recursive: true});
-      });
-    }
-  );
+  it('passes in recursive mode if directory already exists', function() {
+    assert.doesNotThrow(function() {
+      fs.mkdirSync('parent/child', {recursive: true});
+    });
+  });
 
   if (testParentPerms) {
     it('fails if parent is not writeable', function() {
