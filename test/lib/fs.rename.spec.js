@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.rename(oldPath, newPath, callback)', function() {
   beforeEach(function() {
@@ -85,20 +84,17 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
     });
   });
 
-  it(
-    'promise calls callback with error if old path does not exist',
-    function(done) {
-      fs.promises.rename('bogus', 'empty').then(
-        function() {
-          done(new Error('Should not succeed.'));
-        },
-        function(err) {
-          assert.instanceOf(err, Error);
-          done();
-        }
-      );
-    }
-  );
+  it('promise calls callback with error if old path does not exist', function(done) {
+    fs.promises.rename('bogus', 'empty').then(
+      function() {
+        done(new Error('Should not succeed.'));
+      },
+      function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      }
+    );
+  });
 
   it('overwrites existing files', function(done) {
     fs.rename('path/to/a.bin', 'nested/dir/file.txt', function(err) {
@@ -143,20 +139,17 @@ describe('fs.rename(oldPath, newPath, callback)', function() {
     });
   });
 
-  it(
-    'promise calls callback with error if new directory not empty',
-    function(done) {
-      fs.promises.rename('path', 'nested').then(
-        function() {
-          done(new Error('Should not succeed.'));
-        },
-        function(err) {
-          assert.instanceOf(err, Error);
-          done();
-        }
-      );
-    }
-  );
+  it('promise calls callback with error if new directory not empty', function(done) {
+    fs.promises.rename('path', 'nested').then(
+      function() {
+        done(new Error('Should not succeed.'));
+      },
+      function(err) {
+        assert.instanceOf(err, Error);
+        done();
+      }
+    );
+  });
 });
 
 describe('fs.renameSync(oldPath, newPath)', function() {

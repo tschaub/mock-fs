@@ -4,7 +4,6 @@ const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
 const path = require('path');
-const withPromise = helper.withPromise;
 
 const assert = helper.assert;
 

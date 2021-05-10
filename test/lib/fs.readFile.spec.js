@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.readFile(filename, [options], callback)', function() {
   // this is provided by fs.open, fs.fstat, and fs.read
@@ -29,9 +28,7 @@ describe('fs.readFile(filename, [options], callback)', function() {
     });
   });
 
-  it('promise allows a file to be read asynchronously', function(
-    done
-  ) {
+  it('promise allows a file to be read asynchronously', function(done) {
     fs.promises.readFile('path/to/file.txt').then(function(data) {
       assert.isTrue(Buffer.isBuffer(data));
       assert.equal(String(data), 'file content');

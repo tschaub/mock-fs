@@ -4,7 +4,6 @@ const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 if (fs.access && fs.accessSync && process.getuid && process.getgid) {
   // TODO: drop condition when dropping Node < 0.12 support
@@ -613,21 +612,18 @@ if (fs.access && fs.accessSync && process.getuid && process.getgid) {
       });
     });
 
-    it(
-      'promise generates EACCESS for F_OK and an unreadable parent',
-      function(done) {
-        fs.promises.access('unreadable/readable-child').then(
-          function() {
-            done(new Error('should not succeed.'));
-          },
-          function(err) {
-            assert.instanceOf(err, Error);
-            assert.equal(err.code, 'EACCES');
-            done();
-          }
-        );
-      }
-    );
+    it('promise generates EACCESS for F_OK and an unreadable parent', function(done) {
+      fs.promises.access('unreadable/readable-child').then(
+        function() {
+          done(new Error('should not succeed.'));
+        },
+        function(err) {
+          assert.instanceOf(err, Error);
+          assert.equal(err.code, 'EACCES');
+          done();
+        }
+      );
+    });
   });
 
   describe('fs.accessSync(path[, mode])', function() {

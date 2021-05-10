@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.unlink(path, callback)', function() {
   beforeEach(function() {
@@ -110,21 +109,18 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it(
-    'promise respects previously opened file descriptors',
-    function(done) {
-      const fd = fs.openSync('file.txt', 'r');
-      fs.promises.unlink('file.txt').then(function() {
-        assert.isFalse(fs.existsSync('file.txt'));
-        // but we can still use fd to read
-        const buffer = bufferAlloc(7);
-        const read = fs.readSync(fd, buffer, 0, 7);
-        assert.equal(read, 7);
-        assert.equal(String(buffer), 'content');
-        done();
-      }, done);
-    }
-  );
+  it('promise respects previously opened file descriptors', function(done) {
+    const fd = fs.openSync('file.txt', 'r');
+    fs.promises.unlink('file.txt').then(function() {
+      assert.isFalse(fs.existsSync('file.txt'));
+      // but we can still use fd to read
+      const buffer = bufferAlloc(7);
+      const read = fs.readSync(fd, buffer, 0, 7);
+      assert.equal(read, 7);
+      assert.equal(String(buffer), 'content');
+      done();
+    }, done);
+  });
 });
 
 describe('fs.unlinkSync(path)', function() {

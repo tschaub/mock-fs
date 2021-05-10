@@ -6,8 +6,6 @@ const mock = require('../../lib/index');
 const semver = require('semver');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
-const withPromise = helper.withPromise;
 
 describe('fs.stat(path, options, callback)', function() {
   beforeEach(function() {
@@ -126,9 +124,7 @@ describe('fs.stat(path, options, callback)', function() {
     });
   });
 
-  it('identifies directories with bigint', function(
-    done
-  ) {
+  it('identifies directories with bigint', function(done) {
     fs.stat('/empty', {bigint: true}, function(err, stats) {
       if (err) {
         return done(err);
@@ -149,17 +145,14 @@ describe('fs.stat(path, options, callback)', function() {
     }, done);
   });
 
-  it(
-    'promise identifies directories with bigint',
-    function(done) {
-      fs.promises.stat('/empty', {bigint: true}).then(function(stats) {
-        assert.isTrue(stats.isDirectory());
-        assert.isFalse(stats.isFile());
-        assert.equal(typeof stats.size, 'bigint');
-        done();
-      }, done);
-    }
-  );
+  it('promise identifies directories with bigint', function(done) {
+    fs.promises.stat('/empty', {bigint: true}).then(function(stats) {
+      assert.isTrue(stats.isDirectory());
+      assert.isFalse(stats.isFile());
+      assert.equal(typeof stats.size, 'bigint');
+      done();
+    }, done);
+  });
 
   it('provides file stats', function(done) {
     fs.stat('/path/to/file.txt', function(err, stats) {
@@ -206,9 +199,7 @@ describe('fs.stat(path, options, callback)', function() {
     }, done);
   });
 
-  it('promise provides file stats with bigint', function(
-    done
-  ) {
+  it('promise provides file stats with bigint', function(done) {
     fs.promises.stat('/path/to/file.txt', {bigint: true}).then(function(stats) {
       assert.equal(typeof stats.ctimeMs, 'bigint');
       assert.equal(typeof stats.mtimeMs, 'bigint');
@@ -238,9 +229,7 @@ describe('fs.stat(path, options, callback)', function() {
       });
     });
 
-    it('promise includes blocks and blksize in stats', function(
-      done
-    ) {
+    it('promise includes blocks and blksize in stats', function(done) {
       fs.promises.stat('/path/to/file.txt').then(function(stats) {
         assert.isNumber(stats.blocks);
         assert.isNumber(stats.blksize);
@@ -273,9 +262,7 @@ describe('fs.stat(path, options, callback)', function() {
     });
   });
 
-  it('provides directory stats with bigint', function(
-    done
-  ) {
+  it('provides directory stats with bigint', function(done) {
     fs.stat('/path', {bigint: true}, function(err, stats) {
       if (err) {
         return done(err);
@@ -320,29 +307,26 @@ describe('fs.stat(path, options, callback)', function() {
     }, done);
   });
 
-  it(
-    'promise provides directory stats with bigint',
-    function(done) {
-      fs.promises.stat('/path', {bigint: true}).then(function(stats) {
-        assert.instanceOf(stats.ctime, Date);
-        assert.instanceOf(stats.mtime, Date);
-        assert.instanceOf(stats.atime, Date);
-        if (process.getuid) {
-          assert.equal(typeof stats.uid, 'bigint');
-        } else {
-          assert.strictEqual(stats.uid, 0n);
-        }
-        if (process.getgid) {
-          assert.equal(typeof stats.gid, 'bigint');
-        } else {
-          assert.strictEqual(stats.gid, 0n);
-        }
-        assert.equal(typeof stats.nlink, 'bigint');
-        assert.equal(typeof stats.rdev, 'bigint');
-        done();
-      }, done);
-    }
-  );
+  it('promise provides directory stats with bigint', function(done) {
+    fs.promises.stat('/path', {bigint: true}).then(function(stats) {
+      assert.instanceOf(stats.ctime, Date);
+      assert.instanceOf(stats.mtime, Date);
+      assert.instanceOf(stats.atime, Date);
+      if (process.getuid) {
+        assert.equal(typeof stats.uid, 'bigint');
+      } else {
+        assert.strictEqual(stats.uid, 0n);
+      }
+      if (process.getgid) {
+        assert.equal(typeof stats.gid, 'bigint');
+      } else {
+        assert.strictEqual(stats.gid, 0n);
+      }
+      assert.equal(typeof stats.nlink, 'bigint');
+      assert.equal(typeof stats.rdev, 'bigint');
+      done();
+    }, done);
+  });
 
   if (
     process.platform !== 'win32' ||
@@ -361,16 +345,13 @@ describe('fs.stat(path, options, callback)', function() {
       });
     });
 
-    it(
-      'promise includes blocks and blksize in directory stats',
-      function(done) {
-        fs.promises.stat('/path').then(function(stats) {
-          assert.isNumber(stats.blocks);
-          assert.isNumber(stats.blksize);
-          done();
-        }, done);
-      }
-    );
+    it('promise includes blocks and blksize in directory stats', function(done) {
+      fs.promises.stat('/path').then(function(stats) {
+        assert.isNumber(stats.blocks);
+        assert.isNumber(stats.blksize);
+        done();
+      }, done);
+    });
   }
 });
 
@@ -395,24 +376,19 @@ describe('fs.fstat(fd, options, callback)', function() {
     });
   });
 
-  it(
-    'accepts a file descriptor for a file (r) with bigint',
-    function(done) {
-      const fd = fs.openSync('path/to/file.txt', 'r');
-      fs.fstat(fd, {bigint: true}, function(err, stats) {
-        if (err) {
-          return done(err);
-        }
-        assert.isTrue(stats.isFile());
-        assert.equal(typeof stats.size, 'bigint');
-        done();
-      });
-    }
-  );
+  it('accepts a file descriptor for a file (r) with bigint', function(done) {
+    const fd = fs.openSync('path/to/file.txt', 'r');
+    fs.fstat(fd, {bigint: true}, function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isFile());
+      assert.equal(typeof stats.size, 'bigint');
+      done();
+    });
+  });
 
-  it('promise accepts a file descriptor for a file (r)', function(
-    done
-  ) {
+  it('promise accepts a file descriptor for a file (r)', function(done) {
     fs.promises
       .open('path/to/file.txt', 'r')
       .then(function(fd) {
@@ -425,21 +401,18 @@ describe('fs.fstat(fd, options, callback)', function() {
       }, done);
   });
 
-  it(
-    'promise accepts a file descriptor for a file (r) with bigint',
-    function(done) {
-      fs.promises
-        .open('path/to/file.txt', 'r')
-        .then(function(fd) {
-          return fd.stat({bigint: true});
-        })
-        .then(function(stats) {
-          assert.isTrue(stats.isFile());
-          assert.equal(typeof stats.size, 'bigint');
-          done();
-        }, done);
-    }
-  );
+  it('promise accepts a file descriptor for a file (r) with bigint', function(done) {
+    fs.promises
+      .open('path/to/file.txt', 'r')
+      .then(function(fd) {
+        return fd.stat({bigint: true});
+      })
+      .then(function(stats) {
+        assert.isTrue(stats.isFile());
+        assert.equal(typeof stats.size, 'bigint');
+        done();
+      }, done);
+  });
 
   it('accepts a file descriptor for a directory (r)', function(done) {
     const fd = fs.openSync('path/to', 'r');
@@ -453,52 +426,43 @@ describe('fs.fstat(fd, options, callback)', function() {
     });
   });
 
-  it(
-    'accepts a file descriptor for a directory (r) with bigint',
-    function(done) {
-      const fd = fs.openSync('path/to', 'r');
-      fs.fstat(fd, {bigint: true}, function(err, stats) {
-        if (err) {
-          return done(err);
-        }
+  it('accepts a file descriptor for a directory (r) with bigint', function(done) {
+    const fd = fs.openSync('path/to', 'r');
+    fs.fstat(fd, {bigint: true}, function(err, stats) {
+      if (err) {
+        return done(err);
+      }
+      assert.isTrue(stats.isDirectory());
+      assert.equal(typeof stats.size, 'bigint');
+      done();
+    });
+  });
+
+  it('promise accepts a file descriptor for a directory (r)', function(done) {
+    fs.promises
+      .open('path/to', 'r')
+      .then(function(fd) {
+        return fd.stat();
+      })
+      .then(function(stats) {
+        assert.isTrue(stats.isDirectory());
+        assert.equal(stats.size, 1);
+        done();
+      }, done);
+  });
+
+  it('promise accepts a file descriptor for a directory (r) with bigint', function(done) {
+    fs.promises
+      .open('path/to', 'r')
+      .then(function(fd) {
+        return fd.stat({bigint: true});
+      })
+      .then(function(stats) {
         assert.isTrue(stats.isDirectory());
         assert.equal(typeof stats.size, 'bigint');
         done();
-      });
-    }
-  );
-
-  it(
-    'promise accepts a file descriptor for a directory (r)',
-    function(done) {
-      fs.promises
-        .open('path/to', 'r')
-        .then(function(fd) {
-          return fd.stat();
-        })
-        .then(function(stats) {
-          assert.isTrue(stats.isDirectory());
-          assert.equal(stats.size, 1);
-          done();
-        }, done);
-    }
-  );
-
-  it(
-    'promise accepts a file descriptor for a directory (r) with bigint',
-    function(done) {
-      fs.promises
-        .open('path/to', 'r')
-        .then(function(fd) {
-          return fd.stat({bigint: true});
-        })
-        .then(function(stats) {
-          assert.isTrue(stats.isDirectory());
-          assert.equal(typeof stats.size, 'bigint');
-          done();
-        }, done);
-    }
-  );
+      }, done);
+  });
 
   it('fails for bad file descriptor', function(done) {
     const fd = fs.openSync('path/to/file.txt', 'r');
@@ -547,15 +511,12 @@ describe('fs.fstatSync(fd, options)', function() {
     assert.equal(stats.size, 12);
   });
 
-  it(
-    'accepts a file descriptor for a file (r) with bigint',
-    function() {
-      const fd = fs.openSync('path/to/file.txt', 'r');
-      const stats = fs.fstatSync(fd, {bigint: true});
-      assert.isTrue(stats.isFile());
-      assert.equal(typeof stats.size, 'bigint');
-    }
-  );
+  it('accepts a file descriptor for a file (r) with bigint', function() {
+    const fd = fs.openSync('path/to/file.txt', 'r');
+    const stats = fs.fstatSync(fd, {bigint: true});
+    assert.isTrue(stats.isFile());
+    assert.equal(typeof stats.size, 'bigint');
+  });
 
   it('accepts a file descriptor for a directory (r)', function() {
     const fd = fs.openSync('path/to', 'r');
@@ -564,15 +525,12 @@ describe('fs.fstatSync(fd, options)', function() {
     assert.equal(stats.size, 1);
   });
 
-  it(
-    'accepts a file descriptor for a directory (r) with bigint',
-    function() {
-      const fd = fs.openSync('path/to', 'r');
-      const stats = fs.fstatSync(fd, {bigint: true});
-      assert.isTrue(stats.isDirectory());
-      assert.equal(typeof stats.size, 'bigint');
-    }
-  );
+  it('accepts a file descriptor for a directory (r) with bigint', function() {
+    const fd = fs.openSync('path/to', 'r');
+    const stats = fs.fstatSync(fd, {bigint: true});
+    assert.isTrue(stats.isDirectory());
+    assert.equal(typeof stats.size, 'bigint');
+  });
 
   it('fails for bad file descriptor', function() {
     const fd = fs.openSync('path/to/file.txt', 'r');

@@ -33,7 +33,13 @@
     "test": "mocha --recursive test"
   },
   "eslintConfig": {
-    "extends": "tschaub"
+    "extends": "tschaub",
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "env": {
+      "es2020": true
+    }
   },
   "devDependencies": {
     "chai": "^4.3.4",

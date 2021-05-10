@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.chown(path, uid, gid, callback)', function() {
   beforeEach(function() {

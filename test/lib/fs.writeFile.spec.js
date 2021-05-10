@@ -6,7 +6,6 @@ const mock = require('../../lib/index');
 const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.writeFile(filename, data, [options], callback)', function() {
   beforeEach(function() {

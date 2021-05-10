@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 
 const assert = helper.assert;
-const withPromise = helper.withPromise;
 
 describe('fs.chmod(path, mode, callback)', function() {
   beforeEach(function() {
