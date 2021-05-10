@@ -3,7 +3,6 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
@@ -51,7 +50,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
   });
 
   it('appends a buffer to a file', function(done) {
-    fs.appendFile('dir/file.txt', bufferFrom(' bar'), function(err) {
+    fs.appendFile('dir/file.txt', Buffer.from(' bar'), function(err) {
       if (err) {
         return done(err);
       }
@@ -61,10 +60,15 @@ describe('fs.appendFile(filename, data, [options], callback)', function() {
   });
 
   it('promise appends a buffer to a file', function(done) {
-    fs.promises.appendFile('dir/file.txt', bufferFrom(' bar')).then(function() {
-      assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
-      done();
-    }, done);
+    fs.promises
+      .appendFile('dir/file.txt', Buffer.from(' bar'))
+      .then(function() {
+        assert.equal(
+          String(fs.readFileSync('dir/file.txt')),
+          'file content bar'
+        );
+        done();
+      }, done);
   });
 
   it('appends via a symbolic link file', function(done) {

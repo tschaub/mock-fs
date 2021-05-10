@@ -4,14 +4,13 @@ const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
 const path = require('path');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
 describe('fs.exists(path, callback)', function() {
   beforeEach(function() {
     mock({
-      'path/to/a.bin': bufferFrom([1, 2, 3]),
+      'path/to/a.bin': Buffer.from([1, 2, 3]),
       empty: {},
       nested: {
         dir: {
@@ -82,7 +81,7 @@ describe('fs.exists(path, callback)', function() {
 describe('fs.existsSync(path)', function() {
   beforeEach(function() {
     mock({
-      'path/to/a.bin': bufferFrom([1, 2, 3]),
+      'path/to/a.bin': Buffer.from([1, 2, 3]),
       empty: {},
       nested: {
         dir: {

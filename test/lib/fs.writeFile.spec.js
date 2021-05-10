@@ -3,7 +3,6 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferFrom = require('../../lib/buffer').from;
 
 const assert = helper.assert;
 
@@ -56,7 +55,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
   });
 
   it('writes a buffer to a file', function(done) {
-    fs.writeFile('dir/foo', bufferFrom('bar'), function(err) {
+    fs.writeFile('dir/foo', Buffer.from('bar'), function(err) {
       if (err) {
         return done(err);
       }
@@ -66,7 +65,7 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
   });
 
   it('promise writes a buffer to a file', function(done) {
-    fs.promises.writeFile('dir/foo', bufferFrom('bar')).then(function() {
+    fs.promises.writeFile('dir/foo', Buffer.from('bar')).then(function() {
       assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
       done();
     }, done);
@@ -108,7 +107,7 @@ describe('fs.writeFileSync(filename, data, [options]', function() {
   });
 
   it('writes a buffer to a file', function() {
-    fs.writeFileSync('foo', bufferFrom('bar'));
+    fs.writeFileSync('foo', Buffer.from('bar'));
     assert.equal(String(fs.readFileSync('foo')), 'bar');
   });
 

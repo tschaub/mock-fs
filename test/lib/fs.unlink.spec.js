@@ -3,7 +3,6 @@
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
-const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
 
@@ -101,7 +100,7 @@ describe('fs.unlink(path, callback)', function() {
       }
       assert.isFalse(fs.existsSync('file.txt'));
       // but we can still use fd to read
-      const buffer = bufferAlloc(7);
+      const buffer = Buffer.alloc(7);
       const read = fs.readSync(fd, buffer, 0, 7);
       assert.equal(read, 7);
       assert.equal(String(buffer), 'content');
@@ -114,7 +113,7 @@ describe('fs.unlink(path, callback)', function() {
     fs.promises.unlink('file.txt').then(function() {
       assert.isFalse(fs.existsSync('file.txt'));
       // but we can still use fd to read
-      const buffer = bufferAlloc(7);
+      const buffer = Buffer.alloc(7);
       const read = fs.readSync(fd, buffer, 0, 7);
       assert.equal(read, 7);
       assert.equal(String(buffer), 'content');
@@ -141,7 +140,7 @@ describe('fs.unlinkSync(path)', function() {
     fs.unlinkSync('file.txt');
     assert.isFalse(fs.existsSync('file.txt'));
     // but we can still use fd to read
-    const buffer = bufferAlloc(7);
+    const buffer = Buffer.alloc(7);
     const read = fs.readSync(fd, buffer, 0, 7);
     assert.equal(read, 7);
     assert.equal(String(buffer), 'content');

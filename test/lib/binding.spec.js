@@ -9,8 +9,6 @@ const File = require('../../lib/file');
 const FileSystem = require('../../lib/filesystem');
 const helper = require('../helper');
 const constants = require('constants');
-const bufferFrom = require('../../lib/buffer').from;
-const bufferAlloc = require('../../lib/buffer').alloc;
 
 const assert = helper.assert;
 const assertEqualPaths = helper.assertEqualPaths;
@@ -32,7 +30,7 @@ describe('Binding', function() {
         }),
         'one-link.txt': FileSystem.symlink({path: './one.txt'}),
         'one-link2.txt': FileSystem.symlink({path: './one-link.txt'}),
-        'three.bin': bufferFrom([1, 2, 3]),
+        'three.bin': Buffer.from([1, 2, 3]),
         empty: {},
         'non-empty': {
           'a.txt': FileSystem.file({
@@ -353,7 +351,7 @@ describe('Binding', function() {
 
     it('accepts a buffer', function(done) {
       const binding = new Binding(system);
-      binding.realpath(bufferFrom('mock-dir/one.txt'), 'utf-8', function(
+      binding.realpath(Buffer.from('mock-dir/one.txt'), 'utf-8', function(
         err,
         realPath
       ) {
@@ -894,7 +892,7 @@ describe('Binding', function() {
     it('reads from a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
-      const buffer = bufferAlloc(11);
+      const buffer = Buffer.alloc(11);
       const read = binding.read(fd, buffer, 0, 11, 0);
       assert.equal(read, 11);
       assert.equal(String(buffer), 'two content');
@@ -912,7 +910,7 @@ describe('Binding', function() {
     it('interprets null position as current position', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      const buffer = bufferAlloc(4);
+      const buffer = Buffer.alloc(4);
 
       // chunk 1
       assert.equal(binding.read(fd, buffer, 0, 11, null), 4);
@@ -933,7 +931,7 @@ describe('Binding', function() {
         path.join('mock-dir', 'one-link.txt'),
         flags('r')
       );
-      const buffer = bufferAlloc(11);
+      const buffer = Buffer.alloc(11);
       const read = binding.read(fd, buffer, 0, 11, 0);
       assert.equal(read, 11);
       assert.equal(String(buffer), 'one content');
@@ -945,7 +943,7 @@ describe('Binding', function() {
         path.join('mock-dir', 'one-link2.txt'),
         flags('r')
       );
-      const buffer = bufferAlloc(11);
+      const buffer = Buffer.alloc(11);
       const read = binding.read(fd, buffer, 0, 11, 0);
       assert.equal(read, 11);
       assert.equal(String(buffer), 'one content');
@@ -954,7 +952,7 @@ describe('Binding', function() {
     it('throws if not open for reading', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'));
-      const buffer = bufferAlloc(11);
+      const buffer = Buffer.alloc(11);
       assert.throws(function() {
         binding.read(fd, buffer, 0, 11, 0);
       });
@@ -975,7 +973,7 @@ describe('Binding', function() {
     it('writes to a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
-      const buffer = bufferFrom('new content');
+      const buffer = Buffer.from('new content');
       const written = binding.write(fd, buffer, 0, 11, 0);
       assert.equal(written, 11);
       const file = system.getItem(path.join('mock-dir', 'new.txt'));
@@ -1001,7 +999,7 @@ describe('Binding', function() {
     it('can overwrite a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('w'));
-      const buffer = bufferFrom('bingo');
+      const buffer = Buffer.from('bingo');
       const written = binding.write(fd, buffer, 0, 5, null);
       assert.equal(written, 5);
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1014,7 +1012,7 @@ describe('Binding', function() {
     it('can append to a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
-      const buffer = bufferFrom(' more');
+      const buffer = Buffer.from(' more');
       const written = binding.write(fd, buffer, 0, 5, null);
       assert.equal(written, 5);
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1027,7 +1025,7 @@ describe('Binding', function() {
     it('can overwrite part of a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
-      const buffer = bufferFrom('new');
+      const buffer = Buffer.from('new');
       const written = binding.write(fd, buffer, 0, 3, 0);
       assert.equal(written, 3);
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1040,7 +1038,7 @@ describe('Binding', function() {
     it('throws if not open for writing', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
-      const buffer = bufferFrom('some content');
+      const buffer = Buffer.from('some content');
       assert.throws(function() {
         binding.write(fd, buffer, 0, 12, 0);
       });
@@ -1051,7 +1049,7 @@ describe('Binding', function() {
     it('writes to a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
-      const buffers = [bufferFrom('new '), bufferFrom('content')];
+      const buffers = [Buffer.from('new '), Buffer.from('content')];
       const written = binding.writeBuffers(fd, buffers);
       assert.equal(written, 11);
       const file = system.getItem(path.join('mock-dir', 'new.txt'));
@@ -1064,7 +1062,7 @@ describe('Binding', function() {
     it('can append to a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
-      const buffers = [bufferFrom(' more'), bufferFrom(' content')];
+      const buffers = [Buffer.from(' more'), Buffer.from(' content')];
       const written = binding.writeBuffers(fd, buffers);
       assert.equal(written, 13);
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1077,7 +1075,7 @@ describe('Binding', function() {
     it('can overwrite part of a file', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
-      const buffers = [bufferFrom('n'), bufferFrom('e'), bufferFrom('w')];
+      const buffers = [Buffer.from('n'), Buffer.from('e'), Buffer.from('w')];
       const written = binding.writeBuffers(fd, buffers, 0);
       assert.equal(written, 3);
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1090,7 +1088,7 @@ describe('Binding', function() {
     it('throws if not open for writing', function() {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
-      const buffers = [bufferFrom('some content')];
+      const buffers = [Buffer.from('some content')];
       assert.throws(function() {
         binding.writeBuffers(fd, buffers);
       });

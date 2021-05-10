@@ -3,7 +3,6 @@
 const Item = require('../../lib/item');
 const File = require('../../lib/file');
 const assert = require('../helper').assert;
-const bufferFrom = require('../../lib/buffer').from;
 
 describe('File', function() {
   describe('constructor', function() {
@@ -17,7 +16,7 @@ describe('File', function() {
   describe('#getContent()', function() {
     it('gets the file content', function() {
       const file = new File();
-      const content = bufferFrom('bar');
+      const content = Buffer.from('bar');
       file.setContent(content);
       assert.equal(file.getContent(), content);
     });
@@ -48,7 +47,7 @@ describe('File', function() {
 
     it('accepts a buffer', function() {
       const file = new File();
-      file.setContent(bufferFrom('baz'));
+      file.setContent(Buffer.from('baz'));
       const content = file.getContent();
       assert.isTrue(Buffer.isBuffer(content));
       assert.equal(String(content), 'baz');
