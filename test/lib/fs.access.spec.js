@@ -5,8 +5,7 @@ const fs = require('fs');
 const mock = require('../../lib/index');
 const assert = helper.assert;
 
-if (fs.access && fs.accessSync && process.getuid && process.getgid) {
-  // TODO: drop condition when dropping Node < 0.12 support
+if (process.getuid && process.getgid) {
   // TODO: figure out how fs.access() works on Windows (without gid/uid)
 
   describe('fs.access(path[, mode], callback)', function() {

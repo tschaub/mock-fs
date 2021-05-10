@@ -6,8 +6,7 @@ const mock = require('../../lib/index');
 
 const assert = helper.assert;
 
-const testParentPerms =
-  fs.access && fs.accessSync && process.getuid && process.getgid;
+const testParentPerms = process.getuid && process.getgid;
 
 describe('fs.mkdir(path, [mode], callback)', function() {
   beforeEach(function() {

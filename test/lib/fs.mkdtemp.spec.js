@@ -7,8 +7,7 @@ const path = require('path');
 
 const assert = helper.assert;
 
-const testParentPerms =
-  fs.access && fs.accessSync && process.getuid && process.getgid;
+const testParentPerms = process.getuid && process.getgid;
 
 if (fs.mkdtemp) {
   describe('fs.mkdtemp(prefix[, options], callback)', function() {
