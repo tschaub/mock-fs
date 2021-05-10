@@ -1,5 +1,15 @@
 # Change Log
 
+## 5.0.0
+
+Breaking change:
+
+ * Remove support for Node < 12.  If you want to use mock-fs to test on Node 10 or lower, stick with mock-fs@4.
+
+New features:
+
+ * Support for BigInt file stats - required for Node 15+ (thanks @3cp, see [#325][#325])
+
 ## 4.14.0
 
  * Attempt to fix logging when using `mock-fs` with `tape` (see [#322][#322])
@@ -8,7 +18,7 @@
 ## 4.13.0
 
  * Make `process.chdir()`, `process.cwd()`, and `fs.createWriteStream()` work with `bypass()` (thanks @3cp, see [#307][#307])
- * Fix memory leak associated with Node 10 (thanks #3cp, see [#303][#303])
+ * Fix memory leak associated with Node 10 (thanks @3cp, see [#303][#303])
  * Async function handling in `bypass()` (see [#306][#306])
  * Big new feature!  Temporarily bypass the mocked filesystem with the `bypass()` function (thanks @nonara, see [#304][#304])
 
@@ -308,3 +318,4 @@ Detailed changes:
 [#307]: https://github.com/tschaub/mock-fs/pull/307
 [#320]: https://github.com/tschaub/mock-fs/pull/320
 [#322]: https://github.com/tschaub/mock-fs/pull/322
+[#325]: https://github.com/tschaub/mock-fs/pull/325
