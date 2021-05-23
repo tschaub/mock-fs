@@ -1,7 +1,10 @@
 'use strict';
 
 const Item = require('../../lib/item');
-const assert = require('../helper').assert;
+const helper = require('../helper');
+
+const assert = helper.assert;
+const assertEvent = helper.assertEvent;
 
 describe('Item', function() {
   describe('constructor', function() {
@@ -372,4 +375,36 @@ describe('Item', function() {
       });
     });
   }
+
+  describe('#notifyChange()', function() {
+    it('emits a change event', function() {
+      const item = new Item();
+      const watcher = item.getWatcher();
+      assertEvent(
+        function() {
+          item.notifyChange('/path/to/item');
+        },
+        watcher,
+        'change',
+        'change',
+        '/path/to/item'
+      );
+    });
+  });
+
+  describe('#notifyRename()', function() {
+    it('emits a rename event', function() {
+      const item = new Item();
+      const watcher = item.getWatcher();
+      assertEvent(
+        function() {
+          item.notifyRename('/path/to/item');
+        },
+        watcher,
+        'change',
+        'rename',
+        '/path/to/item'
+      );
+    });
+  });
 });
