@@ -1,5 +1,6 @@
 'use strict';
 
+const constants = require('constants');
 const helper = require('../helper');
 const fs = require('fs');
 const mock = require('../../lib/index');
@@ -142,6 +143,31 @@ describe('fs.readFile() with ReadFileContext', function() {
     fs.readFile(1, 'utf-8', function(err, data) {
       assert.isNull(err);
       assert.equal(data, '');
+      done();
+    });
+  });
+
+  it('allows file reads with unknown size', function(done) {
+    mock({
+      'unknown-size.txt': function() {
+        const file = mock.file({
+          content: Buffer.from('unknown size')
+        })();
+
+        // Override getStats to drop the S_IFREG flag
+        const origGetStats = file.getStats;
+        file.getStats = function() {
+          const stats = origGetStats.apply(this, arguments);
+          stats[1] ^= constants.S_IFREG;
+          return stats;
+        };
+        return file;
+      }
+    });
+
+    fs.readFile('unknown-size.txt', 'utf-8', function(err, data) {
+      assert.isNull(err);
+      assert.equal(data, 'unknown size');
       done();
     });
   });
