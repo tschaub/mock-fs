@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.1.0
+
+ * Added support for Node >= 16.3 (thanks @Rugvip, see [#335][#335])
+
 ## 5.0.0
 
 Breaking change:
@@ -319,3 +323,4 @@ Detailed changes:
 [#320]: https://github.com/tschaub/mock-fs/pull/320
 [#322]: https://github.com/tschaub/mock-fs/pull/322
 [#325]: https://github.com/tschaub/mock-fs/pull/325
+[#335]: https://github.com/tschaub/mock-fs/pull/335
