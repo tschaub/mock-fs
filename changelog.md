@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.1.1
+
+ * Added `engines` to `package.json` to clarify that Node >= 12 is required (thanks @tillig, see [#337][#337])
+
 ## 5.1.0
 
  * Added support for Node >= 16.3 (thanks @Rugvip, see [#335][#335])
@@ -324,3 +328,4 @@ Detailed changes:
 [#322]: https://github.com/tschaub/mock-fs/pull/322
 [#325]: https://github.com/tschaub/mock-fs/pull/325
 [#335]: https://github.com/tschaub/mock-fs/pull/335
+[#337]: https://github.com/tschaub/mock-fs/pull/337
