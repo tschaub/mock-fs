@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.1.2
+
+ * Avoid open `FSREQCALLBACK` file handles (thanks @jloleysens, see [#342][#342])
+
 ## 5.1.1
 
  * Added `engines` to `package.json` to clarify that Node >= 12 is required (thanks @tillig, see [#337][#337])
@@ -329,3 +333,4 @@ Detailed changes:
 [#325]: https://github.com/tschaub/mock-fs/pull/325
 [#335]: https://github.com/tschaub/mock-fs/pull/335
 [#337]: https://github.com/tschaub/mock-fs/pull/337
+[#342]: https://github.com/tschaub/mock-fs/pull/342
