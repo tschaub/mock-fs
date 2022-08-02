@@ -27,6 +27,7 @@ jobs:
           - 12
           - 14
           - 16
+          - 18
 
     steps:
       - name: Clone repository

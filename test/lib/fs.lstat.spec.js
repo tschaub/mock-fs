@@ -1,28 +1,28 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
 
-describe('fs.lstat(path, options, callback)', function() {
-  beforeEach(function() {
+describe('fs.lstat(path, options, callback)', function () {
+  beforeEach(function () {
     mock({
       'file.txt': mock.file({
         content: 'content',
-        mtime: new Date(1)
+        mtime: new Date(1),
       }),
       link: mock.symlink({
         path: './file.txt',
-        mtime: new Date(2)
-      })
+        mtime: new Date(2),
+      }),
     });
   });
   afterEach(mock.restore);
 
-  it('stats a symbolic link', function(done) {
-    fs.lstat('link', function(err, stats) {
+  it('stats a symbolic link', function (done) {
+    fs.lstat('link', function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -33,8 +33,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('stats a symbolic link with bigint', function(done) {
-    fs.lstat('link', {bigint: true}, function(err, stats) {
+  it('stats a symbolic link with bigint', function (done) {
+    fs.lstat('link', {bigint: true}, function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -45,8 +45,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('suports Buffer input', function(done) {
-    fs.lstat(Buffer.from('link'), function(err, stats) {
+  it('suports Buffer input', function (done) {
+    fs.lstat(Buffer.from('link'), function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -57,8 +57,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('suports Buffer input with bigint', function(done) {
-    fs.lstat(Buffer.from('link'), {bigint: true}, function(err, stats) {
+  it('suports Buffer input with bigint', function (done) {
+    fs.lstat(Buffer.from('link'), {bigint: true}, function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -69,8 +69,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('promise stats a symbolic link', function(done) {
-    fs.promises.lstat('link').then(function(stats) {
+  it('promise stats a symbolic link', function (done) {
+    fs.promises.lstat('link').then(function (stats) {
       assert.isTrue(stats.isSymbolicLink());
       assert.isFalse(stats.isFile());
       assert.equal(stats.mtime.getTime(), 2);
@@ -78,8 +78,8 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it('promise stats a symbolic link with bigint', function(done) {
-    fs.promises.lstat('link', {bigint: true}).then(function(stats) {
+  it('promise stats a symbolic link with bigint', function (done) {
+    fs.promises.lstat('link', {bigint: true}).then(function (stats) {
       assert.isTrue(stats.isSymbolicLink());
       assert.isFalse(stats.isFile());
       assert.equal(typeof stats.mtimeMs, 'bigint');
@@ -87,8 +87,8 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it('stats a regular file', function(done) {
-    fs.lstat('file.txt', function(err, stats) {
+  it('stats a regular file', function (done) {
+    fs.lstat('file.txt', function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -99,8 +99,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('stats a regular file with bigint', function(done) {
-    fs.lstat('file.txt', {bigint: true}, function(err, stats) {
+  it('stats a regular file with bigint', function (done) {
+    fs.lstat('file.txt', {bigint: true}, function (err, stats) {
       if (err) {
         return done(err);
       }
@@ -111,8 +111,8 @@ describe('fs.lstat(path, options, callback)', function() {
     });
   });
 
-  it('promise stats a regular file', function(done) {
-    fs.promises.lstat('file.txt').then(function(stats) {
+  it('promise stats a regular file', function (done) {
+    fs.promises.lstat('file.txt').then(function (stats) {
       assert.isTrue(stats.isFile());
       assert.isFalse(stats.isSymbolicLink());
       assert.equal(stats.mtime.getTime(), 1);
@@ -120,8 +120,8 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it('promise stats a regular file with bigint', function(done) {
-    fs.promises.lstat('file.txt', {bigint: true}).then(function(stats) {
+  it('promise stats a regular file with bigint', function (done) {
+    fs.promises.lstat('file.txt', {bigint: true}).then(function (stats) {
       assert.isTrue(stats.isFile());
       assert.isFalse(stats.isSymbolicLink());
       assert.equal(typeof stats.mtimeMs, 'bigint');
@@ -129,20 +129,20 @@ describe('fs.lstat(path, options, callback)', function() {
     }, done);
   });
 
-  it('fails on file not exist', function(done) {
-    fs.lstat('bogus', function(err, stats) {
+  it('fails on file not exist', function (done) {
+    fs.lstat('bogus', function (err, stats) {
       assert.instanceOf(err, Error);
       assert.equal(err.code, 'ENOENT');
       done();
     });
   });
 
-  it('promise fails on file not exist', function(done) {
+  it('promise fails on file not exist', function (done) {
     fs.promises.lstat('bogus').then(
-      function() {
+      function () {
         done(new Error('should not succeed.'));
       },
-      function(err) {
+      function (err) {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
@@ -151,51 +151,51 @@ describe('fs.lstat(path, options, callback)', function() {
   });
 });
 
-describe('fs.lstatSync(path, options)', function() {
-  beforeEach(function() {
+describe('fs.lstatSync(path, options)', function () {
+  beforeEach(function () {
     mock({
       'file.txt': mock.file({
         content: 'content',
-        mtime: new Date(1)
+        mtime: new Date(1),
       }),
       link: mock.symlink({
         path: './file.txt',
-        mtime: new Date(2)
-      })
+        mtime: new Date(2),
+      }),
     });
   });
   afterEach(mock.restore);
 
-  it('stats a symbolic link', function() {
+  it('stats a symbolic link', function () {
     const stats = fs.lstatSync('link');
     assert.isTrue(stats.isSymbolicLink());
     assert.isFalse(stats.isFile());
     assert.equal(stats.mtime.getTime(), 2);
   });
 
-  it('stats a symbolic link with bigint', function() {
+  it('stats a symbolic link with bigint', function () {
     const stats = fs.lstatSync('link', {bigint: true});
     assert.isTrue(stats.isSymbolicLink());
     assert.isFalse(stats.isFile());
     assert.equal(typeof stats.mtimeMs, 'bigint');
   });
 
-  it('stats a regular file', function() {
+  it('stats a regular file', function () {
     const stats = fs.lstatSync('file.txt');
     assert.isTrue(stats.isFile());
     assert.isFalse(stats.isSymbolicLink());
     assert.equal(stats.mtime.getTime(), 1);
   });
 
-  it('stats a regular file with bigint', function() {
+  it('stats a regular file with bigint', function () {
     const stats = fs.lstatSync('file.txt', {bigint: true});
     assert.isTrue(stats.isFile());
     assert.isFalse(stats.isSymbolicLink());
     assert.equal(typeof stats.mtimeMs, 'bigint');
   });
 
-  it('fails on file not exist', function() {
-    assert.throws(function() {
+  it('fails on file not exist', function () {
+    assert.throws(function () {
       fs.lstatSync('bogus');
     });
   });

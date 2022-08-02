@@ -1,23 +1,23 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
 
-describe('fs.writeFile(filename, data, [options], callback)', function() {
-  beforeEach(function() {
+describe('fs.writeFile(filename, data, [options], callback)', function () {
+  beforeEach(function () {
     mock({
       dir: mock.directory({
-        mtime: new Date(1)
-      })
+        mtime: new Date(1),
+      }),
     });
   });
   afterEach(mock.restore);
 
-  it('writes a string to a file', function(done) {
-    fs.writeFile('dir/foo', 'bar', function(err) {
+  it('writes a string to a file', function (done) {
+    fs.writeFile('dir/foo', 'bar', function (err) {
       if (err) {
         return done(err);
       }
@@ -26,16 +26,16 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  it('promise writes a string to a file', function(done) {
-    fs.promises.writeFile('dir/foo', 'bar').then(function() {
+  it('promise writes a string to a file', function (done) {
+    fs.promises.writeFile('dir/foo', 'bar').then(function () {
       assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
       done();
     }, done);
   });
 
-  it('updates mtime of parent directory', function(done) {
+  it('updates mtime of parent directory', function (done) {
     const oldTime = fs.statSync('dir').mtime;
-    fs.writeFile('dir/foo', 'bar', function(err) {
+    fs.writeFile('dir/foo', 'bar', function (err) {
       if (err) {
         return done(err);
       }
@@ -45,17 +45,17 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  it('promise updates mtime of parent directory', function(done) {
+  it('promise updates mtime of parent directory', function (done) {
     const oldTime = fs.statSync('dir').mtime;
-    fs.promises.writeFile('dir/foo', 'bar').then(function() {
+    fs.promises.writeFile('dir/foo', 'bar').then(function () {
       const newTime = fs.statSync('dir').mtime;
       assert.isTrue(newTime > oldTime);
       done();
     }, done);
   });
 
-  it('writes a buffer to a file', function(done) {
-    fs.writeFile('dir/foo', Buffer.from('bar'), function(err) {
+  it('writes a buffer to a file', function (done) {
+    fs.writeFile('dir/foo', Buffer.from('bar'), function (err) {
       if (err) {
         return done(err);
       }
@@ -64,27 +64,27 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
     });
   });
 
-  it('promise writes a buffer to a file', function(done) {
-    fs.promises.writeFile('dir/foo', Buffer.from('bar')).then(function() {
+  it('promise writes a buffer to a file', function (done) {
+    fs.promises.writeFile('dir/foo', Buffer.from('bar')).then(function () {
       assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
       done();
     }, done);
   });
 
-  it('fails if directory does not exist', function(done) {
-    fs.writeFile('foo/bar', 'baz', function(err) {
+  it('fails if directory does not exist', function (done) {
+    fs.writeFile('foo/bar', 'baz', function (err) {
       assert.instanceOf(err, Error);
       assert.equal(err.code, 'ENOENT');
       done();
     });
   });
 
-  it('promise fails if directory does not exist', function(done) {
+  it('promise fails if directory does not exist', function (done) {
     fs.promises.writeFile('foo/bar', 'baz').then(
-      function() {
+      function () {
         done(new Error('should not succeed.'));
       },
-      function(err) {
+      function (err) {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
@@ -93,26 +93,26 @@ describe('fs.writeFile(filename, data, [options], callback)', function() {
   });
 });
 
-describe('fs.writeFileSync(filename, data, [options]', function() {
-  beforeEach(function() {
+describe('fs.writeFileSync(filename, data, [options]', function () {
+  beforeEach(function () {
     mock({
-      '.': {}
+      '.': {},
     });
   });
   afterEach(mock.restore);
 
-  it('writes a string to a file', function() {
+  it('writes a string to a file', function () {
     fs.writeFileSync('foo', 'bar');
     assert.equal(String(fs.readFileSync('foo')), 'bar');
   });
 
-  it('writes a buffer to a file', function() {
+  it('writes a buffer to a file', function () {
     fs.writeFileSync('foo', Buffer.from('bar'));
     assert.equal(String(fs.readFileSync('foo')), 'bar');
   });
 
-  it('fails if directory does not exist', function() {
-    assert.throws(function() {
+  it('fails if directory does not exist', function () {
+    assert.throws(function () {
       fs.writeFileSync('foo/bar', 'baz');
     });
   });

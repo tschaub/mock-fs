@@ -8,12 +8,12 @@ const mock = require('..');
  * test time.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
+exports.test = function (done) {
   mock({
-    'foo-mock.txt': 'foo'
+    'foo-mock.txt': 'foo',
   });
 
-  fs.readFile('foo-mock.txt', 'utf8', function(err, str) {
+  fs.readFile('foo-mock.txt', 'utf8', function (err, str) {
     assert.ifError(err);
     assert.equal(str, 'foo');
 
