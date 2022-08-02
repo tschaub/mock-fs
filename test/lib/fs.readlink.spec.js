@@ -1,22 +1,22 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
 
-describe('fs.readlink(path, callback)', function() {
-  beforeEach(function() {
+describe('fs.readlink(path, callback)', function () {
+  beforeEach(function () {
     mock({
       'file.txt': 'content',
-      link: mock.symlink({path: './file.txt'})
+      link: mock.symlink({path: './file.txt'}),
     });
   });
   afterEach(mock.restore);
 
-  it('reads a symbolic link', function(done) {
-    fs.readlink('link', function(err, srcPath) {
+  it('reads a symbolic link', function (done) {
+    fs.readlink('link', function (err, srcPath) {
       if (err) {
         return done(err);
       }
@@ -25,8 +25,8 @@ describe('fs.readlink(path, callback)', function() {
     });
   });
 
-  it('supports Buffer input', function(done) {
-    fs.readlink(Buffer.from('link'), function(err, srcPath) {
+  it('supports Buffer input', function (done) {
+    fs.readlink(Buffer.from('link'), function (err, srcPath) {
       if (err) {
         return done(err);
       }
@@ -35,26 +35,26 @@ describe('fs.readlink(path, callback)', function() {
     });
   });
 
-  it('promise reads a symbolic link', function(done) {
-    fs.promises.readlink('link').then(function(srcPath) {
+  it('promise reads a symbolic link', function (done) {
+    fs.promises.readlink('link').then(function (srcPath) {
       assert.equal(srcPath, './file.txt');
       done();
     }, done);
   });
 
-  it('fails for regular files', function(done) {
-    fs.readlink('file.txt', function(err, srcPath) {
+  it('fails for regular files', function (done) {
+    fs.readlink('file.txt', function (err, srcPath) {
       assert.instanceOf(err, Error);
       done();
     });
   });
 
-  it('promise fails for regular files', function(done) {
+  it('promise fails for regular files', function (done) {
     fs.promises.readlink('file.txt').then(
-      function() {
+      function () {
         done(new Error('should not succeed.'));
       },
-      function(err) {
+      function (err) {
         assert.instanceOf(err, Error);
         done();
       }
@@ -62,21 +62,21 @@ describe('fs.readlink(path, callback)', function() {
   });
 });
 
-describe('fs.readlinkSync(path)', function() {
-  beforeEach(function() {
+describe('fs.readlinkSync(path)', function () {
+  beforeEach(function () {
     mock({
       'file.txt': 'content',
-      link: mock.symlink({path: './file.txt'})
+      link: mock.symlink({path: './file.txt'}),
     });
   });
   afterEach(mock.restore);
 
-  it('reads a symbolic link', function() {
+  it('reads a symbolic link', function () {
     assert.equal(fs.readlinkSync('link'), './file.txt');
   });
 
-  it('fails for regular files', function() {
-    assert.throws(function() {
+  it('fails for regular files', function () {
+    assert.throws(function () {
       fs.readlinkSync('file.txt');
     });
   });

@@ -1,22 +1,21 @@
 'use strict';
 
 const path = require('path');
-
-const Binding = require('../../lib/binding');
-const Directory = require('../../lib/directory');
-const SymbolicLink = require('../../lib/symlink');
-const File = require('../../lib/file');
-const FileSystem = require('../../lib/filesystem');
-const helper = require('../helper');
+const Binding = require('../../lib/binding.js');
+const Directory = require('../../lib/directory.js');
+const SymbolicLink = require('../../lib/symlink.js');
+const File = require('../../lib/file.js');
+const FileSystem = require('../../lib/filesystem.js');
+const helper = require('../helper.js');
 const constants = require('constants');
 
 const assert = helper.assert;
 const assertEqualPaths = helper.assertEqualPaths;
 const flags = helper.flags;
 
-describe('Binding', function() {
+describe('Binding', function () {
   let system;
-  beforeEach(function() {
+  beforeEach(function () {
     system = FileSystem.create({
       'mock-dir': {
         'one.txt': 'one content',
@@ -26,7 +25,7 @@ describe('Binding', function() {
           atime: new Date(1),
           ctime: new Date(2),
           mtime: new Date(3),
-          birthtime: new Date(4)
+          birthtime: new Date(4),
         }),
         'one-link.txt': FileSystem.symlink({path: './one.txt'}),
         'one-link2.txt': FileSystem.symlink({path: './one-link.txt'}),
@@ -39,30 +38,30 @@ describe('Binding', function() {
             atime: new Date(1),
             ctime: new Date(2),
             mtime: new Date(3),
-            birthtime: new Date(4)
+            birthtime: new Date(4),
           }),
-          'b.txt': 'b content'
+          'b.txt': 'b content',
         },
         'dir-link': FileSystem.symlink({path: './non-empty'}),
         'dir-link2': FileSystem.symlink({path: './dir-link'}),
-        'dead-link': FileSystem.symlink({path: './non-a-real-file'})
-      }
+        'dead-link': FileSystem.symlink({path: './non-a-real-file'}),
+      },
     });
   });
 
-  describe('constructor', function() {
-    it('creates a new instance', function() {
+  describe('constructor', function () {
+    it('creates a new instance', function () {
       const binding = new Binding(system);
       assert.instanceOf(binding, Binding);
     });
   });
 
-  describe('#getSystem()', function() {
+  describe('#getSystem()', function () {
     const binding = new Binding(system);
     assert.equal(binding.getSystem(), system);
   });
 
-  describe('#setSystem()', function() {
+  describe('#setSystem()', function () {
     const firstSystem = new FileSystem();
     const binding = new Binding(firstSystem);
     assert.equal(binding.getSystem(), firstSystem);
@@ -71,50 +70,52 @@ describe('Binding', function() {
     assert.equal(binding.getSystem(), system);
   });
 
-  describe('#stat()', function() {
-    it('calls callback with a Stats instance', function(done) {
+  describe('#stat()', function () {
+    it('calls callback with a Stats instance', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'one.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.instanceOf(stats, Float64Array);
+          done();
         }
-        assert.instanceOf(stats, Float64Array);
-        done();
-      });
+      );
     });
 
-    it('returns a Stats instance when called synchronously', function() {
+    it('returns a Stats instance when called synchronously', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'one.txt'), false);
       assert.instanceOf(stats, Float64Array);
     });
 
-    it('identifies files (async)', function(done) {
+    it('identifies files (async)', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'one.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
+          done();
         }
-        assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
-        done();
-      });
+      );
     });
 
-    it('identifies files (sync)', function() {
+    it('identifies files (sync)', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'one.txt'), false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
     });
 
-    it('identifies directories (async)', function(done) {
+    it('identifies directories (async)', function (done) {
       const binding = new Binding(system);
-      binding.stat('mock-dir', false, function(err, stats) {
+      binding.stat('mock-dir', false, function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -123,97 +124,101 @@ describe('Binding', function() {
       });
     });
 
-    it('identifies directories (sync)', function() {
+    it('identifies directories (sync)', function () {
       const binding = new Binding(system);
       const stats = binding.stat('mock-dir', false);
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFDIR);
     });
 
-    it('includes atime, ctime, mtime and birthtime', function(done) {
+    it('includes atime, ctime, mtime and birthtime', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'two.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(
+            stats[10] * 1000 + stats[11] / 1000000,
+            new Date(1).getTime()
+          );
+          assert.equal(
+            stats[12] * 1000 + stats[13] / 1000000,
+            new Date(3).getTime()
+          );
+          assert.equal(
+            stats[14] * 1000 + stats[15] / 1000000,
+            new Date(2).getTime()
+          );
+          assert.equal(
+            stats[16] * 1000 + stats[17] / 1000000,
+            new Date(4).getTime()
+          );
+          done();
         }
-        assert.equal(
-          stats[10] * 1000 + stats[11] / 1000000,
-          new Date(1).getTime()
-        );
-        assert.equal(
-          stats[12] * 1000 + stats[13] / 1000000,
-          new Date(3).getTime()
-        );
-        assert.equal(
-          stats[14] * 1000 + stats[15] / 1000000,
-          new Date(2).getTime()
-        );
-        assert.equal(
-          stats[16] * 1000 + stats[17] / 1000000,
-          new Date(4).getTime()
-        );
-        done();
-      });
+      );
     });
 
-    it('includes mode with file permissions (default)', function(done) {
+    it('includes mode with file permissions (default)', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'one.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'one.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(stats[1] & parseInt('0777', 8), parseInt('0666', 8));
+          done();
         }
-        assert.equal(stats[1] & parseInt('0777', 8), parseInt('0666', 8));
-        done();
-      });
+      );
     });
 
-    it('includes mode with file permissions (custom)', function(done) {
+    it('includes mode with file permissions (custom)', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'two.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(stats[1] & parseInt('0777', 8), parseInt('0644', 8));
+          done();
         }
-        assert.equal(stats[1] & parseInt('0777', 8), parseInt('0644', 8));
-        done();
-      });
+      );
     });
 
-    it('includes size in bytes (async)', function(done) {
+    it('includes size in bytes (async)', function (done) {
       const binding = new Binding(system);
-      binding.stat(path.join('mock-dir', 'two.txt'), false, function(
-        err,
-        stats
-      ) {
-        if (err) {
-          return done(err);
+      binding.stat(
+        path.join('mock-dir', 'two.txt'),
+        false,
+        function (err, stats) {
+          if (err) {
+            return done(err);
+          }
+          assert.equal(stats[8], 11);
+          done();
         }
-        assert.equal(stats[8], 11);
-        done();
-      });
+      );
     });
 
-    it('includes size in bytes (sync)', function() {
+    it('includes size in bytes (sync)', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'three.bin'), false);
       assert.equal(stats[8], 3);
     });
 
-    it('includes non-zero size for directories', function() {
+    it('includes non-zero size for directories', function () {
       const binding = new Binding(system);
       const stats = binding.stat('mock-dir', false);
       assert.isNumber(stats[8]);
       assert.isTrue(stats[8] > 0);
     });
 
-    it('includes uid for files', function() {
+    it('includes uid for files', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'two.txt'), false);
       if (process.getuid) {
@@ -221,7 +226,7 @@ describe('Binding', function() {
       }
     });
 
-    it('includes uid for directories', function() {
+    it('includes uid for directories', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'empty'), false);
       if (process.getuid) {
@@ -229,7 +234,7 @@ describe('Binding', function() {
       }
     });
 
-    it('includes gid for files', function() {
+    it('includes gid for files', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'two.txt'), false);
       if (process.getgid) {
@@ -237,7 +242,7 @@ describe('Binding', function() {
       }
     });
 
-    it('includes gid for directories', function() {
+    it('includes gid for directories', function () {
       const binding = new Binding(system);
       const stats = binding.stat(path.join('mock-dir', 'empty'), false);
       if (process.getgid) {
@@ -245,7 +250,7 @@ describe('Binding', function() {
       }
     });
 
-    it('retrieves stats of files relative to symbolic linked directories', function() {
+    it('retrieves stats of files relative to symbolic linked directories', function () {
       const binding = new Binding(system);
       const stats = binding.stat(
         path.join('mock-dir', 'dir-link', 'a.txt'),
@@ -262,10 +267,10 @@ describe('Binding', function() {
     });
   });
 
-  describe('#realpath()', function() {
-    it('returns the real path for a regular file', function(done) {
+  describe('#realpath()', function () {
+    it('returns the real path for a regular file', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/one.txt', 'utf-8', function(err, realPath) {
+      binding.realpath('mock-dir/one.txt', 'utf-8', function (err, realPath) {
         if (err) {
           return done(err);
         }
@@ -274,9 +279,9 @@ describe('Binding', function() {
       });
     });
 
-    it('returns the real path for a directory', function(done) {
+    it('returns the real path for a directory', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/empty', 'utf-8', function(err, realPath) {
+      binding.realpath('mock-dir/empty', 'utf-8', function (err, realPath) {
         if (err) {
           return done(err);
         }
@@ -285,48 +290,39 @@ describe('Binding', function() {
       });
     });
 
-    it('returns the real path for a symlinked file', function(done) {
+    it('returns the real path for a symlinked file', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/one-link.txt', 'utf-8', function(
-        err,
-        realPath
-      ) {
-        if (err) {
-          return done(err);
+      binding.realpath(
+        'mock-dir/one-link.txt',
+        'utf-8',
+        function (err, realPath) {
+          if (err) {
+            return done(err);
+          }
+          assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+          done();
         }
-        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
-        done();
-      });
+      );
     });
 
-    it('returns the real path for a deeply symlinked file', function(done) {
+    it('returns the real path for a deeply symlinked file', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/one-link2.txt', 'utf-8', function(
-        err,
-        realPath
-      ) {
-        if (err) {
-          return done(err);
+      binding.realpath(
+        'mock-dir/one-link2.txt',
+        'utf-8',
+        function (err, realPath) {
+          if (err) {
+            return done(err);
+          }
+          assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+          done();
         }
-        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
-        done();
-      });
+      );
     });
 
-    it('returns the real path for a symlinked directory', function(done) {
+    it('returns the real path for a symlinked directory', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/dir-link', 'utf-8', function(err, realPath) {
-        if (err) {
-          return done(err);
-        }
-        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
-        done();
-      });
-    });
-
-    it('returns the real path for a deeply symlinked directory', function(done) {
-      const binding = new Binding(system);
-      binding.realpath('mock-dir/dir-link2', 'utf-8', function(err, realPath) {
+      binding.realpath('mock-dir/dir-link', 'utf-8', function (err, realPath) {
         if (err) {
           return done(err);
         }
@@ -335,37 +331,50 @@ describe('Binding', function() {
       });
     });
 
-    it('returns the real path for a file in a symlinked directory', function(done) {
+    it('returns the real path for a deeply symlinked directory', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/dir-link/b.txt', 'utf-8', function(
-        err,
-        realPath
-      ) {
+      binding.realpath('mock-dir/dir-link2', 'utf-8', function (err, realPath) {
         if (err) {
           return done(err);
         }
-        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty/b.txt'));
+        assertEqualPaths(realPath, path.resolve('mock-dir/non-empty'));
         done();
       });
     });
 
-    it('accepts a buffer', function(done) {
+    it('returns the real path for a file in a symlinked directory', function (done) {
       const binding = new Binding(system);
-      binding.realpath(Buffer.from('mock-dir/one.txt'), 'utf-8', function(
-        err,
-        realPath
-      ) {
-        if (err) {
-          return done(err);
+      binding.realpath(
+        'mock-dir/dir-link/b.txt',
+        'utf-8',
+        function (err, realPath) {
+          if (err) {
+            return done(err);
+          }
+          assertEqualPaths(realPath, path.resolve('mock-dir/non-empty/b.txt'));
+          done();
         }
-        assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
-        done();
-      });
+      );
     });
 
-    it('can return a buffer', function(done) {
+    it('accepts a buffer', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/one.txt', 'buffer', function(err, realPath) {
+      binding.realpath(
+        Buffer.from('mock-dir/one.txt'),
+        'utf-8',
+        function (err, realPath) {
+          if (err) {
+            return done(err);
+          }
+          assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
+          done();
+        }
+      );
+    });
+
+    it('can return a buffer', function (done) {
+      const binding = new Binding(system);
+      binding.realpath('mock-dir/one.txt', 'buffer', function (err, realPath) {
         if (err) {
           return done(err);
         }
@@ -375,37 +384,42 @@ describe('Binding', function() {
       });
     });
 
-    it('throws ENOENT for a non-existent file', function(done) {
+    it('throws ENOENT for a non-existent file', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/bogus-path', 'utf-8', function(err, realPath) {
-        if (!err || realPath) {
-          return done(new Error('Expected ENOENT'));
+      binding.realpath(
+        'mock-dir/bogus-path',
+        'utf-8',
+        function (err, realPath) {
+          if (!err || realPath) {
+            return done(new Error('Expected ENOENT'));
+          }
+          assert.equal(err.code, 'ENOENT');
+          done();
         }
-        assert.equal(err.code, 'ENOENT');
-        done();
-      });
+      );
     });
 
-    it('throws ENOTDIR for a file treated like a directory', function(done) {
+    it('throws ENOTDIR for a file treated like a directory', function (done) {
       const binding = new Binding(system);
-      binding.realpath('mock-dir/one.txt/foo', 'utf-8', function(
-        err,
-        realPath
-      ) {
-        if (!err || realPath) {
-          return done(new Error('Expected ENOTDIR'));
+      binding.realpath(
+        'mock-dir/one.txt/foo',
+        'utf-8',
+        function (err, realPath) {
+          if (!err || realPath) {
+            return done(new Error('Expected ENOTDIR'));
+          }
+          assert.equal(err.code, 'ENOTDIR');
+          done();
         }
-        assert.equal(err.code, 'ENOTDIR');
-        done();
-      });
+      );
     });
   });
 
-  describe('#fstat()', function() {
-    it('calls callback with a Stats instance', function(done) {
+  describe('#fstat()', function () {
+    it('calls callback with a Stats instance', function (done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      binding.fstat(fd, false, function(err, stats) {
+      binding.fstat(fd, false, function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -414,17 +428,17 @@ describe('Binding', function() {
       });
     });
 
-    it('returns a Stats instance when called synchronously', function() {
+    it('returns a Stats instance when called synchronously', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
       const stats = binding.fstat(fd, false);
       assert.instanceOf(stats, Float64Array);
     });
 
-    it('identifies files (async)', function(done) {
+    it('identifies files (async)', function (done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
-      binding.fstat(fd, false, function(err, stats) {
+      binding.fstat(fd, false, function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -433,10 +447,10 @@ describe('Binding', function() {
       });
     });
 
-    it('identifies directories (async)', function(done) {
+    it('identifies directories (async)', function (done) {
       const binding = new Binding(system);
       const fd = binding.open('mock-dir', flags('r'));
-      binding.fstat(fd, false, function(err, stats) {
+      binding.fstat(fd, false, function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -445,10 +459,10 @@ describe('Binding', function() {
       });
     });
 
-    it('includes size in bytes (async)', function(done) {
+    it('includes size in bytes (async)', function (done) {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
-      binding.fstat(fd, false, function(err, stats) {
+      binding.fstat(fd, false, function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -457,14 +471,14 @@ describe('Binding', function() {
       });
     });
 
-    it('includes size in bytes (sync)', function() {
+    it('includes size in bytes (sync)', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'three.bin'), flags('r'));
       const stats = binding.fstat(fd, false);
       assert.equal(stats[8], 3);
     });
 
-    it('includes non-zero size for directories', function() {
+    it('includes non-zero size for directories', function () {
       const binding = new Binding(system);
       const fd = binding.open('mock-dir', flags('r'));
       const stats = binding.fstat(fd, false);
@@ -473,10 +487,10 @@ describe('Binding', function() {
     });
   });
 
-  describe('#readdir()', function() {
-    it('calls callback with file list', function(done) {
+  describe('#readdir()', function () {
+    it('calls callback with file list', function (done) {
       const binding = new Binding(system);
-      binding.readdir('mock-dir', 'utf8', false, function(err, items) {
+      binding.readdir('mock-dir', 'utf8', false, function (err, items) {
         assert.isNull(err);
         assert.isArray(items);
         assert.deepEqual(items.sort(), [
@@ -489,21 +503,21 @@ describe('Binding', function() {
           'one-link2.txt',
           'one.txt',
           'three.bin',
-          'two.txt'
+          'two.txt',
         ]);
         done();
       });
     });
 
-    it('accepts "buffer" encoding', function(done) {
+    it('accepts "buffer" encoding', function (done) {
       const binding = new Binding(system);
-      binding.readdir('mock-dir', 'buffer', false, function(err, items) {
+      binding.readdir('mock-dir', 'buffer', false, function (err, items) {
         assert.isNull(err);
         assert.isArray(items);
-        items.forEach(function(item) {
+        items.forEach(function (item) {
           assert.equal(Buffer.isBuffer(item), true);
         });
-        const strings = items.map(function(item) {
+        const strings = items.map(function (item) {
           return item.toString();
         });
         assert.deepEqual(strings.sort(), [
@@ -516,13 +530,13 @@ describe('Binding', function() {
           'one-link2.txt',
           'one.txt',
           'three.bin',
-          'two.txt'
+          'two.txt',
         ]);
         done();
       });
     });
 
-    it('returns a file list (sync)', function() {
+    it('returns a file list (sync)', function () {
       const binding = new Binding(system);
       const items = binding.readdir('mock-dir', 'utf8', false);
       assert.isArray(items);
@@ -536,17 +550,17 @@ describe('Binding', function() {
         'one-link2.txt',
         'one.txt',
         'three.bin',
-        'two.txt'
+        'two.txt',
       ]);
     });
 
-    it('calls callback with file list for symbolic linked dir', function(done) {
+    it('calls callback with file list for symbolic linked dir', function (done) {
       const binding = new Binding(system);
       binding.readdir(
         path.join('mock-dir', 'dir-link'),
         'utf8',
         false,
-        function(err, items) {
+        function (err, items) {
           assert.isNull(err);
           assert.isArray(items);
           assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
@@ -555,13 +569,13 @@ describe('Binding', function() {
       );
     });
 
-    it('calls callback with file list for link to symbolic linked dir', function(done) {
+    it('calls callback with file list for link to symbolic linked dir', function (done) {
       const binding = new Binding(system);
       binding.readdir(
         path.join('mock-dir', 'dir-link2'),
         'utf8',
         false,
-        function(err, items) {
+        function (err, items) {
           assert.isNull(err);
           assert.isArray(items);
           assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
@@ -570,7 +584,7 @@ describe('Binding', function() {
       );
     });
 
-    it('calls callback with file list for symbolic linked dir (sync)', function() {
+    it('calls callback with file list for symbolic linked dir (sync)', function () {
       const binding = new Binding(system);
       const items = binding.readdir(
         path.join('mock-dir', 'dir-link'),
@@ -581,34 +595,36 @@ describe('Binding', function() {
       assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
     });
 
-    it('calls callback with error for bogus dir', function(done) {
+    it('calls callback with error for bogus dir', function (done) {
       const binding = new Binding(system);
-      binding.readdir('bogus', 'utf8', false, function(err, items) {
+      binding.readdir('bogus', 'utf8', false, function (err, items) {
         assert.instanceOf(err, Error);
         assert.isUndefined(items);
         done();
       });
     });
 
-    it('calls callback with error for file path', function(done) {
+    it('calls callback with error for file path', function (done) {
       const binding = new Binding(system);
-      binding.readdir(path.join('mock-dir', 'one.txt'), 'utf8', false, function(
-        err,
-        items
-      ) {
-        assert.instanceOf(err, Error);
-        assert.isUndefined(items);
-        done();
-      });
+      binding.readdir(
+        path.join('mock-dir', 'one.txt'),
+        'utf8',
+        false,
+        function (err, items) {
+          assert.instanceOf(err, Error);
+          assert.isUndefined(items);
+          done();
+        }
+      );
     });
 
-    it('calls callback with error for dead symbolic link', function(done) {
+    it('calls callback with error for dead symbolic link', function (done) {
       const binding = new Binding(system);
       binding.readdir(
         path.join('mock-dir', 'dead-link'),
         'utf8',
         false,
-        function(err, items) {
+        function (err, items) {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
@@ -616,13 +632,13 @@ describe('Binding', function() {
       );
     });
 
-    it('calls callback with error for symbolic link to file', function(done) {
+    it('calls callback with error for symbolic link to file', function (done) {
       const binding = new Binding(system);
       binding.readdir(
         path.join('mock-dir', 'one-link.txt'),
         'utf8',
         false,
-        function(err, items) {
+        function (err, items) {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
@@ -630,13 +646,13 @@ describe('Binding', function() {
       );
     });
 
-    it('calls callback with error for link to symbolic link to file', function(done) {
+    it('calls callback with error for link to symbolic link to file', function (done) {
       const binding = new Binding(system);
       binding.readdir(
         path.join('mock-dir', 'one-link2.txt'),
         'utf8',
         false,
-        function(err, items) {
+        function (err, items) {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
@@ -645,27 +661,27 @@ describe('Binding', function() {
     });
   });
 
-  describe('#open()', function() {
-    it('creates a file descriptor for reading (r)', function() {
+  describe('#open()', function () {
+    it('creates a file descriptor for reading (r)', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
       assert.isNumber(fd);
     });
 
-    it('generates error if file does not exist (r)', function() {
+    it('generates error if file does not exist (r)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('bogus', flags('r'));
       });
     });
 
-    it('creates a file descriptor for reading and writing (r+)', function() {
+    it('creates a file descriptor for reading and writing (r+)', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r+'));
       assert.isNumber(fd);
     });
 
-    it('does not truncate (r+)', function() {
+    it('does not truncate (r+)', function () {
       const binding = new Binding(system);
       binding.open(path.join('mock-dir', 'two.txt'), flags('r+'));
       const file = system.getItem(path.join('mock-dir', 'two.txt'));
@@ -673,40 +689,40 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), 'two content');
     });
 
-    it('generates error if file does not exist (r+)', function() {
+    it('generates error if file does not exist (r+)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('bogus', flags('r+'));
       });
     });
 
-    it('creates a file descriptor for reading (rs)', function() {
+    it('creates a file descriptor for reading (rs)', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('rs'));
       assert.isNumber(fd);
     });
 
-    it('generates error if file does not exist (rs)', function() {
+    it('generates error if file does not exist (rs)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('bogus', flags('rs'));
       });
     });
 
-    it('creates a file descriptor for reading and writing (rs+)', function() {
+    it('creates a file descriptor for reading and writing (rs+)', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('rs+'));
       assert.isNumber(fd);
     });
 
-    it('generates error if file does not exist (rs+)', function() {
+    it('generates error if file does not exist (rs+)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('bogus', flags('rs+'));
       });
     });
 
-    it('opens a new file for writing (w)', function() {
+    it('opens a new file for writing (w)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('w'), parseInt('0644', 8));
       const file = system.getItem('new.txt');
@@ -714,7 +730,7 @@ describe('Binding', function() {
       assert.equal(file.getMode(), parseInt('0644', 8));
     });
 
-    it('truncates an existing file for writing (w)', function() {
+    it('truncates an existing file for writing (w)', function () {
       const binding = new Binding(system);
       binding.open(
         path.join('mock-dir', 'two.txt'),
@@ -726,21 +742,21 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('generates error if file is directory (w)', function() {
+    it('generates error if file is directory (w)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('mock-dir', flags('w'));
       });
     });
 
-    it('generates error if file exists (wx)', function() {
+    it('generates error if file exists (wx)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open(path.join('mock-dir', 'two.txt'), flags('wx'));
       });
     });
 
-    it('opens a new file for reading and writing (w+)', function() {
+    it('opens a new file for reading and writing (w+)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('w+'), parseInt('0644', 8));
       const file = system.getItem('new.txt');
@@ -749,7 +765,7 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('truncates an existing file for writing (w+)', function() {
+    it('truncates an existing file for writing (w+)', function () {
       const binding = new Binding(system);
       binding.open(
         path.join('mock-dir', 'one.txt'),
@@ -761,7 +777,7 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('opens a new file for reading and writing (wx+)', function() {
+    it('opens a new file for reading and writing (wx+)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('wx+'), parseInt('0644', 8));
       const file = system.getItem('new.txt');
@@ -770,9 +786,9 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('generates error if file exists (wx+)', function() {
+    it('generates error if file exists (wx+)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open(
           path.join('mock-dir', 'one.txt'),
           flags('wx+'),
@@ -781,7 +797,7 @@ describe('Binding', function() {
       });
     });
 
-    it('opens a new file for appending (a)', function() {
+    it('opens a new file for appending (a)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('a'), parseInt('0666', 8));
       const file = system.getItem('new.txt');
@@ -790,7 +806,7 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('opens an existing file for appending (a)', function() {
+    it('opens an existing file for appending (a)', function () {
       const binding = new Binding(system);
       binding.open(
         path.join('mock-dir', 'one.txt'),
@@ -802,14 +818,14 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), 'one content');
     });
 
-    it('generates error if file is directory (a)', function() {
+    it('generates error if file is directory (a)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open('mock-dir', flags('a'));
       });
     });
 
-    it('opens a new file for appending (ax)', function() {
+    it('opens a new file for appending (ax)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('ax'), parseInt('0664', 8));
       const file = system.getItem('new.txt');
@@ -818,9 +834,9 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('generates error if file exists (ax)', function() {
+    it('generates error if file exists (ax)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open(
           path.join('mock-dir', 'one.txt'),
           flags('ax'),
@@ -829,7 +845,7 @@ describe('Binding', function() {
       });
     });
 
-    it('opens a new file for appending and reading (a+)', function() {
+    it('opens a new file for appending and reading (a+)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('a+'), parseInt('0666', 8));
       const file = system.getItem('new.txt');
@@ -838,7 +854,7 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('opens an existing file for appending and reading (a+)', function() {
+    it('opens an existing file for appending and reading (a+)', function () {
       const binding = new Binding(system);
       binding.open(
         path.join('mock-dir', 'one.txt'),
@@ -850,7 +866,7 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), 'two content');
     });
 
-    it('opens a new file for appending and reading (ax+)', function() {
+    it('opens a new file for appending and reading (ax+)', function () {
       const binding = new Binding(system);
       binding.open('new.txt', flags('ax+'), parseInt('0666', 8));
       const file = system.getItem('new.txt');
@@ -859,9 +875,9 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), '');
     });
 
-    it('opens an existing file for appending and reading (ax+)', function() {
+    it('opens an existing file for appending and reading (ax+)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open(
           path.join('mock-dir', 'two.txt'),
           flags('ax+'),
@@ -871,25 +887,25 @@ describe('Binding', function() {
     });
   });
 
-  describe('#close()', function() {
-    it('closes an existing file descriptor', function() {
+  describe('#close()', function () {
+    it('closes an existing file descriptor', function () {
       const binding = new Binding(system);
       const fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
       binding.close(fd);
     });
 
-    it('fails for closed file descriptor', function() {
+    it('fails for closed file descriptor', function () {
       const binding = new Binding(system);
       const fd = binding.open('new.txt', flags('w'), parseInt('0644', 8));
       binding.close(fd);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.close(fd);
       });
     });
   });
 
-  describe('#read()', function() {
-    it('reads from a file', function() {
+  describe('#read()', function () {
+    it('reads from a file', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
       const buffer = Buffer.alloc(11);
@@ -898,7 +914,7 @@ describe('Binding', function() {
       assert.equal(String(buffer), 'two content');
     });
 
-    it('reads into a Uint8Array', function() {
+    it('reads into a Uint8Array', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'three.bin'), flags('r'));
       const buffer = new Uint8Array(3);
@@ -907,7 +923,7 @@ describe('Binding', function() {
       assert.deepEqual(Array.from(buffer), [1, 2, 3]);
     });
 
-    it('interprets null position as current position', function() {
+    it('interprets null position as current position', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('r'));
       const buffer = Buffer.alloc(4);
@@ -925,7 +941,7 @@ describe('Binding', function() {
       assert.equal(String(buffer.slice(0, 3)), 'ent');
     });
 
-    it('reads from a symbolic link', function() {
+    it('reads from a symbolic link', function () {
       const binding = new Binding(system);
       const fd = binding.open(
         path.join('mock-dir', 'one-link.txt'),
@@ -937,7 +953,7 @@ describe('Binding', function() {
       assert.equal(String(buffer), 'one content');
     });
 
-    it('reads from a deeply linked symlink', function() {
+    it('reads from a deeply linked symlink', function () {
       const binding = new Binding(system);
       const fd = binding.open(
         path.join('mock-dir', 'one-link2.txt'),
@@ -949,18 +965,18 @@ describe('Binding', function() {
       assert.equal(String(buffer), 'one content');
     });
 
-    it('throws if not open for reading', function() {
+    it('throws if not open for reading', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('w'));
       const buffer = Buffer.alloc(11);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.read(fd, buffer, 0, 11, 0);
       });
     });
 
-    it('throws ENOTDIR when trying to open an incorrect path (nested under existing file)', function() {
+    it('throws ENOTDIR when trying to open an incorrect path (nested under existing file)', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.open(
           path.join('mock-dir', 'two.txt', 'bogus-path'),
           flags('r')
@@ -969,8 +985,8 @@ describe('Binding', function() {
     });
   });
 
-  describe('#writeBuffers()', function() {
-    it('writes to a file', function() {
+  describe('#writeBuffers()', function () {
+    it('writes to a file', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'new.txt'), flags('w'));
       const buffers = [Buffer.from('new '), Buffer.from('content')];
@@ -983,7 +999,7 @@ describe('Binding', function() {
       assert.equal(String(content), 'new content');
     });
 
-    it('can append to a file', function() {
+    it('can append to a file', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
       const buffers = [Buffer.from(' more'), Buffer.from(' content')];
@@ -996,7 +1012,7 @@ describe('Binding', function() {
       assert.equal(String(content), 'one content more content');
     });
 
-    it('can overwrite part of a file', function() {
+    it('can overwrite part of a file', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'one.txt'), flags('a'));
       const buffers = [Buffer.from('n'), Buffer.from('e'), Buffer.from('w')];
@@ -1009,22 +1025,22 @@ describe('Binding', function() {
       assert.equal(String(content), 'new content');
     });
 
-    it('throws if not open for writing', function() {
+    it('throws if not open for writing', function () {
       const binding = new Binding(system);
       const fd = binding.open(path.join('mock-dir', 'two.txt'), flags('r'));
       const buffers = [Buffer.from('some content')];
-      assert.throws(function() {
+      assert.throws(function () {
         binding.writeBuffers(fd, buffers);
       });
     });
   });
 
-  describe('#rename()', function() {
-    it('allows files to be renamed', function(done) {
+  describe('#rename()', function () {
+    it('allows files to be renamed', function (done) {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'one.txt');
       const newPath = path.join('mock-dir', 'empty', 'new.txt');
-      binding.rename(oldPath, newPath, function(_) {
+      binding.rename(oldPath, newPath, function (_) {
         const stats = binding.stat(newPath);
         assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
         assert.equal(stats[8], 11);
@@ -1032,7 +1048,7 @@ describe('Binding', function() {
       });
     });
 
-    it('allows files to be renamed (sync)', function() {
+    it('allows files to be renamed (sync)', function () {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'one.txt');
       const newPath = path.join('mock-dir', 'new.txt');
@@ -1042,7 +1058,7 @@ describe('Binding', function() {
       assert.equal(stats[8], 11);
     });
 
-    it('replaces existing files (sync)', function() {
+    it('replaces existing files (sync)', function () {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'one.txt');
       const newPath = path.join('mock-dir', 'two.txt');
@@ -1052,18 +1068,18 @@ describe('Binding', function() {
       assert.equal(stats[8], 11);
     });
 
-    it('allows directories to be renamed', function(done) {
+    it('allows directories to be renamed', function (done) {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'empty');
       const newPath = path.join('mock-dir', 'new');
-      binding.rename(oldPath, newPath, function(_) {
+      binding.rename(oldPath, newPath, function (_) {
         const stats = binding.stat(newPath);
         assert.equal(stats[1] & constants.S_IFMT, constants.S_IFDIR);
         done();
       });
     });
 
-    it('allows directories to be renamed (sync)', function() {
+    it('allows directories to be renamed (sync)', function () {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir');
       const newPath = path.join('new-dir');
@@ -1082,43 +1098,43 @@ describe('Binding', function() {
         'one-link2.txt',
         'one.txt',
         'three.bin',
-        'two.txt'
+        'two.txt',
       ]);
     });
 
-    it('calls callback with error for bogus old path', function(done) {
+    it('calls callback with error for bogus old path', function (done) {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'bogus');
       const newPath = path.join('mock-dir', 'new');
-      binding.rename(oldPath, newPath, function(err) {
+      binding.rename(oldPath, newPath, function (err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
 
-    it('calls callback with error for file->dir rename', function(done) {
+    it('calls callback with error for file->dir rename', function (done) {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'one.txt');
       const newPath = path.join('mock-dir', 'empty');
-      binding.rename(oldPath, newPath, function(err) {
+      binding.rename(oldPath, newPath, function (err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
 
-    it('calls callback with error for dir->file rename', function(done) {
+    it('calls callback with error for dir->file rename', function (done) {
       const binding = new Binding(system);
       const oldPath = path.join('mock-dir', 'one.txt');
       const newPath = path.join('mock-dir', 'empty');
-      binding.rename(oldPath, newPath, function(err) {
+      binding.rename(oldPath, newPath, function (err) {
         assert.instanceOf(err, Error);
         done();
       });
     });
   });
 
-  describe('#mkdir()', function() {
-    it('creates a new directory', function() {
+  describe('#mkdir()', function () {
+    it('creates a new directory', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'foo');
       binding.mkdir(dirPath, parseInt('0755', 8), false);
@@ -1127,33 +1143,33 @@ describe('Binding', function() {
       assert.equal(dir.getMode(), parseInt('0755', 8));
     });
 
-    it('fails if parent does not exist', function() {
+    it('fails if parent does not exist', function () {
       const binding = new Binding(system);
       const dirPath = path.join('bogus', 'path');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), false);
       });
     });
 
-    it('fails if directory exists', function() {
+    it('fails if directory exists', function () {
       const binding = new Binding(system);
       const dirPath = 'mock-dir';
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), false);
       });
     });
 
-    it('fails if file exists', function() {
+    it('fails if file exists', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'one.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), false);
       });
     });
   });
 
-  describe('#mkdir() recursive', function() {
-    it('creates a new directory', function() {
+  describe('#mkdir() recursive', function () {
+    it('creates a new directory', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'foo');
       binding.mkdir(dirPath, parseInt('0755', 8), true);
@@ -1162,7 +1178,7 @@ describe('Binding', function() {
       assert.equal(dir.getMode(), parseInt('0755', 8));
     });
 
-    it('creates a new deep directory', function() {
+    it('creates a new deep directory', function () {
       const binding = new Binding(system);
       const dirPath1 = path.join('mock-dir', 'foo');
       const dirPath2 = path.join(dirPath1, 'bar');
@@ -1182,43 +1198,43 @@ describe('Binding', function() {
       assert.equal(dir.getMode(), parseInt('0755', 8));
     });
 
-    it('fails if permission does not allow recursive creation', function() {
+    it('fails if permission does not allow recursive creation', function () {
       const binding = new Binding(system);
       const dirPath1 = path.join('mock-dir', 'foo');
       const dirPath2 = path.join(dirPath1, 'bar');
       const dirPath3 = path.join(dirPath2, 'loo');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath3, parseInt('0400', 8), true);
       });
     });
 
-    it('fails if one parent is not a folder', function() {
+    it('fails if one parent is not a folder', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'one.txt', 'foo', 'bar');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), true);
       });
     });
 
-    it('fails if file exists', function() {
+    it('fails if file exists', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'non-empty', 'a.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), true);
       });
     });
 
-    it('passes silently if directory exists', function() {
+    it('passes silently if directory exists', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'non-empty');
-      assert.doesNotThrow(function() {
+      assert.doesNotThrow(function () {
         binding.mkdir(dirPath, parseInt('0755', 8), true);
       });
     });
   });
 
-  describe('#mkdtemp()', function() {
-    it('creates a new directory', function() {
+  describe('#mkdtemp()', function () {
+    it('creates a new directory', function () {
       const binding = new Binding(system);
       const template = path.join('mock-dir', 'fooXXXXXX');
       const dirPath = binding.mkdtemp(template);
@@ -1227,58 +1243,58 @@ describe('Binding', function() {
       assert.instanceOf(dir, Directory);
     });
 
-    it('fails if parent does not exist', function() {
+    it('fails if parent does not exist', function () {
       const binding = new Binding(system);
       const dirPath = path.join('bogus', 'pathXXXXXX');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdtemp(dirPath);
       });
     });
 
-    it('fails if file exists', function() {
+    it('fails if file exists', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'one.txt', 'XXXXXX');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.mkdtemp(dirPath);
       });
     });
   });
 
-  describe('#rmdir()', function() {
-    it('removes an empty directory', function() {
+  describe('#rmdir()', function () {
+    it('removes an empty directory', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'empty');
       binding.rmdir(dirPath);
       assert.isNull(system.getItem(dirPath));
     });
 
-    it('fails if directory is not empty', function() {
+    it('fails if directory is not empty', function () {
       const binding = new Binding(system);
       const dirPath = 'mock-dir';
-      assert.throws(function() {
+      assert.throws(function () {
         binding.rmdir(dirPath);
       });
     });
 
-    it('fails if directory does not exist', function() {
+    it('fails if directory does not exist', function () {
       const binding = new Binding(system);
       const dirPath = path.join('bogus', 'path');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.rmdir(dirPath);
       });
     });
 
-    it('fails if a file exists', function() {
+    it('fails if a file exists', function () {
       const binding = new Binding(system);
       const dirPath = path.join('mock-dir', 'one.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.rmdir(dirPath);
       });
     });
   });
 
-  describe('#ftruncate()', function() {
-    it('truncates a file', function() {
+  describe('#ftruncate()', function () {
+    it('truncates a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r+'));
@@ -1287,26 +1303,26 @@ describe('Binding', function() {
       assert.equal(String(file.getContent()), 'one');
     });
 
-    it('fails if directory', function() {
+    it('fails if directory', function () {
       const binding = new Binding(system);
       const fd = binding.open('mock-dir', flags('r'));
-      assert.throws(function() {
+      assert.throws(function () {
         binding.ftruncate(fd, 3);
       });
     });
 
-    it('fails if not open for writing', function() {
+    it('fails if not open for writing', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
-      assert.throws(function() {
+      assert.throws(function () {
         binding.ftruncate(fd, 4);
       });
     });
   });
 
-  describe('#chown()', function() {
-    it('sets the uid and gid for a file', function() {
+  describe('#chown()', function () {
+    it('sets the uid and gid for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       binding.chown(pathname, 3, 4);
@@ -1315,7 +1331,7 @@ describe('Binding', function() {
       assert.equal(file.getGid(), 4);
     });
 
-    it('sets the uid and gid for a directory', function() {
+    it('sets the uid and gid for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       binding.chown(pathname, 5, 6);
@@ -1325,8 +1341,8 @@ describe('Binding', function() {
     });
   });
 
-  describe('#fchown()', function() {
-    it('sets the uid and gid for a file', function() {
+  describe('#fchown()', function () {
+    it('sets the uid and gid for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
@@ -1336,7 +1352,7 @@ describe('Binding', function() {
       assert.equal(file.getGid(), 4);
     });
 
-    it('sets the uid and gid for a directory', function() {
+    it('sets the uid and gid for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       const fd = binding.open(pathname, flags('r'));
@@ -1347,8 +1363,8 @@ describe('Binding', function() {
     });
   });
 
-  describe('#chmod()', function() {
-    it('sets the mode for a file', function() {
+  describe('#chmod()', function () {
+    it('sets the mode for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'two.txt');
       binding.chmod(pathname, parseInt('0644', 8));
@@ -1356,7 +1372,7 @@ describe('Binding', function() {
       assert.equal(file.getMode(), parseInt('0644', 8));
     });
 
-    it('sets the mode for a directory', function() {
+    it('sets the mode for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       binding.chmod(pathname, parseInt('0755', 8));
@@ -1365,8 +1381,8 @@ describe('Binding', function() {
     });
   });
 
-  describe('#fchmod()', function() {
-    it('sets the mode for a file', function() {
+  describe('#fchmod()', function () {
+    it('sets the mode for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
@@ -1375,7 +1391,7 @@ describe('Binding', function() {
       assert.equal(file.getMode(), parseInt('0664', 8));
     });
 
-    it('sets the mode for a directory', function() {
+    it('sets the mode for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       const fd = binding.open(pathname, flags('r'));
@@ -1385,33 +1401,33 @@ describe('Binding', function() {
     });
   });
 
-  describe('#unlink()', function() {
-    it('deletes a file', function() {
+  describe('#unlink()', function () {
+    it('deletes a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       binding.unlink(pathname);
       assert.isNull(system.getItem(pathname));
     });
 
-    it('fails for directory', function() {
+    it('fails for directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.unlink(pathname);
       });
     });
 
-    it('fails for bogus path', function() {
+    it('fails for bogus path', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'bogus.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.unlink(pathname);
       });
     });
   });
 
-  describe('#utimes()', function() {
-    it('updates atime and mtime for a file', function() {
+  describe('#utimes()', function () {
+    it('updates atime and mtime for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       binding.utimes(pathname, 100, 200);
@@ -1420,7 +1436,7 @@ describe('Binding', function() {
       assert.equal(item.getMTime().getTime(), 200 * 1000);
     });
 
-    it('updates atime and mtime for a directory', function() {
+    it('updates atime and mtime for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       binding.utimes(pathname, 300, 400);
@@ -1429,17 +1445,17 @@ describe('Binding', function() {
       assert.equal(item.getMTime().getTime(), 400 * 1000);
     });
 
-    it('fails for a bogus path', function() {
+    it('fails for a bogus path', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'bogus.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.utimes(pathname, 300, 400);
       });
     });
   });
 
-  describe('#futimes()', function() {
-    it('updates atime and mtime for a file', function() {
+  describe('#futimes()', function () {
+    it('updates atime and mtime for a file', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
@@ -1449,7 +1465,7 @@ describe('Binding', function() {
       assert.equal(item.getMTime().getTime(), 200 * 1000);
     });
 
-    it('updates atime and mtime for a directory', function() {
+    it('updates atime and mtime for a directory', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'empty');
       const fd = binding.open(pathname, flags('r'));
@@ -1460,46 +1476,46 @@ describe('Binding', function() {
     });
   });
 
-  describe('#fsync()', function() {
-    it('synchronize file state (noop)', function() {
+  describe('#fsync()', function () {
+    it('synchronize file state (noop)', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
       binding.fsync(fd);
     });
 
-    it('fails for closed file descriptor', function() {
+    it('fails for closed file descriptor', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
       binding.close(fd);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.fsync(fd);
       });
     });
   });
 
-  describe('#fdatasync()', function() {
-    it('synchronize file state (noop)', function() {
+  describe('#fdatasync()', function () {
+    it('synchronize file state (noop)', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
       binding.fdatasync(fd);
     });
 
-    it('fails for closed file descriptor', function() {
+    it('fails for closed file descriptor', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one.txt');
       const fd = binding.open(pathname, flags('r'));
       binding.close(fd);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.fdatasync(fd);
       });
     });
   });
 
-  describe('#link()', function() {
-    it('creates a link to a file', function() {
+  describe('#link()', function () {
+    it('creates a link to a file', function () {
       const binding = new Binding(system);
       const source = path.join('mock-dir', 'one.txt');
       const dest = path.join('mock-dir', 'link.txt');
@@ -1509,27 +1525,27 @@ describe('Binding', function() {
       assert.equal(String(link.getContent()), 'one content');
     });
 
-    it('fails if dest exists', function() {
+    it('fails if dest exists', function () {
       const binding = new Binding(system);
       const source = path.join('mock-dir', 'one.txt');
       const dest = path.join('mock-dir', 'two.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.link(source, dest);
       });
     });
 
-    it('fails if source is directory', function() {
+    it('fails if source is directory', function () {
       const binding = new Binding(system);
       const source = path.join('mock-dir', 'empty');
       const dest = path.join('mock-dir', 'link');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.link(source, dest);
       });
     });
   });
 
-  describe('#symlink()', function() {
-    it('creates a symbolic link to a file', function() {
+  describe('#symlink()', function () {
+    it('creates a symbolic link to a file', function () {
       const binding = new Binding(system);
       const source = path.join('.', 'one.txt');
       const dest = path.join('mock-dir', 'link.txt');
@@ -1539,16 +1555,16 @@ describe('Binding', function() {
       assert.equal(link.getPath(), source);
     });
 
-    it('fails if dest exists', function() {
+    it('fails if dest exists', function () {
       const binding = new Binding(system);
       const source = path.join('.', 'one.txt');
       const dest = path.join('mock-dir', 'two.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.symlink(source, dest);
       });
     });
 
-    it('works if source is directory', function() {
+    it('works if source is directory', function () {
       const binding = new Binding(system);
       const source = path.join('mock-dir', 'empty');
       const dest = path.join('mock-dir', 'link');
@@ -1559,14 +1575,14 @@ describe('Binding', function() {
     });
   });
 
-  describe('#readlink()', function() {
-    it('reads the symbolic link', function() {
+  describe('#readlink()', function () {
+    it('reads the symbolic link', function () {
       const binding = new Binding(system);
       const srcPath = binding.readlink(path.join('mock-dir', 'one-link.txt'));
       assert.equal(srcPath, './one.txt');
     });
 
-    it('can return "buffer" encoding', function() {
+    it('can return "buffer" encoding', function () {
       const binding = new Binding(system);
       const srcPath = binding.readlink(
         path.join('mock-dir', 'one-link.txt'),
@@ -1576,30 +1592,30 @@ describe('Binding', function() {
       assert.equal(srcPath.toString(), './one.txt');
     });
 
-    it('fails for regular files', function() {
+    it('fails for regular files', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.readlink(path.join('mock-dir', 'one.txt'));
       }, /EINVAL/);
     });
 
-    it('fails for directories', function() {
+    it('fails for directories', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.readlink(path.join('mock-dir', 'empty'));
       }, /EINVAL/);
     });
 
-    it('fails for bogus paths', function() {
+    it('fails for bogus paths', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.readlink(path.join('mock-dir', 'bogus'));
       }, /ENOENT/);
     });
   });
 
-  describe('#lstat()', function() {
-    it('stats symbolic links', function() {
+  describe('#lstat()', function () {
+    it('stats symbolic links', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one-link.txt');
       const stats = binding.lstat(pathname, false);
@@ -1608,56 +1624,56 @@ describe('Binding', function() {
     });
   });
 
-  describe('#access()', function() {
-    it('works if file exists', function() {
+  describe('#access()', function () {
+    it('works if file exists', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one-link.txt');
       binding.access(pathname);
     });
 
-    it('throws for dead link', function() {
+    it('throws for dead link', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'dead-link.txt');
-      assert.throws(function() {
+      assert.throws(function () {
         binding.access(pathname);
       }, /ENOENT/);
     });
 
     if (process.getuid && process.getgid) {
-      it('fails in case of insufficient user permissions', function() {
+      it('fails in case of insufficient user permissions', function () {
         const binding = new Binding(system);
         const item = system.getItem(path.join('mock-dir', 'one.txt'));
         item.setMode(parseInt('0077', 8));
-        assert.throws(function() {
+        assert.throws(function () {
           binding.access(path.join('mock-dir', 'one.txt'), 1);
         }, /EACCES/);
       });
 
-      it('fails in case of insufficient group permissions', function() {
+      it('fails in case of insufficient group permissions', function () {
         const binding = new Binding(system);
         const item = system.getItem(path.join('mock-dir', 'one.txt'));
         item.setUid(process.getuid() + 1);
         item.setMode(parseInt('0707', 8));
-        assert.throws(function() {
+        assert.throws(function () {
           binding.access(path.join('mock-dir', 'one.txt'), 2);
         }, /EACCES/);
       });
 
-      it('fails in case of insufficient permissions', function() {
+      it('fails in case of insufficient permissions', function () {
         const binding = new Binding(system);
         const item = system.getItem(path.join('mock-dir', 'one.txt'));
         item.setUid(process.getuid() + 1);
         item.setGid(process.getgid() + 1);
         item.setMode(parseInt('0771', 8));
-        assert.throws(function() {
+        assert.throws(function () {
           binding.access(path.join('mock-dir', 'one.txt'), 5);
         }, /EACCES/);
       });
     }
 
-    it('fails for bogus paths', function() {
+    it('fails for bogus paths', function () {
       const binding = new Binding(system);
-      assert.throws(function() {
+      assert.throws(function () {
         binding.access(path.join('mock-dir', 'bogus'));
       }, /ENOENT/);
     });

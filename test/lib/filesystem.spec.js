@@ -2,20 +2,19 @@
 
 const os = require('os');
 const path = require('path');
+const Directory = require('../../lib/directory.js');
+const File = require('../../lib/file.js');
+const FileSystem = require('../../lib/filesystem.js');
+const assert = require('../helper.js').assert;
 
-const Directory = require('../../lib/directory');
-const File = require('../../lib/file');
-const FileSystem = require('../../lib/filesystem');
-const assert = require('../helper').assert;
-
-describe('FileSystem', function() {
-  describe('constructor', function() {
-    it('creates a new instance', function() {
+describe('FileSystem', function () {
+  describe('constructor', function () {
+    it('creates a new instance', function () {
       const system = new FileSystem();
       assert.instanceOf(system, FileSystem);
     });
 
-    it('accepts a createCwd option', function() {
+    it('accepts a createCwd option', function () {
       const cwd = process.cwd();
       const withCwd = new FileSystem({createCwd: true});
       const withoutCwd = new FileSystem({createCwd: false});
@@ -24,7 +23,7 @@ describe('FileSystem', function() {
       assert.isNull(withoutCwd.getItem(cwd));
     });
 
-    it('accepts a createTmp option', function() {
+    it('accepts a createTmp option', function () {
       const tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
       const withTmp = new FileSystem({createTmp: true});
       const withoutTmp = new FileSystem({createTmp: false});
@@ -34,17 +33,17 @@ describe('FileSystem', function() {
     });
   });
 
-  describe('#getRoot()', function() {
-    it('gets the root directory', function() {
+  describe('#getRoot()', function () {
+    it('gets the root directory', function () {
       const system = new FileSystem();
       assert.instanceOf(system.getRoot(), Directory);
     });
   });
 
-  describe('#getItem()', function() {
-    it('gets an item', function() {
+  describe('#getItem()', function () {
+    it('gets an item', function () {
       const system = FileSystem.create({
-        'one/two/three.js': 'contents'
+        'one/two/three.js': 'contents',
       });
 
       const filepath = path.join('one', 'two', 'three.js');
@@ -52,9 +51,9 @@ describe('FileSystem', function() {
       assert.instanceOf(item, File);
     });
 
-    it('returns null if not found', function() {
+    it('returns null if not found', function () {
       const system = FileSystem.create({
-        'one/two/three.js': 'contents'
+        'one/two/three.js': 'contents',
       });
 
       assert.isNull(system.getItem(path.join('one', 'two', 'four.js')));
@@ -62,7 +61,7 @@ describe('FileSystem', function() {
       assert.isNull(system.getItem(path.join('um', 'two', 'three.js')));
     });
 
-    it('gets an item traversing links to symbolic links', function() {
+    it('gets an item traversing links to symbolic links', function () {
       const system = FileSystem.create({
         'dir-link': FileSystem.symlink({path: './b/dir-link2'}),
         b: {
@@ -72,11 +71,11 @@ describe('FileSystem', function() {
               a: 'file a',
               b: {
                 c: 'file c',
-                d: 'file d'
-              }
-            }
-          }
-        }
+                d: 'file d',
+              },
+            },
+          },
+        },
       });
       const file = system.getItem(path.join('dir-link', 'a'));
       assert.instanceOf(file, File);
@@ -88,8 +87,8 @@ describe('FileSystem', function() {
   });
 });
 
-describe('FileSystem.file', function() {
-  it('creates a factory for files', function() {
+describe('FileSystem.file', function () {
+  it('creates a factory for files', function () {
     const factory = FileSystem.file();
     assert.isFunction(factory);
 
@@ -97,7 +96,7 @@ describe('FileSystem.file', function() {
     assert.instanceOf(file, File);
   });
 
-  it('accepts a content member', function() {
+  it('accepts a content member', function () {
     const factory = FileSystem.file({content: 'foo'});
     assert.isFunction(factory);
 
@@ -109,8 +108,8 @@ describe('FileSystem.file', function() {
   });
 });
 
-describe('FileSystem.directory', function() {
-  it('creates a factory for directories', function() {
+describe('FileSystem.directory', function () {
+  it('creates a factory for directories', function () {
     const factory = FileSystem.directory();
     assert.isFunction(factory);
 
@@ -119,15 +118,15 @@ describe('FileSystem.directory', function() {
   });
 });
 
-describe('FileSystem.create', function() {
-  it('provides a convenient way to populate a file system', function() {
+describe('FileSystem.create', function () {
+  it('provides a convenient way to populate a file system', function () {
     const system = FileSystem.create({
       'path/to/one': {
         'file.js': 'file.js content',
-        dir: {}
+        dir: {},
       },
       'path/to/two.js': 'two.js content',
-      'path/to/three': {}
+      'path/to/three': {},
     });
 
     assert.instanceOf(system, FileSystem);
@@ -165,7 +164,7 @@ describe('FileSystem.create', function() {
     assert.deepEqual(item.list(), []);
   });
 
-  it('passes options to the FileSystem constructor', function() {
+  it('passes options to the FileSystem constructor', function () {
     const cwd = process.cwd();
     const tmp = os.tmpdir ? os.tmpdir() : os.tmpDir();
 
@@ -179,9 +178,9 @@ describe('FileSystem.create', function() {
     assert.instanceOf(withoutTmp.getItem(cwd), Directory);
   });
 
-  it('accepts file factory', function() {
+  it('accepts file factory', function () {
     const system = FileSystem.create({
-      'path/to/file.js': FileSystem.file({content: 'foo'})
+      'path/to/file.js': FileSystem.file({content: 'foo'}),
     });
 
     assert.instanceOf(system, FileSystem);
@@ -191,13 +190,13 @@ describe('FileSystem.create', function() {
     assert.equal(String(file.getContent()), 'foo');
   });
 
-  it('accepts file factory with uid & gid', function() {
+  it('accepts file factory with uid & gid', function () {
     const system = FileSystem.create({
       'path/to/file.js': FileSystem.file({
         content: 'foo',
         uid: 42,
-        gid: 43
-      })
+        gid: 43,
+      }),
     });
 
     assert.instanceOf(system, FileSystem);
@@ -209,9 +208,9 @@ describe('FileSystem.create', function() {
     assert.equal(file.getGid(), 43);
   });
 
-  it('accepts directory factory', function() {
+  it('accepts directory factory', function () {
     const system = FileSystem.create({
-      'path/to/dir': FileSystem.directory()
+      'path/to/dir': FileSystem.directory(),
     });
 
     assert.instanceOf(system, FileSystem);
@@ -220,12 +219,12 @@ describe('FileSystem.create', function() {
     assert.instanceOf(dir, Directory);
   });
 
-  it('accepts directory factory with uid & gid', function() {
+  it('accepts directory factory with uid & gid', function () {
     const system = FileSystem.create({
       'path/to/dir': FileSystem.directory({
         uid: 42,
-        gid: 43
-      })
+        gid: 43,
+      }),
     });
 
     assert.instanceOf(system, FileSystem);
@@ -236,15 +235,15 @@ describe('FileSystem.create', function() {
     assert.equal(dir.getGid(), 43);
   });
 
-  it('accepts directory factory with additional items', function() {
+  it('accepts directory factory with additional items', function () {
     const system = FileSystem.create({
       'path/to/dir': FileSystem.directory({
         mode: parseInt('0755', 8),
         items: {
           'file.txt': 'file content',
-          'empty-dir': {}
-        }
-      })
+          'empty-dir': {},
+        },
+      }),
     });
 
     assert.instanceOf(system, FileSystem);
@@ -262,7 +261,7 @@ describe('FileSystem.create', function() {
     assert.deepEqual(empty.list(), []);
   });
 
-  it('correctly generates link counts', function() {
+  it('correctly generates link counts', function () {
     const system = FileSystem.create({
       '/dir-a.0': {
         'dir-b.0': {
@@ -270,9 +269,9 @@ describe('FileSystem.create', function() {
           'dir-c.1': {},
           'file-c.0': 'content',
           'file-c.1': 'content',
-          'symlink-c.0': FileSystem.symlink({path: 'file-c.0'})
-        }
-      }
+          'symlink-c.0': FileSystem.symlink({path: 'file-c.0'}),
+        },
+      },
     });
 
     /**
@@ -312,24 +311,24 @@ describe('FileSystem.create', function() {
     assert.equal(system.getItem('/dir-a.0/dir-b.0/symlink-c.0').links, 1);
   });
 
-  it('throws if item content is not valid type', function() {
-    assert.throws(function() {
+  it('throws if item content is not valid type', function () {
+    assert.throws(function () {
       FileSystem.create({
         '/dir-a.0': {
           'dir-b.0': {
-            'file-c.0': undefined
-          }
-        }
+            'file-c.0': undefined,
+          },
+        },
       });
     });
 
-    assert.throws(function() {
+    assert.throws(function () {
       FileSystem.create({
         '/dir-a.0': {
           'dir-b.0': {
-            'file-c.0': 123
-          }
-        }
+            'file-c.0': 123,
+          },
+        },
       });
     });
   });

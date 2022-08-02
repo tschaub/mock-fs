@@ -1,28 +1,28 @@
 /* eslint-env mocha */
 'use strict';
 
-const mock = require('../../lib/index');
-const assert = require('../helper').assert;
+const mock = require('../../lib/index.js');
+const assert = require('../helper.js').assert;
 
-const count = require('./filecount');
+const count = require('./filecount.js');
 
-describe('count(dir, callback)', function() {
-  beforeEach(function() {
+describe('count(dir, callback)', function () {
+  beforeEach(function () {
     mock({
       'path/to/dir': {
         'one.txt': 'first file',
         'two.txt': 'second file',
         'empty-dir': {},
         'another-dir': {
-          'another.txt': 'more files'
-        }
-      }
+          'another.txt': 'more files',
+        },
+      },
     });
   });
   afterEach(mock.restore);
 
-  it('counts files in a directory', function(done) {
-    count('path/to/dir', function(err, num) {
+  it('counts files in a directory', function (done) {
+    count('path/to/dir', function (err, num) {
       if (err) {
         return done(err);
       }
@@ -31,8 +31,8 @@ describe('count(dir, callback)', function() {
     });
   });
 
-  it('counts files in another directory', function(done) {
-    count('path/to/dir/another-dir', function(err, num) {
+  it('counts files in another directory', function (done) {
+    count('path/to/dir/another-dir', function (err, num) {
       if (err) {
         return done(err);
       }
@@ -41,8 +41,8 @@ describe('count(dir, callback)', function() {
     });
   });
 
-  it('counts files in an empty directory', function(done) {
-    count('path/to/dir/empty-dir', function(err, num) {
+  it('counts files in an empty directory', function (done) {
+    count('path/to/dir/empty-dir', function (err, num) {
       if (err) {
         return done(err);
       }
@@ -51,8 +51,8 @@ describe('count(dir, callback)', function() {
     });
   });
 
-  it('fails for bogus path', function(done) {
-    count('path/to/dir/bogus', function(err, num) {
+  it('fails for bogus path', function (done) {
+    count('path/to/dir/bogus', function (err, num) {
       assert.instanceOf(err, Error);
       assert.isUndefined(num);
       done();

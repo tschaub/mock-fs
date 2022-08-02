@@ -1,26 +1,26 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
 
-describe('fs.unlink(path, callback)', function() {
-  beforeEach(function() {
+describe('fs.unlink(path, callback)', function () {
+  beforeEach(function () {
     mock({
       dir: {},
       dir2: mock.directory({
         mtime: new Date(1),
-        items: {file: 'content here'}
+        items: {file: 'content here'},
       }),
-      'file.txt': 'content'
+      'file.txt': 'content',
     });
   });
   afterEach(mock.restore);
 
-  it('deletes a file', function(done) {
-    fs.unlink('file.txt', function(err) {
+  it('deletes a file', function (done) {
+    fs.unlink('file.txt', function (err) {
       if (err) {
         return done(err);
       }
@@ -29,8 +29,8 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it('supports Buffer input', function(done) {
-    fs.unlink(Buffer.from('file.txt'), function(err) {
+  it('supports Buffer input', function (done) {
+    fs.unlink(Buffer.from('file.txt'), function (err) {
       if (err) {
         return done(err);
       }
@@ -39,16 +39,16 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it('promise deletes a file', function(done) {
-    fs.promises.unlink('file.txt').then(function() {
+  it('promise deletes a file', function (done) {
+    fs.promises.unlink('file.txt').then(function () {
       assert.isFalse(fs.existsSync('file.txt'));
       done();
     }, done);
   });
 
-  it('updates mtime of parent', function(done) {
+  it('updates mtime of parent', function (done) {
     const oldTime = fs.statSync('dir2').mtime;
-    fs.unlink('dir2/file', function(err) {
+    fs.unlink('dir2/file', function (err) {
       if (err) {
         return done(err);
       }
@@ -59,9 +59,9 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it('updates mtime of parent', function(done) {
+  it('updates mtime of parent', function (done) {
     const oldTime = fs.statSync('dir2').mtime;
-    fs.promises.unlink('dir2/file').then(function() {
+    fs.promises.unlink('dir2/file').then(function () {
       assert.isFalse(fs.existsSync('dir2/file'));
       const newTime = fs.statSync('dir2').mtime;
       assert.isTrue(newTime > oldTime);
@@ -69,8 +69,8 @@ describe('fs.unlink(path, callback)', function() {
     }, done);
   });
 
-  it('fails for a directory', function(done) {
-    fs.unlink('dir', function(err) {
+  it('fails for a directory', function (done) {
+    fs.unlink('dir', function (err) {
       assert.instanceOf(err, Error);
       assert.equal(err.code, 'EPERM');
       assert.isTrue(fs.existsSync('dir'));
@@ -78,12 +78,12 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it('promise fails for a directory', function(done) {
+  it('promise fails for a directory', function (done) {
     fs.promises.unlink('dir').then(
-      function() {
+      function () {
         done(new Error('should not succeed.'));
       },
-      function(err) {
+      function (err) {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EPERM');
         assert.isTrue(fs.existsSync('dir'));
@@ -92,9 +92,9 @@ describe('fs.unlink(path, callback)', function() {
     );
   });
 
-  it('respects previously opened file descriptors', function(done) {
+  it('respects previously opened file descriptors', function (done) {
     const fd = fs.openSync('file.txt', 'r');
-    fs.unlink('file.txt', function(err) {
+    fs.unlink('file.txt', function (err) {
       if (err) {
         return done(err);
       }
@@ -108,9 +108,9 @@ describe('fs.unlink(path, callback)', function() {
     });
   });
 
-  it('promise respects previously opened file descriptors', function(done) {
+  it('promise respects previously opened file descriptors', function (done) {
     const fd = fs.openSync('file.txt', 'r');
-    fs.promises.unlink('file.txt').then(function() {
+    fs.promises.unlink('file.txt').then(function () {
       assert.isFalse(fs.existsSync('file.txt'));
       // but we can still use fd to read
       const buffer = Buffer.alloc(7);
@@ -122,20 +122,20 @@ describe('fs.unlink(path, callback)', function() {
   });
 });
 
-describe('fs.unlinkSync(path)', function() {
-  beforeEach(function() {
+describe('fs.unlinkSync(path)', function () {
+  beforeEach(function () {
     mock({
-      'file.txt': 'content'
+      'file.txt': 'content',
     });
   });
   afterEach(mock.restore);
 
-  it('deletes a file', function() {
+  it('deletes a file', function () {
     fs.unlinkSync('file.txt');
     assert.isFalse(fs.existsSync('file.txt'));
   });
 
-  it('respects previously opened file descriptors', function() {
+  it('respects previously opened file descriptors', function () {
     const fd = fs.openSync('file.txt', 'r');
     fs.unlinkSync('file.txt');
     assert.isFalse(fs.existsSync('file.txt'));

@@ -1,22 +1,22 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 const os = require('os');
 const path = require('path');
-const File = require('../../lib/file');
-const {fixWin32Permissions} = require('../../lib/item');
-const Directory = require('../../lib/directory');
+const File = require('../../lib/file.js');
+const {fixWin32Permissions} = require('../../lib/item.js');
+const Directory = require('../../lib/directory.js');
 
 const assert = helper.assert;
 const assetsPath = path.resolve(__dirname, '../assets');
 
-describe('The API', function() {
-  describe('mock()', function() {
-    it('configures the real fs module with a mock file system', function() {
+describe('The API', function () {
+  describe('mock()', function () {
+    it('configures the real fs module with a mock file system', function () {
       mock({
-        'fake-file-for-testing-only': 'file content'
+        'fake-file-for-testing-only': 'file content',
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
@@ -24,7 +24,7 @@ describe('The API', function() {
       mock.restore();
     });
 
-    it('provides direct access to the internal filesystem object', function() {
+    it('provides direct access to the internal filesystem object', function () {
       mock();
       const root = mock.getMockRoot();
       assert.notDeepEqual(root, {});
@@ -32,7 +32,7 @@ describe('The API', function() {
       assert.deepEqual(mock.getMockRoot(), {});
     });
 
-    it('creates process.cwd() and os.tmpdir() by default', function() {
+    it('creates process.cwd() and os.tmpdir() by default', function () {
       mock();
 
       assert.isTrue(fs.statSync(process.cwd()).isDirectory());
@@ -49,7 +49,7 @@ describe('The API', function() {
       mock.restore();
     });
 
-    it('passes the createCwd option to the FileSystem constructor', function() {
+    it('passes the createCwd option to the FileSystem constructor', function () {
       mock({}, {createCwd: false});
 
       assert.isFalse(fs.existsSync(process.cwd()));
@@ -57,7 +57,7 @@ describe('The API', function() {
       mock.restore();
     });
 
-    it('passes the createTmp option to the FileSystem constructor', function() {
+    it('passes the createTmp option to the FileSystem constructor', function () {
       mock({}, {createTmp: false});
 
       let tmp;
@@ -73,7 +73,7 @@ describe('The API', function() {
       mock.restore();
     });
 
-    xit('uses the real fs module in require() calls', function() {
+    xit('uses the real fs module in require() calls', function () {
       mock({foo: 'bar'});
 
       const pkg = require('../../package.json');
@@ -83,10 +83,10 @@ describe('The API', function() {
     });
   });
 
-  describe('mock.restore()', function() {
-    it('restores bindings for the real file system', function() {
+  describe('mock.restore()', function () {
+    it('restores bindings for the real file system', function () {
       mock({
-        'fake-file-for-testing-only': 'file content'
+        'fake-file-for-testing-only': 'file content',
       });
 
       assert.isTrue(fs.existsSync('fake-file-for-testing-only'));
@@ -96,19 +96,19 @@ describe('The API', function() {
     });
   });
 
-  describe('mock.file()', function() {
+  describe('mock.file()', function () {
     afterEach(mock.restore);
 
-    it('lets you create files with additional properties', function(done) {
+    it('lets you create files with additional properties', function (done) {
       mock({
         'path/to/file.txt': mock.file({
           content: 'file content',
           mtime: new Date(8675309),
-          mode: parseInt('0644', 8)
-        })
+          mode: parseInt('0644', 8),
+        }),
       });
 
-      fs.stat('path/to/file.txt', function(err, stats) {
+      fs.stat('path/to/file.txt', function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -121,18 +121,18 @@ describe('The API', function() {
     });
   });
 
-  describe('mock.directory()', function() {
+  describe('mock.directory()', function () {
     afterEach(mock.restore);
 
-    it('lets you create directories with more properties', function(done) {
+    it('lets you create directories with more properties', function (done) {
       mock({
         'path/to/dir': mock.directory({
           mtime: new Date(8675309),
-          mode: parseInt('0644', 8)
-        })
+          mode: parseInt('0644', 8),
+        }),
       });
 
-      fs.stat('path/to/dir', function(err, stats) {
+      fs.stat('path/to/dir', function (err, stats) {
         if (err) {
           return done(err);
         }
@@ -144,24 +144,24 @@ describe('The API', function() {
       });
     });
 
-    it('works with a trailing slash', function() {
+    it('works with a trailing slash', function () {
       mock({
         'path/to/dir/': mock.directory({
           mtime: new Date(8675309),
-          mode: parseInt('0644', 8)
-        })
+          mode: parseInt('0644', 8),
+        }),
       });
 
       assert.isTrue(fs.statSync('path/to/dir').isDirectory());
       assert.isTrue(fs.statSync('path/to/dir/').isDirectory());
     });
 
-    it('works without a trailing slash', function() {
+    it('works without a trailing slash', function () {
       mock({
         'path/to/dir': mock.directory({
           mtime: new Date(8675309),
-          mode: parseInt('0644', 8)
-        })
+          mode: parseInt('0644', 8),
+        }),
       });
 
       assert.isTrue(fs.statSync('path/to/dir').isDirectory());
@@ -169,13 +169,13 @@ describe('The API', function() {
     });
   });
 
-  describe('mock.symlink()', function() {
+  describe('mock.symlink()', function () {
     afterEach(mock.restore);
 
-    it('lets you create symbolic links', function() {
+    it('lets you create symbolic links', function () {
       mock({
         'path/to/file': 'content',
-        'path/to/link': mock.symlink({path: './file'})
+        'path/to/link': mock.symlink({path: './file'}),
       });
 
       const stats = fs.statSync('path/to/link');
@@ -192,9 +192,9 @@ describe('The API', function() {
       'gid',
       'uid',
       'mtime',
-      'mode'
+      'mode',
     ];
-    const filterStats = stats => {
+    const filterStats = (stats) => {
       const res = {};
       for (const key of statsCompareKeys) {
         const k =
@@ -272,7 +272,7 @@ describe('The API', function() {
 
       it('lazy=false loads file content', () => {
         const file = mock.load(path.join(assetsPath, 'file1.txt'), {
-          lazy: false
+          lazy: false,
         })();
 
         assert.equal(
@@ -343,26 +343,26 @@ describe('The API', function() {
     });
   });
 
-  xdescribe('mock.fs()', function() {
-    it('generates a mock fs module with a mock file system', function(done) {
+  xdescribe('mock.fs()', function () {
+    it('generates a mock fs module with a mock file system', function (done) {
       const mockFs = mock.fs({
-        'path/to/file.txt': 'file content'
+        'path/to/file.txt': 'file content',
       });
 
-      mockFs.exists('path/to/file.txt', function(exists) {
+      mockFs.exists('path/to/file.txt', function (exists) {
         assert.isTrue(exists);
         done();
       });
     });
 
-    it('passes options to the FileSystem constructor', function() {
+    it('passes options to the FileSystem constructor', function () {
       const mockFs = mock.fs(
         {
-          '/path/to/file.txt': 'file content'
+          '/path/to/file.txt': 'file content',
         },
         {
           createCwd: false,
-          createTmp: false
+          createTmp: false,
         }
       );
 
@@ -370,14 +370,14 @@ describe('The API', function() {
       assert.deepEqual(mockFs.readdirSync('/'), ['path']);
     });
 
-    it('accepts an arbitrary nesting of files and directories', function() {
+    it('accepts an arbitrary nesting of files and directories', function () {
       const mockFs = mock.fs({
         'dir-one': {
           'dir-two': {
-            'some-file.txt': 'file content here'
-          }
+            'some-file.txt': 'file content here',
+          },
         },
-        'empty-dir': {}
+        'empty-dir': {},
       });
 
       assert.isTrue(mockFs.existsSync('dir-one/dir-two/some-file.txt'));
@@ -388,10 +388,10 @@ describe('The API', function() {
   });
 });
 
-describe('process.cwd()', function() {
+describe('process.cwd()', function () {
   afterEach(mock.restore);
 
-  it('maintains current working directory', function() {
+  it('maintains current working directory', function () {
     const originalCwd = process.cwd();
     mock();
 
@@ -399,10 +399,10 @@ describe('process.cwd()', function() {
     assert.equal(cwd, originalCwd);
   });
 
-  it('allows changing directory', function() {
+  it('allows changing directory', function () {
     const originalCwd = process.cwd();
     mock({
-      dir: {}
+      dir: {},
     });
 
     process.chdir('dir');
@@ -410,7 +410,7 @@ describe('process.cwd()', function() {
     assert.equal(cwd, path.join(originalCwd, 'dir'));
   });
 
-  it('prevents changing directory to non-existent path', function() {
+  it('prevents changing directory to non-existent path', function () {
     mock();
 
     let err;
@@ -423,9 +423,9 @@ describe('process.cwd()', function() {
     assert.equal(err.code, 'ENOENT');
   });
 
-  it('prevents changing directory to non-directory path', function() {
+  it('prevents changing directory to non-directory path', function () {
     mock({
-      file: ''
+      file: '',
     });
 
     let err;
@@ -438,7 +438,7 @@ describe('process.cwd()', function() {
     assert.equal(err.code, 'ENOTDIR');
   });
 
-  it('restores original methods on restore', function() {
+  it('restores original methods on restore', function () {
     const originalCwd = process.cwd;
     const originalChdir = process.chdir;
     mock();
@@ -448,10 +448,10 @@ describe('process.cwd()', function() {
     assert.equal(process.chdir, originalChdir);
   });
 
-  it('restores original working directory on restore', function() {
+  it('restores original working directory on restore', function () {
     const originalCwd = process.cwd();
     mock({
-      dir: {}
+      dir: {},
     });
 
     process.chdir('dir');
@@ -463,19 +463,19 @@ describe('process.cwd()', function() {
 });
 
 if (process.getuid && process.getgid) {
-  describe('security', function() {
+  describe('security', function () {
     afterEach(mock.restore);
 
-    it('denies dir listing without execute on parent', function() {
+    it('denies dir listing without execute on parent', function () {
       mock({
         secure: mock.directory({
           mode: parseInt('0666', 8),
           items: {
             insecure: {
-              file: 'file content'
-            }
-          }
-        })
+              file: 'file content',
+            },
+          },
+        }),
       });
 
       let err;
@@ -488,16 +488,16 @@ if (process.getuid && process.getgid) {
       assert.equal(err.code, 'EACCES');
     });
 
-    it('denies file read without execute on parent', function() {
+    it('denies file read without execute on parent', function () {
       mock({
         secure: mock.directory({
           mode: parseInt('0666', 8),
           items: {
             insecure: {
-              file: 'file content'
-            }
-          }
-        })
+              file: 'file content',
+            },
+          },
+        }),
       });
 
       let err;
@@ -510,14 +510,14 @@ if (process.getuid && process.getgid) {
       assert.equal(err.code, 'EACCES');
     });
 
-    it('denies file read without read on file', function() {
+    it('denies file read without read on file', function () {
       mock({
         insecure: {
           'write-only': mock.file({
             mode: parseInt('0222', 8),
-            content: 'write only'
-          })
-        }
+            content: 'write only',
+          }),
+        },
       });
 
       let err;
@@ -530,14 +530,14 @@ if (process.getuid && process.getgid) {
       assert.equal(err.code, 'EACCES');
     });
 
-    it('denies file write without write on file', function() {
+    it('denies file write without write on file', function () {
       mock({
         insecure: {
           'read-only': mock.file({
             mode: parseInt('0444', 8),
-            content: 'read only'
-          })
-        }
+            content: 'read only',
+          }),
+        },
       });
 
       let err;

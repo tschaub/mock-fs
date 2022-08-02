@@ -11,8 +11,8 @@ function numFiles(dir, items, callback) {
   if (total === 0) {
     callback(null, 0);
   }
-  items.forEach(function(item) {
-    fs.stat(path.join(dir, item), function(err, stats) {
+  items.forEach(function (item) {
+    fs.stat(path.join(dir, item), function (err, stats) {
       if (err) {
         return callback(err);
       }
@@ -32,8 +32,8 @@ function numFiles(dir, items, callback) {
  * @param {string} dir Path to directory.
  * @param {function(Error, number)} callback Callback.
  */
-module.exports = exports = function(dir, callback) {
-  fs.readdir(dir, function(err, items) {
+module.exports = function (dir, callback) {
+  fs.readdir(dir, function (err, items) {
     if (err) {
       return callback(err);
     }
