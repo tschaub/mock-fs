@@ -1,6 +1,6 @@
 # Change Log
 
-## Next release
+## 5.1.3
 
  * Fix for BigInt stats in Node 18.7 (thanks @3cp, see [#361][#361])
 
