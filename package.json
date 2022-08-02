@@ -39,13 +39,24 @@
     },
     "env": {
       "es2020": true
+    },
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto",
+          "singleQuote": true,
+          "bracketSpacing": false,
+          "quoteProps": "preserve"
+        }
+      ]
     }
   },
   "devDependencies": {
     "chai": "^4.3.4",
-    "eslint": "^7.26.0",
-    "eslint-config-tschaub": "^13.1.0",
-    "mocha": "^8.4.0",
+    "eslint": "^8.21.0",
+    "eslint-config-tschaub": "^14.1.2",
+    "mocha": "^9.2.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.5"
   },

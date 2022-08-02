@@ -1,8 +1,8 @@
 'use strict';
 
-const helper = require('../helper');
+const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index');
+const mock = require('../../lib/index.js');
 const path = require('path');
 
 const assert = helper.assert;
@@ -38,7 +38,7 @@ describe('mock.bypass()', () => {
   it('bypasses patched process.cwd() and process.chdir()', () => {
     const originalCwd = process.cwd();
     mock({
-      dir: {}
+      dir: {},
     });
 
     process.chdir('dir');
@@ -57,7 +57,7 @@ describe('mock.bypass()', () => {
     assert.equal(process.cwd(), originalCwd);
   });
 
-  it('runs an async function using the real filesystem', done => {
+  it('runs an async function using the real filesystem', (done) => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -65,7 +65,7 @@ describe('mock.bypass()', () => {
 
     mock
       .bypass(() => fs.promises.stat(__filename))
-      .then(stat => {
+      .then((stat) => {
         assert.isTrue(stat.isFile());
         assert.isFalse(fs.existsSync(__filename));
         done();
@@ -73,7 +73,7 @@ describe('mock.bypass()', () => {
       .catch(done);
   });
 
-  it('handles promise rejection', done => {
+  it('handles promise rejection', (done) => {
     mock({'/path/to/file': 'content'});
 
     assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
@@ -89,7 +89,7 @@ describe('mock.bypass()', () => {
       .then(() => {
         done(new Error('should not succeed'));
       })
-      .catch(err => {
+      .catch((err) => {
         assert.equal(err, error);
 
         assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');

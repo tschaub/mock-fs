@@ -6,9 +6,9 @@ const mock = require('..');
 /**
  * Test setup.  Not timed.
  */
-exports.beforeEach = function() {
+exports.beforeEach = function () {
   mock({
-    'foo-mock.txt': 'foo'
+    'foo-mock.txt': 'foo',
   });
 };
 
@@ -16,8 +16,8 @@ exports.beforeEach = function() {
  * Timed test.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
-  fs.readFile('foo-mock.txt', 'utf8', function(err, str) {
+exports.test = function (done) {
+  fs.readFile('foo-mock.txt', 'utf8', function (err, str) {
     assert.ifError(err);
     assert.equal(str, 'foo');
     done();
@@ -27,6 +27,6 @@ exports.test = function(done) {
 /**
  * Test teardown.  Not timed.
  */
-exports.afterEach = function() {
+exports.afterEach = function () {
   mock.restore();
 };

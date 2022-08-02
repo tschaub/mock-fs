@@ -11,10 +11,10 @@ const tmpPath = '.tmp';
  * test time.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
-  fs.mkdir(tmpPath, function(mkdirErr) {
+exports.test = function (done) {
+  fs.mkdir(tmpPath, function (mkdirErr) {
     assert.ifError(mkdirErr);
-    fs.writeFile(path.join(tmpPath, 'foo-real.txt'), 'foo', function(err) {
+    fs.writeFile(path.join(tmpPath, 'foo-real.txt'), 'foo', function (err) {
       assert.ifError(err);
       rimraf(tmpPath, done);
     });

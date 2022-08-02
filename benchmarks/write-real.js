@@ -9,7 +9,7 @@ const tmpPath = '.tmp';
  * Test setup.  Not timed.
  * @param {function(Error)} done Callback.
  */
-exports.beforeEach = function(done) {
+exports.beforeEach = function (done) {
   fs.mkdir(tmpPath, done);
 };
 
@@ -17,7 +17,7 @@ exports.beforeEach = function(done) {
  * Timed test.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
+exports.test = function (done) {
   fs.writeFile(path.join(tmpPath, 'foo-real.txt'), 'foo', done);
 };
 
@@ -25,6 +25,6 @@ exports.test = function(done) {
  * Test teardown.  Not timed.
  * @param {function(Error)} done Callback.
  */
-exports.afterEach = function(done) {
+exports.afterEach = function (done) {
   rimraf(tmpPath, done);
 };

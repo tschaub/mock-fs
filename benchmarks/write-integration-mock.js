@@ -8,10 +8,10 @@ const mock = require('..');
  * test time.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
+exports.test = function (done) {
   mock();
 
-  fs.writeFile('foo-mock.txt', 'foo', function(err) {
+  fs.writeFile('foo-mock.txt', 'foo', function (err) {
     assert.ifError(err);
 
     mock.restore();

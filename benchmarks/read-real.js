@@ -10,8 +10,8 @@ const tmpPath = '.tmp';
  * Test setup.  Not timed.
  * @param {function(Error)} done Callback.
  */
-exports.beforeEach = function(done) {
-  fs.mkdir(tmpPath, function(err) {
+exports.beforeEach = function (done) {
+  fs.mkdir(tmpPath, function (err) {
     if (err) {
       return done(err);
     }
@@ -23,8 +23,8 @@ exports.beforeEach = function(done) {
  * Timed test.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
-  fs.readFile(path.join(tmpPath, 'foo-real.txt'), 'utf8', function(err, str) {
+exports.test = function (done) {
+  fs.readFile(path.join(tmpPath, 'foo-real.txt'), 'utf8', function (err, str) {
     assert.ifError(err);
     assert.equal(str, 'foo');
     done();
@@ -35,6 +35,6 @@ exports.test = function(done) {
  * Test teardown.  Not timed.
  * @param {function(Error)} done Callback.
  */
-exports.afterEach = function(done) {
+exports.afterEach = function (done) {
   rimraf(tmpPath, done);
 };

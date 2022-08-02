@@ -5,7 +5,7 @@ const mock = require('..');
 /**
  * Test setup.  Not timed.
  */
-exports.beforeEach = function() {
+exports.beforeEach = function () {
   mock();
 };
 
@@ -13,13 +13,13 @@ exports.beforeEach = function() {
  * Timed test.
  * @param {function(Error)} done Callback.
  */
-exports.test = function(done) {
+exports.test = function (done) {
   fs.writeFile('foo-mock.txt', 'foo', done);
 };
 
 /**
  * Test teardown.  Not timed.
  */
-exports.afterEach = function() {
+exports.afterEach = function () {
   mock.restore();
 };
