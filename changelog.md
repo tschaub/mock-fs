@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.1.4
+
+ * Fix for BigInt stats in Node 16.7 (thanks @ahippler, see [#363][#363])
+
 ## 5.1.3
 
  * Fix for BigInt stats in Node 18.7 (thanks @3cp, see [#361][#361])
@@ -339,3 +343,4 @@ Detailed changes:
 [#337]: https://github.com/tschaub/mock-fs/pull/337
 [#342]: https://github.com/tschaub/mock-fs/pull/342
 [#361]: https://github.com/tschaub/mock-fs/pull/361
+[#363]: https://github.com/tschaub/mock-fs/pull/363
