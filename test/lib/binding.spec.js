@@ -1625,6 +1625,14 @@ describe('Binding', function () {
   });
 
   describe('#access()', function () {
+    const originalGetuid = process.getuid;
+    const originalGetgid = process.getgid;
+
+    beforeEach(function () {
+      process.getuid = originalGetuid;
+      process.getgid = originalGetgid;
+    });
+
     it('works if file exists', function () {
       const binding = new Binding(system);
       const pathname = path.join('mock-dir', 'one-link.txt');
@@ -1639,7 +1647,7 @@ describe('Binding', function () {
       }, /ENOENT/);
     });
 
-    if (process.getuid && process.getgid) {
+    if (originalGetuid && originalGetgid) {
       it('fails in case of insufficient user permissions', function () {
         const binding = new Binding(system);
         const item = system.getItem(path.join('mock-dir', 'one.txt'));
@@ -1668,6 +1676,16 @@ describe('Binding', function () {
         assert.throws(function () {
           binding.access(path.join('mock-dir', 'one.txt'), 5);
         }, /EACCES/);
+      });
+
+      it('sould not throw if process runs as root', function () {
+        const binding = new Binding(system);
+        const item = system.getItem(path.join('mock-dir', 'one.txt'));
+        item.setUid(42);
+        item.setGid(42);
+        item.setMode(parseInt('0000', 8));
+        process.getuid = () => 0;
+        binding.access(path.join('mock-dir', 'one.txt'), 5);
       });
     }
 
