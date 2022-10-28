@@ -1,5 +1,10 @@
 # Change Log
 
+## 5.2.0
+
+ * Fix EACCES error on access by root user (thanks @danielkatz, see [#369][#369])
+ * Fix bug on utimes and futimes; add support of lutimes (thanks @3cp, see [#366][#366])
+
 ## 5.1.4
 
  * Fix for BigInt stats in Node 16.7 (thanks @ahippler, see [#363][#363])
@@ -344,3 +349,5 @@ Detailed changes:
 [#342]: https://github.com/tschaub/mock-fs/pull/342
 [#361]: https://github.com/tschaub/mock-fs/pull/361
 [#363]: https://github.com/tschaub/mock-fs/pull/363
+[#366]: https://github.com/tschaub/mock-fs/pull/366
+[#369]: https://github.com/tschaub/mock-fs/pull/369
