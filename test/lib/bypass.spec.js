@@ -13,7 +13,7 @@ describe('mock.bypass()', () => {
   it('runs a synchronous function using the real filesystem', () => {
     mock({'/path/to/file': 'content'});
 
-    assert.equal(fs.readFileSync('/path/to/file', 'utf8'), 'content');
+    assert.equal(fs.readFileSync('/path/to/file', 'utf-8'), 'content');
     assert.isNotOk(fs.existsSync(__filename));
     assert.isOk(mock.bypass(() => fs.existsSync(__filename)));
 
