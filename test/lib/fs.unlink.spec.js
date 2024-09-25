@@ -40,10 +40,13 @@ describe('fs.unlink(path, callback)', function () {
   });
 
   it('promise deletes a file', function (done) {
-    fs.promises.unlink('file.txt').then(function () {
-      assert.isFalse(fs.existsSync('file.txt'));
-      done();
-    }, done);
+    fs.promises
+      .unlink('file.txt')
+      .then(function () {
+        assert.isFalse(fs.existsSync('file.txt'));
+        done();
+      })
+      .catch(done);
   });
 
   it('updates mtime of parent', function (done) {
@@ -61,12 +64,15 @@ describe('fs.unlink(path, callback)', function () {
 
   it('updates mtime of parent', function (done) {
     const oldTime = fs.statSync('dir2').mtime;
-    fs.promises.unlink('dir2/file').then(function () {
-      assert.isFalse(fs.existsSync('dir2/file'));
-      const newTime = fs.statSync('dir2').mtime;
-      assert.isTrue(newTime > oldTime);
-      done();
-    }, done);
+    fs.promises
+      .unlink('dir2/file')
+      .then(function () {
+        assert.isFalse(fs.existsSync('dir2/file'));
+        const newTime = fs.statSync('dir2').mtime;
+        assert.isTrue(newTime > oldTime);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for a directory', function (done) {
@@ -110,15 +116,18 @@ describe('fs.unlink(path, callback)', function () {
 
   it('promise respects previously opened file descriptors', function (done) {
     const fd = fs.openSync('file.txt', 'r');
-    fs.promises.unlink('file.txt').then(function () {
-      assert.isFalse(fs.existsSync('file.txt'));
-      // but we can still use fd to read
-      const buffer = Buffer.alloc(7);
-      const read = fs.readSync(fd, buffer, 0, 7);
-      assert.equal(read, 7);
-      assert.equal(String(buffer), 'content');
-      done();
-    }, done);
+    fs.promises
+      .unlink('file.txt')
+      .then(function () {
+        assert.isFalse(fs.existsSync('file.txt'));
+        // but we can still use fd to read
+        const buffer = Buffer.alloc(7);
+        const read = fs.readSync(fd, buffer, 0, 7);
+        assert.equal(read, 7);
+        assert.equal(String(buffer), 'content');
+        done();
+      })
+      .catch(done);
   });
 });
 

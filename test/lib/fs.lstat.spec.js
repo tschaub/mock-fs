@@ -70,21 +70,27 @@ describe('fs.lstat(path, options, callback)', function () {
   });
 
   it('promise stats a symbolic link', function (done) {
-    fs.promises.lstat('link').then(function (stats) {
-      assert.isTrue(stats.isSymbolicLink());
-      assert.isFalse(stats.isFile());
-      assert.equal(stats.mtime.getTime(), 2);
-      done();
-    }, done);
+    fs.promises
+      .lstat('link')
+      .then(function (stats) {
+        assert.isTrue(stats.isSymbolicLink());
+        assert.isFalse(stats.isFile());
+        assert.equal(stats.mtime.getTime(), 2);
+        done();
+      })
+      .catch(done);
   });
 
   it('promise stats a symbolic link with bigint', function (done) {
-    fs.promises.lstat('link', {bigint: true}).then(function (stats) {
-      assert.isTrue(stats.isSymbolicLink());
-      assert.isFalse(stats.isFile());
-      assert.equal(typeof stats.mtimeMs, 'bigint');
-      done();
-    }, done);
+    fs.promises
+      .lstat('link', {bigint: true})
+      .then(function (stats) {
+        assert.isTrue(stats.isSymbolicLink());
+        assert.isFalse(stats.isFile());
+        assert.equal(typeof stats.mtimeMs, 'bigint');
+        done();
+      })
+      .catch(done);
   });
 
   it('stats a regular file', function (done) {
@@ -112,21 +118,27 @@ describe('fs.lstat(path, options, callback)', function () {
   });
 
   it('promise stats a regular file', function (done) {
-    fs.promises.lstat('file.txt').then(function (stats) {
-      assert.isTrue(stats.isFile());
-      assert.isFalse(stats.isSymbolicLink());
-      assert.equal(stats.mtime.getTime(), 1);
-      done();
-    }, done);
+    fs.promises
+      .lstat('file.txt')
+      .then(function (stats) {
+        assert.isTrue(stats.isFile());
+        assert.isFalse(stats.isSymbolicLink());
+        assert.equal(stats.mtime.getTime(), 1);
+        done();
+      })
+      .catch(done);
   });
 
   it('promise stats a regular file with bigint', function (done) {
-    fs.promises.lstat('file.txt', {bigint: true}).then(function (stats) {
-      assert.isTrue(stats.isFile());
-      assert.isFalse(stats.isSymbolicLink());
-      assert.equal(typeof stats.mtimeMs, 'bigint');
-      done();
-    }, done);
+    fs.promises
+      .lstat('file.txt', {bigint: true})
+      .then(function (stats) {
+        assert.isTrue(stats.isFile());
+        assert.isFalse(stats.isSymbolicLink());
+        assert.equal(typeof stats.mtimeMs, 'bigint');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails on file not exist', function (done) {

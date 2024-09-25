@@ -37,11 +37,14 @@ describe('fs.chmod(path, mode, callback)', function () {
   });
 
   it('promise changes permissions of a file', function (done) {
-    fs.promises.chmod('file.txt', parseInt('0664', 8)).then(function () {
-      const stats = fs.statSync('file.txt');
-      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
-      done();
-    }, done);
+    fs.promises
+      .chmod('file.txt', parseInt('0664', 8))
+      .then(function () {
+        const stats = fs.statSync('file.txt');
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0664', 8));
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if file does not exist', function (done) {
@@ -117,7 +120,8 @@ describe('fs.fchmod(fd, mode, callback)', function () {
         const stats = fs.statSync('file.txt');
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0644', 8));
         done();
-      }, done);
+      })
+      .catch(done);
   });
 });
 

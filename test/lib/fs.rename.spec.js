@@ -44,11 +44,14 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
   });
 
   it('promise allows files to be renamed', function (done) {
-    fs.promises.rename('path/to/a.bin', 'path/to/b.bin').then(function () {
-      assert.isFalse(fs.existsSync('path/to/a.bin'));
-      assert.isTrue(fs.existsSync('path/to/b.bin'));
-      done();
-    }, done);
+    fs.promises
+      .rename('path/to/a.bin', 'path/to/b.bin')
+      .then(function () {
+        assert.isFalse(fs.existsSync('path/to/a.bin'));
+        assert.isTrue(fs.existsSync('path/to/b.bin'));
+        done();
+      })
+      .catch(done);
   });
 
   it('updates mtime of parent directory', function (done) {
@@ -73,7 +76,8 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
         const newTime = fs.statSync('nested/dir').mtime;
         assert.isTrue(newTime > oldTime);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('calls callback with error if old path does not exist', function (done) {
@@ -111,7 +115,8 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
         assert.isFalse(fs.existsSync('path/to/a.bin'));
         assert.isTrue(fs.existsSync('nested/dir/file.txt'));
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows directories to be renamed', function (done) {
@@ -125,12 +130,15 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
   });
 
   it('promise allows directories to be renamed', function (done) {
-    fs.promises.rename('path/to', 'path/foo').then(function () {
-      assert.isFalse(fs.existsSync('path/to'));
-      assert.isTrue(fs.existsSync('path/foo'));
-      assert.deepEqual(fs.readdirSync('path/foo'), ['a.bin']);
-      done();
-    }, done);
+    fs.promises
+      .rename('path/to', 'path/foo')
+      .then(function () {
+        assert.isFalse(fs.existsSync('path/to'));
+        assert.isTrue(fs.existsSync('path/foo'));
+        assert.deepEqual(fs.readdirSync('path/foo'), ['a.bin']);
+        done();
+      })
+      .catch(done);
   });
 
   it('calls callback with error if new directory not empty', function (done) {

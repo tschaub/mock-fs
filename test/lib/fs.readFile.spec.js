@@ -29,11 +29,14 @@ describe('fs.readFile(filename, [options], callback)', function () {
   });
 
   it('promise allows a file to be read asynchronously', function (done) {
-    fs.promises.readFile('path/to/file.txt').then(function (data) {
-      assert.isTrue(Buffer.isBuffer(data));
-      assert.equal(String(data), 'file content');
-      done();
-    }, done);
+    fs.promises
+      .readFile('path/to/file.txt')
+      .then(function (data) {
+        assert.isTrue(Buffer.isBuffer(data));
+        assert.equal(String(data), 'file content');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for directory', function (done) {

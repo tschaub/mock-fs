@@ -40,7 +40,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('writes a buffer to a file with implicit offset, length, position', function (done) {
@@ -69,7 +70,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can write a portion of a buffer to a file', function (done) {
@@ -102,7 +104,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(String(fs.readFileSync('path/new-file.txt')), 'ew fi');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can write a portion of a buffer to a file position', function (done) {
@@ -141,7 +144,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
           'fiew fintent'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can write a portion of a buffer to a file position and enlarge the file', function (done) {
@@ -180,7 +184,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
           'file conew fi'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can append to a file', function (done) {
@@ -219,7 +224,8 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
           'file content more'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails if file not open for writing', function (done) {
@@ -335,7 +341,8 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
         assert.equal(String(result.buffer), string);
         assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('writes a string to a file with implicit position and encoding', function (done) {
@@ -368,7 +375,8 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
         assert.equal(String(result.buffer), string);
         assert.equal(String(fs.readFileSync('path/new-file.txt')), 'new file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can append to a file', function (done) {
@@ -404,7 +412,8 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
           'file content more'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can write to a position of a file', function (done) {
@@ -440,7 +449,8 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
           'fil moretent'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('can write to a position of a file and enlarge it', function (done) {
@@ -476,7 +486,8 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
           'file cont more'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails if file not open for writing', function (done) {

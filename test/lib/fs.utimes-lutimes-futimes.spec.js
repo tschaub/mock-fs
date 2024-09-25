@@ -76,7 +76,8 @@ describe('fs.utimes(path, atime, mtime, callback)', function () {
         assert.equal(stats.atime.getTime(), 100);
         assert.equal(stats.mtime.getTime(), 200);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('updates timestamps for a directory', function (done) {
@@ -92,12 +93,15 @@ describe('fs.utimes(path, atime, mtime, callback)', function () {
   });
 
   it('promise updates timestamps for a directory', function (done) {
-    fs.promises.utimes('dir', new Date(300), new Date(400)).then(function () {
-      const stats = fs.statSync('dir');
-      assert.equal(stats.atime.getTime(), 300);
-      assert.equal(stats.mtime.getTime(), 400);
-      done();
-    }, done);
+    fs.promises
+      .utimes('dir', new Date(300), new Date(400))
+      .then(function () {
+        const stats = fs.statSync('dir');
+        assert.equal(stats.atime.getTime(), 300);
+        assert.equal(stats.mtime.getTime(), 400);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for a bogus path', function (done) {
@@ -192,7 +196,8 @@ describe('fs.lutimes(path, atime, mtime, callback)', function () {
         assert.equal(stats.atime.getTime(), 100);
         assert.equal(stats.mtime.getTime(), 200);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('updates timestamps for a directory', function (done) {
@@ -208,12 +213,15 @@ describe('fs.lutimes(path, atime, mtime, callback)', function () {
   });
 
   it('promise updates timestamps for a directory', function (done) {
-    fs.promises.lutimes('dir', new Date(300), new Date(400)).then(function () {
-      const stats = fs.statSync('dir');
-      assert.equal(stats.atime.getTime(), 300);
-      assert.equal(stats.mtime.getTime(), 400);
-      done();
-    }, done);
+    fs.promises
+      .lutimes('dir', new Date(300), new Date(400))
+      .then(function () {
+        const stats = fs.statSync('dir');
+        assert.equal(stats.atime.getTime(), 300);
+        assert.equal(stats.mtime.getTime(), 400);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for a bogus path', function (done) {
@@ -366,7 +374,8 @@ describe('fs.futimes(fd, atime, mtime, callback)', function () {
         assert.equal(stats.atime.getTime(), 100);
         assert.equal(stats.mtime.getTime(), 200);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('updates timestamps for a directory', function (done) {
@@ -393,7 +402,8 @@ describe('fs.futimes(fd, atime, mtime, callback)', function () {
         assert.equal(stats.atime.getTime(), 300);
         assert.equal(stats.mtime.getTime(), 400);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 });
 

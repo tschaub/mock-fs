@@ -37,10 +37,13 @@ describe('fs.stat(path, options, callback)', function () {
   });
 
   xit('promise creates an instance of fs.Stats', function (done) {
-    fs.promises.stat('/path/to/file.txt').then(function (stats) {
-      assert.instanceOf(stats, fs.Stats);
-      done();
-    }, done);
+    fs.promises
+      .stat('/path/to/file.txt')
+      .then(function (stats) {
+        assert.instanceOf(stats, fs.Stats);
+        done();
+      })
+      .catch(done);
   });
 
   it('identifies files', function (done) {
@@ -96,12 +99,15 @@ describe('fs.stat(path, options, callback)', function () {
   });
 
   it('promise identifies files', function (done) {
-    fs.promises.stat('/path/to/file.txt').then(function (stats) {
-      assert.isTrue(stats.isFile());
-      assert.isFalse(stats.isDirectory());
-      done();
-      assert.equal(stats.mtime.getTime(), 2);
-    }, done);
+    fs.promises
+      .stat('/path/to/file.txt')
+      .then(function (stats) {
+        assert.isTrue(stats.isFile());
+        assert.isFalse(stats.isDirectory());
+        done();
+        assert.equal(stats.mtime.getTime(), 2);
+      })
+      .catch(done);
   });
 
   it('promise identifies files', function (done) {
@@ -112,7 +118,8 @@ describe('fs.stat(path, options, callback)', function () {
         assert.isFalse(stats.isDirectory());
         done();
         assert.equal(typeof stats.mtimeMs, 'bigint');
-      }, done);
+      })
+      .catch(done);
   });
 
   it('identifies directories', function (done) {
@@ -140,21 +147,27 @@ describe('fs.stat(path, options, callback)', function () {
   });
 
   it('promise identifies directories', function (done) {
-    fs.promises.stat('/empty').then(function (stats) {
-      assert.isTrue(stats.isDirectory());
-      assert.isFalse(stats.isFile());
-      assert.equal(stats.size, 1);
-      done();
-    }, done);
+    fs.promises
+      .stat('/empty')
+      .then(function (stats) {
+        assert.isTrue(stats.isDirectory());
+        assert.isFalse(stats.isFile());
+        assert.equal(stats.size, 1);
+        done();
+      })
+      .catch(done);
   });
 
   it('promise identifies directories with bigint', function (done) {
-    fs.promises.stat('/empty', {bigint: true}).then(function (stats) {
-      assert.isTrue(stats.isDirectory());
-      assert.isFalse(stats.isFile());
-      assert.equal(typeof stats.size, 'bigint');
-      done();
-    }, done);
+    fs.promises
+      .stat('/empty', {bigint: true})
+      .then(function (stats) {
+        assert.isTrue(stats.isDirectory());
+        assert.isFalse(stats.isFile());
+        assert.equal(typeof stats.size, 'bigint');
+        done();
+      })
+      .catch(done);
   });
 
   it('provides file stats', function (done) {
@@ -190,16 +203,19 @@ describe('fs.stat(path, options, callback)', function () {
   });
 
   it('promise provides file stats', function (done) {
-    fs.promises.stat('/path/to/file.txt').then(function (stats) {
-      assert.equal(stats.ctime.getTime(), 1);
-      assert.equal(stats.mtime.getTime(), 2);
-      assert.equal(stats.atime.getTime(), 3);
-      assert.equal(stats.uid, 42);
-      assert.equal(stats.gid, 43);
-      assert.equal(stats.nlink, 1);
-      assert.isNumber(stats.rdev);
-      done();
-    }, done);
+    fs.promises
+      .stat('/path/to/file.txt')
+      .then(function (stats) {
+        assert.equal(stats.ctime.getTime(), 1);
+        assert.equal(stats.mtime.getTime(), 2);
+        assert.equal(stats.atime.getTime(), 3);
+        assert.equal(stats.uid, 42);
+        assert.equal(stats.gid, 43);
+        assert.equal(stats.nlink, 1);
+        assert.isNumber(stats.rdev);
+        done();
+      })
+      .catch(done);
   });
 
   it('promise provides file stats with bigint', function (done) {
@@ -214,7 +230,8 @@ describe('fs.stat(path, options, callback)', function () {
         assert.equal(typeof stats.nlink, 'bigint');
         assert.equal(typeof stats.rdev, 'bigint');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   if (
@@ -235,11 +252,14 @@ describe('fs.stat(path, options, callback)', function () {
     });
 
     it('promise includes blocks and blksize in stats', function (done) {
-      fs.promises.stat('/path/to/file.txt').then(function (stats) {
-        assert.isNumber(stats.blocks);
-        assert.isNumber(stats.blksize);
-        done();
-      }, done);
+      fs.promises
+        .stat('/path/to/file.txt')
+        .then(function (stats) {
+          assert.isNumber(stats.blocks);
+          assert.isNumber(stats.blksize);
+          done();
+        })
+        .catch(done);
     });
   }
 
@@ -292,45 +312,51 @@ describe('fs.stat(path, options, callback)', function () {
   });
 
   it('promise provides directory stats', function (done) {
-    fs.promises.stat('/path').then(function (stats) {
-      assert.instanceOf(stats.ctime, Date);
-      assert.instanceOf(stats.mtime, Date);
-      assert.instanceOf(stats.atime, Date);
-      if (process.getuid) {
-        assert.isNumber(stats.uid);
-      } else {
-        assert.strictEqual(stats.uid, 0);
-      }
-      if (process.getgid) {
-        assert.isNumber(stats.gid);
-      } else {
-        assert.strictEqual(stats.gid, 0);
-      }
-      assert.equal(stats.nlink, 3);
-      assert.isNumber(stats.rdev);
-      done();
-    }, done);
+    fs.promises
+      .stat('/path')
+      .then(function (stats) {
+        assert.instanceOf(stats.ctime, Date);
+        assert.instanceOf(stats.mtime, Date);
+        assert.instanceOf(stats.atime, Date);
+        if (process.getuid) {
+          assert.isNumber(stats.uid);
+        } else {
+          assert.strictEqual(stats.uid, 0);
+        }
+        if (process.getgid) {
+          assert.isNumber(stats.gid);
+        } else {
+          assert.strictEqual(stats.gid, 0);
+        }
+        assert.equal(stats.nlink, 3);
+        assert.isNumber(stats.rdev);
+        done();
+      })
+      .catch(done);
   });
 
   it('promise provides directory stats with bigint', function (done) {
-    fs.promises.stat('/path', {bigint: true}).then(function (stats) {
-      assert.instanceOf(stats.ctime, Date);
-      assert.instanceOf(stats.mtime, Date);
-      assert.instanceOf(stats.atime, Date);
-      if (process.getuid) {
-        assert.equal(typeof stats.uid, 'bigint');
-      } else {
-        assert.strictEqual(stats.uid, 0n);
-      }
-      if (process.getgid) {
-        assert.equal(typeof stats.gid, 'bigint');
-      } else {
-        assert.strictEqual(stats.gid, 0n);
-      }
-      assert.equal(typeof stats.nlink, 'bigint');
-      assert.equal(typeof stats.rdev, 'bigint');
-      done();
-    }, done);
+    fs.promises
+      .stat('/path', {bigint: true})
+      .then(function (stats) {
+        assert.instanceOf(stats.ctime, Date);
+        assert.instanceOf(stats.mtime, Date);
+        assert.instanceOf(stats.atime, Date);
+        if (process.getuid) {
+          assert.equal(typeof stats.uid, 'bigint');
+        } else {
+          assert.strictEqual(stats.uid, 0n);
+        }
+        if (process.getgid) {
+          assert.equal(typeof stats.gid, 'bigint');
+        } else {
+          assert.strictEqual(stats.gid, 0n);
+        }
+        assert.equal(typeof stats.nlink, 'bigint');
+        assert.equal(typeof stats.rdev, 'bigint');
+        done();
+      })
+      .catch(done);
   });
 
   if (
@@ -351,11 +377,14 @@ describe('fs.stat(path, options, callback)', function () {
     });
 
     it('promise includes blocks and blksize in directory stats', function (done) {
-      fs.promises.stat('/path').then(function (stats) {
-        assert.isNumber(stats.blocks);
-        assert.isNumber(stats.blksize);
-        done();
-      }, done);
+      fs.promises
+        .stat('/path')
+        .then(function (stats) {
+          assert.isNumber(stats.blocks);
+          assert.isNumber(stats.blksize);
+          done();
+        })
+        .catch(done);
     });
   }
 });
@@ -403,7 +432,8 @@ describe('fs.fstat(fd, options, callback)', function () {
         assert.isTrue(stats.isFile());
         assert.equal(stats.size, 12);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('promise accepts a file descriptor for a file (r) with bigint', function (done) {
@@ -416,7 +446,8 @@ describe('fs.fstat(fd, options, callback)', function () {
         assert.isTrue(stats.isFile());
         assert.equal(typeof stats.size, 'bigint');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('accepts a file descriptor for a directory (r)', function (done) {
@@ -453,7 +484,8 @@ describe('fs.fstat(fd, options, callback)', function () {
         assert.isTrue(stats.isDirectory());
         assert.equal(stats.size, 1);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('promise accepts a file descriptor for a directory (r) with bigint', function (done) {
@@ -466,7 +498,8 @@ describe('fs.fstat(fd, options, callback)', function () {
         assert.isTrue(stats.isDirectory());
         assert.equal(typeof stats.size, 'bigint');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails for bad file descriptor', function (done) {

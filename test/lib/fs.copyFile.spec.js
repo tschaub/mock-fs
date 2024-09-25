@@ -52,7 +52,8 @@ if (fs.copyFile && fs.copyFileSync) {
             'file content'
           );
           done();
-        }, done);
+        })
+        .catch(done);
     });
 
     it('truncates dest file if it exists', function (done) {
@@ -75,7 +76,8 @@ if (fs.copyFile && fs.copyFileSync) {
             'file content'
           );
           done();
-        }, done);
+        })
+        .catch(done);
     });
 
     it('throws if dest exists and exclusive', function (done) {
