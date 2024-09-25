@@ -191,7 +191,6 @@ describe('The API', function () {
       'mtime',
       'gid',
       'uid',
-      'mtime',
       'mode',
     ];
     const filterStats = (stats) => {
@@ -199,12 +198,15 @@ describe('The API', function () {
       for (const key of statsCompareKeys) {
         const k =
           (stats.hasOwnProperty(key) && key) ||
-          (stats.hasOwnProperty(`_${key}`) && `_${key}`);
+          (stats.hasOwnProperty(`_${key}`) && `_${key}`) ||
+          (stats.hasOwnProperty(`${key}Ms`) && `${key}Ms`);
 
         if (k) {
           res[key] =
             k === 'mode' && stats.isDirectory()
               ? fixWin32Permissions(stats[k])
+              : k.endsWith('Ms')
+              ? new Date(stats[k])
               : stats[k];
         }
       }
