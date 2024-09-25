@@ -270,7 +270,7 @@ When you require `mock-fs`, Node's own `fs` module is patched to allow the bindi
 
 Mock file access is controlled based on file mode where `process.getuid()` and `process.getgid()` are available (POSIX systems).  On other systems (e.g. Windows) the file mode has no effect.
 
-Tested on Linux, OSX, and Windows using Node 12 through 16.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
+Tested on Linux, OSX, and Windows using Node 16 through 18.  Check the tickets for a list of [known issues](https://github.com/tschaub/mock-fs/issues).
 
 ### Using with Jest Snapshot Testing
 
