@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
+[![Build Status](https://github.com/tschaub/mock-fs/workflows/Test/badge.svg?branch=main)](https://github.com/tschaub/mock-fs/actions?workflow=Test)
 
 # `mock-fs`
 
