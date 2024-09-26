@@ -95,6 +95,11 @@ describe('fs.readFileSync(filename, [options])', function () {
   });
   afterEach(mock.restore);
 
+  it('works with utf-8', function () {
+    const content = fs.readFileSync('path/to/file.txt', 'utf-8').toString();
+    assert.equal(content, 'file content');
+  });
+
   it('allows a file to be read synchronously', function () {
     const data = fs.readFileSync('path/to/file.txt');
     assert.isTrue(Buffer.isBuffer(data));
