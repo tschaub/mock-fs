@@ -10,7 +10,6 @@ const {
 } = require('../../lib/readfilecontext.js');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 
 describe('getReadFileContextPrototype', function () {
   it('provides access to the internal ReadFileContext', function () {
@@ -122,7 +121,7 @@ describe('fs.readFile() with ReadFileContext', function () {
   });
   afterEach(mock.restore);
 
-  inVersion('>=15.0.0').it('allows file reads to be aborted', function (done) {
+  it('allows file reads to be aborted', function (done) {
     const controller = new AbortController();
     const {signal} = controller;
 
