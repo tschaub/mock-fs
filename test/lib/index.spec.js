@@ -344,50 +344,6 @@ describe('The API', function () {
       });
     });
   });
-
-  xdescribe('mock.fs()', function () {
-    it('generates a mock fs module with a mock file system', function (done) {
-      const mockFs = mock.fs({
-        'path/to/file.txt': 'file content',
-      });
-
-      mockFs.exists('path/to/file.txt', function (exists) {
-        assert.isTrue(exists);
-        done();
-      });
-    });
-
-    it('passes options to the FileSystem constructor', function () {
-      const mockFs = mock.fs(
-        {
-          '/path/to/file.txt': 'file content',
-        },
-        {
-          createCwd: false,
-          createTmp: false,
-        }
-      );
-
-      assert.isTrue(mockFs.existsSync('/path/to/file.txt'));
-      assert.deepEqual(mockFs.readdirSync('/'), ['path']);
-    });
-
-    it('accepts an arbitrary nesting of files and directories', function () {
-      const mockFs = mock.fs({
-        'dir-one': {
-          'dir-two': {
-            'some-file.txt': 'file content here',
-          },
-        },
-        'empty-dir': {},
-      });
-
-      assert.isTrue(mockFs.existsSync('dir-one/dir-two/some-file.txt'));
-      assert.isTrue(mockFs.statSync('dir-one/dir-two/some-file.txt').isFile());
-      assert.isTrue(mockFs.statSync('dir-one/dir-two').isDirectory());
-      assert.isTrue(mockFs.statSync('empty-dir').isDirectory());
-    });
-  });
 });
 
 describe('process.cwd()', function () {
