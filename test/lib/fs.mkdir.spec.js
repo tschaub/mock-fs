@@ -44,11 +44,14 @@ describe('fs.mkdir(path, [mode], callback)', function () {
   });
 
   it('promise creates a new directory', function (done) {
-    fs.promises.mkdir('parent/dir').then(function () {
-      const stats = fs.statSync('parent/dir');
-      assert.isTrue(stats.isDirectory());
-      done();
-    }, done);
+    fs.promises
+      .mkdir('parent/dir')
+      .then(function () {
+        const stats = fs.statSync('parent/dir');
+        assert.isTrue(stats.isDirectory());
+        done();
+      })
+      .catch(done);
   });
 
   it('creates a new directory recursively', function (done) {
@@ -77,7 +80,8 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         stats = fs.statSync('parent/foo');
         assert.isTrue(stats.isDirectory());
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('accepts dir mode', function (done) {
@@ -93,12 +97,15 @@ describe('fs.mkdir(path, [mode], callback)', function () {
   });
 
   it('promise accepts dir mode', function (done) {
-    fs.promises.mkdir('parent/dir', parseInt('0755', 8)).then(function () {
-      const stats = fs.statSync('parent/dir');
-      assert.isTrue(stats.isDirectory());
-      assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
-      done();
-    }, done);
+    fs.promises
+      .mkdir('parent/dir', parseInt('0755', 8))
+      .then(function () {
+        const stats = fs.statSync('parent/dir');
+        assert.isTrue(stats.isDirectory());
+        assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
+        done();
+      })
+      .catch(done);
   });
 
   it('accepts dir mode recursively', function (done) {
@@ -141,7 +148,8 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.isTrue(stats.isDirectory());
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails if parent does not exist', function (done) {

@@ -34,13 +34,16 @@ if (fs.mkdtemp) {
     });
 
     it('promise creates a new directory', function (done) {
-      fs.promises.mkdtemp('parent/dir').then(function (dirPath) {
-        const parentPath = path.dirname(dirPath);
-        assert.equal(parentPath, 'parent');
-        const stats = fs.statSync(dirPath);
-        assert.isTrue(stats.isDirectory());
-        done();
-      }, done);
+      fs.promises
+        .mkdtemp('parent/dir')
+        .then(function (dirPath) {
+          const parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          const stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        })
+        .catch(done);
     });
 
     it('accepts a "utf8" encoding argument', function (done) {
@@ -58,14 +61,17 @@ if (fs.mkdtemp) {
     });
 
     it('promise accepts a "utf8" encoding argument', function (done) {
-      fs.promises.mkdtemp('parent/dir', 'utf8').then(function (dirPath) {
-        assert.isString(dirPath);
-        const parentPath = path.dirname(dirPath);
-        assert.equal(parentPath, 'parent');
-        const stats = fs.statSync(dirPath);
-        assert.isTrue(stats.isDirectory());
-        done();
-      }, done);
+      fs.promises
+        .mkdtemp('parent/dir', 'utf8')
+        .then(function (dirPath) {
+          assert.isString(dirPath);
+          const parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          const stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        })
+        .catch(done);
     });
 
     it('accepts a "buffer" encoding argument', function (done) {
@@ -84,15 +90,18 @@ if (fs.mkdtemp) {
     });
 
     it('promise accepts a "buffer" encoding argument', function (done) {
-      fs.promises.mkdtemp('parent/dir', 'buffer').then(function (buffer) {
-        assert.instanceOf(buffer, Buffer);
-        const dirPath = buffer.toString();
-        const parentPath = path.dirname(dirPath);
-        assert.equal(parentPath, 'parent');
-        const stats = fs.statSync(dirPath);
-        assert.isTrue(stats.isDirectory());
-        done();
-      }, done);
+      fs.promises
+        .mkdtemp('parent/dir', 'buffer')
+        .then(function (buffer) {
+          assert.instanceOf(buffer, Buffer);
+          const dirPath = buffer.toString();
+          const parentPath = path.dirname(dirPath);
+          assert.equal(parentPath, 'parent');
+          const stats = fs.statSync(dirPath);
+          assert.isTrue(stats.isDirectory());
+          done();
+        })
+        .catch(done);
     });
 
     it('accepts an options argument with "utf8" encoding', function (done) {
@@ -119,7 +128,8 @@ if (fs.mkdtemp) {
           const stats = fs.statSync(dirPath);
           assert.isTrue(stats.isDirectory());
           done();
-        }, done);
+        })
+        .catch(done);
     });
 
     it('accepts an options argument with "buffer" encoding', function (done) {
@@ -148,7 +158,8 @@ if (fs.mkdtemp) {
           const stats = fs.statSync(dirPath);
           assert.isTrue(stats.isDirectory());
           done();
-        }, done);
+        })
+        .catch(done);
     });
 
     it('fails if parent does not exist', function (done) {

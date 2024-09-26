@@ -49,13 +49,16 @@ describe('fs.link(srcpath, dstpath, callback)', function () {
   it('promise creates a link to a file', function (done) {
     assert.equal(fs.statSync('file.txt').nlink, 1);
 
-    fs.promises.link('file.txt', 'link.txt').then(function () {
-      assert.isTrue(fs.statSync('link.txt').isFile());
-      assert.equal(fs.statSync('link.txt').nlink, 2);
-      assert.equal(fs.statSync('file.txt').nlink, 2);
-      assert.equal(String(fs.readFileSync('link.txt')), 'content');
-      done();
-    }, done);
+    fs.promises
+      .link('file.txt', 'link.txt')
+      .then(function () {
+        assert.isTrue(fs.statSync('link.txt').isFile());
+        assert.equal(fs.statSync('link.txt').nlink, 2);
+        assert.equal(fs.statSync('file.txt').nlink, 2);
+        assert.equal(String(fs.readFileSync('link.txt')), 'content');
+        done();
+      })
+      .catch(done);
   });
 
   it('works if original is renamed', function (done) {
@@ -71,12 +74,15 @@ describe('fs.link(srcpath, dstpath, callback)', function () {
   });
 
   it('promise works if original is renamed', function (done) {
-    fs.promises.link('file.txt', 'link.txt').then(function () {
-      fs.renameSync('file.txt', 'renamed.txt');
-      assert.isTrue(fs.statSync('link.txt').isFile());
-      assert.equal(String(fs.readFileSync('link.txt')), 'content');
-      done();
-    }, done);
+    fs.promises
+      .link('file.txt', 'link.txt')
+      .then(function () {
+        fs.renameSync('file.txt', 'renamed.txt');
+        assert.isTrue(fs.statSync('link.txt').isFile());
+        assert.equal(String(fs.readFileSync('link.txt')), 'content');
+        done();
+      })
+      .catch(done);
   });
 
   it('works if original is removed', function (done) {
@@ -99,15 +105,18 @@ describe('fs.link(srcpath, dstpath, callback)', function () {
   it('promise works if original is removed', function (done) {
     assert.equal(fs.statSync('file.txt').nlink, 1);
 
-    fs.promises.link('file.txt', 'link.txt').then(function () {
-      assert.equal(fs.statSync('link.txt').nlink, 2);
-      assert.equal(fs.statSync('file.txt').nlink, 2);
-      fs.unlinkSync('file.txt');
-      assert.isTrue(fs.statSync('link.txt').isFile());
-      assert.equal(fs.statSync('link.txt').nlink, 1);
-      assert.equal(String(fs.readFileSync('link.txt')), 'content');
-      done();
-    }, done);
+    fs.promises
+      .link('file.txt', 'link.txt')
+      .then(function () {
+        assert.equal(fs.statSync('link.txt').nlink, 2);
+        assert.equal(fs.statSync('file.txt').nlink, 2);
+        fs.unlinkSync('file.txt');
+        assert.isTrue(fs.statSync('link.txt').isFile());
+        assert.equal(fs.statSync('link.txt').nlink, 1);
+        assert.equal(String(fs.readFileSync('link.txt')), 'content');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if original is a directory', function (done) {
@@ -221,11 +230,14 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
   }
 
   it('promise creates a symbolic link to a file', function (done) {
-    fs.promises.symlink('../file.txt', 'dir/link.txt').then(function () {
-      assert.isTrue(fs.statSync('dir/link.txt').isFile());
-      assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
-      done();
-    }, done);
+    fs.promises
+      .symlink('../file.txt', 'dir/link.txt')
+      .then(function () {
+        assert.isTrue(fs.statSync('dir/link.txt').isFile());
+        assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
+        done();
+      })
+      .catch(done);
   });
 
   it('breaks if original is renamed', function (done) {
@@ -241,12 +253,15 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
   });
 
   it('promise breaks if original is renamed', function (done) {
-    fs.promises.symlink('file.txt', 'link.txt').then(function () {
-      assert.isTrue(fs.existsSync('link.txt'));
-      fs.renameSync('file.txt', 'renamed.txt');
-      assert.isFalse(fs.existsSync('link.txt'));
-      done();
-    }, done);
+    fs.promises
+      .symlink('file.txt', 'link.txt')
+      .then(function () {
+        assert.isTrue(fs.existsSync('link.txt'));
+        fs.renameSync('file.txt', 'renamed.txt');
+        assert.isFalse(fs.existsSync('link.txt'));
+        done();
+      })
+      .catch(done);
   });
 
   it('works if original is a directory', function (done) {
@@ -260,10 +275,13 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
   });
 
   it('promise works if original is a directory', function (done) {
-    fs.promises.symlink('dir', 'link').then(function () {
-      assert.isTrue(fs.statSync('link').isDirectory());
-      done();
-    }, done);
+    fs.promises
+      .symlink('dir', 'link')
+      .then(function () {
+        assert.isTrue(fs.statSync('link').isDirectory());
+        done();
+      })
+      .catch(done);
   });
 });
 

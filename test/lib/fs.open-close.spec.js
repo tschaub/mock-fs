@@ -45,10 +45,13 @@ describe('fs.open(path, flags, [mode], callback)', function () {
   });
 
   it('promise opens an existing file for reading (r)', function (done) {
-    fs.promises.open('nested/sub/dir/one.txt', 'r').then(function (fd) {
-      assert.isNumber(fd.fd);
-      done();
-    }, done);
+    fs.promises
+      .open('nested/sub/dir/one.txt', 'r')
+      .then(function (fd) {
+        assert.isNumber(fd.fd);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if file does not exist (r)', function (done) {
@@ -90,7 +93,8 @@ describe('fs.open(path, flags, [mode], callback)', function () {
         assert.isNumber(fd.fd);
         assert.isTrue(fs.existsSync('path/to/new.txt'));
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('opens an existing file for writing (w)', function (done) {
@@ -109,7 +113,8 @@ describe('fs.open(path, flags, [mode], callback)', function () {
       .then(function (fd) {
         assert.isNumber(fd.fd);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails if file exists (wx)', function (done) {

@@ -36,10 +36,13 @@ describe('fs.readlink(path, callback)', function () {
   });
 
   it('promise reads a symbolic link', function (done) {
-    fs.promises.readlink('link').then(function (srcPath) {
-      assert.equal(srcPath, './file.txt');
-      done();
-    }, done);
+    fs.promises
+      .readlink('link')
+      .then(function (srcPath) {
+        assert.equal(srcPath, './file.txt');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for regular files', function (done) {

@@ -51,11 +51,14 @@ describe('fs.readdir(path, callback)', function () {
   });
 
   it('promise lists directory contents', function (done) {
-    fs.promises.readdir(path.join('path', 'to')).then(function (items) {
-      assert.isArray(items);
-      assert.deepEqual(items, ['file.txt']);
-      done();
-    }, done);
+    fs.promises
+      .readdir(path.join('path', 'to'))
+      .then(function (items) {
+        assert.isArray(items);
+        assert.deepEqual(items, ['file.txt']);
+        done();
+      })
+      .catch(done);
   });
 
   it('lists nested directory contents', function (done) {
@@ -74,7 +77,8 @@ describe('fs.readdir(path, callback)', function () {
         assert.isArray(items);
         assert.deepEqual(items, ['empty', 'one.txt', 'two.txt']);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('calls with an error for bogus path', function (done) {
@@ -151,7 +155,8 @@ describe('fs.readdir(path, callback)', function () {
         assert.ok(items[1].isFile());
         assert.ok(items[2].isFile());
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('should support "withFileTypes" option with "encoding" option', function (done) {

@@ -64,11 +64,14 @@ describe('fs.rmdir(path, callback)', function () {
   it('promise removes an empty directory', function (done) {
     assert.equal(fs.statSync('path/to').nlink, 3);
 
-    fs.promises.rmdir('path/to/empty').then(function () {
-      assert.isFalse(fs.existsSync('path/to/empty'));
-      assert.equal(fs.statSync('path/to').nlink, 2);
-      done();
-    }, done);
+    fs.promises
+      .rmdir('path/to/empty')
+      .then(function () {
+        assert.isFalse(fs.existsSync('path/to/empty'));
+        assert.equal(fs.statSync('path/to').nlink, 2);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if not empty', function (done) {
@@ -130,11 +133,14 @@ describe('fs.rmdir(path, callback)', function () {
     it('promise recursively remove empty directory', function (done) {
       assert.equal(fs.statSync('path2/to').nlink, 4);
 
-      fs.promises.rmdir('path2/to/empty', {recursive: true}).then(function () {
-        assert.isFalse(fs.existsSync('path2/to/empty'));
-        assert.equal(fs.statSync('path2/to').nlink, 3);
-        done();
-      }, done);
+      fs.promises
+        .rmdir('path2/to/empty', {recursive: true})
+        .then(function () {
+          assert.isFalse(fs.existsSync('path2/to/empty'));
+          assert.equal(fs.statSync('path2/to').nlink, 3);
+          done();
+        })
+        .catch(done);
     });
 
     it('recursively remove non-empty directory', function (done) {
@@ -159,7 +165,8 @@ describe('fs.rmdir(path, callback)', function () {
           assert.isFalse(fs.existsSync('path2/to/non-empty'));
           assert.equal(fs.statSync('path2/to').nlink, 3);
           done();
-        }, done);
+        })
+        .catch(done);
     });
   });
 

@@ -44,7 +44,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer), 'file content');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows file contents to be read w/ offset', function (done) {
@@ -77,7 +78,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer.slice(5)), 'file co');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows file contents to be read w/ length', function (done) {
@@ -110,7 +112,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer.slice(0, 4)), 'file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows file contents to be read w/ offset & length', function (done) {
@@ -143,7 +146,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer.slice(2, 6)), 'file');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows file contents to be read w/ position', function (done) {
@@ -176,7 +180,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer), 'content');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('allows read w/ offset, length, & position', function (done) {
@@ -209,7 +214,8 @@ describe('fs.read(fd, buffer, offset, length, position, callback)', function () 
         assert.equal(result.buffer, buffer);
         assert.equal(String(buffer.slice(2, 9)), 'content');
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails for closed file descriptor', function (done) {
