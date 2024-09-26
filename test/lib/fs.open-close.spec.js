@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 
 describe('fs.open(path, flags, [mode], callback)', function () {
   beforeEach(function () {
@@ -220,30 +219,6 @@ describe('fs.close(fd, callback)', function () {
       });
     });
   });
-
-  inVersion('<14.0.0').it(
-    'promise fails for closed file descriptors',
-    function (done) {
-      fs.promises
-        .open('dir/file.txt', 'w')
-        .then(function (fd) {
-          return fd.close().then(function () {
-            // in Nodejs v14+, closing on closed file descriptor is silently ignored.
-            return fd.close();
-          });
-        })
-        .then(
-          function () {
-            done(new Error('should not succeed.'));
-          },
-          function (err) {
-            assert.instanceOf(err, Error);
-            assert.equal(err.code, 'EBADF');
-            done();
-          }
-        );
-    }
-  );
 });
 
 describe('fs.closeSync(fd)', function () {

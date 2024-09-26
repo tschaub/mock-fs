@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 
 describe('fs.link(srcpath, dstpath, callback)', function () {
   beforeEach(function () {
@@ -198,7 +197,7 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
 
   // https://github.com/nodejs/node/issues/34514
   if (process.platform === 'win32') {
-    inVersion('>=15.0.0').it('supports Buffer input', function (done) {
+    it('supports Buffer input', function (done) {
       fs.symlink(
         Buffer.from('../file.txt'),
         Buffer.from('dir/link.txt'),
