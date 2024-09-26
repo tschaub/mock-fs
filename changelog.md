@@ -1,5 +1,25 @@
 # Change Log
 
+## 5.3.0
+
+ * Remove conditions for untested versions
+ * Remove disabled tests for mock.fs (thanks @everett1992, see [#391][#391])
+ * Fix tests on node 20 (thanks @everett1992, see [#387][#387])
+ * Fix timeout in failing test (thanks @everett1992, see [#390][#390])
+ * Stop testing on Node 12 and 14
+
+<details>
+  <summary>Dependency Updates</summary>
+
+ * chore(deps-dev): bump rimraf from 3.0.2 to 6.0.1
+ * chore(deps): bump actions/checkout from 2 to 4
+ * chore(deps-dev): bump mocha from 9.2.2 to 10.7.3
+ * chore(deps-dev): bump braces from 3.0.2 to 3.0.3
+ * chore(deps-dev): bump word-wrap from 1.2.3 to 1.2.4
+ * chore(deps): bump json5 from 1.0.1 to 1.0.2
+
+</details>
+
 ## 5.2.0
 
  * Fix EACCES error on access by root user (thanks @danielkatz, see [#369][#369])
@@ -351,3 +371,6 @@ Detailed changes:
 [#363]: https://github.com/tschaub/mock-fs/pull/363
 [#366]: https://github.com/tschaub/mock-fs/pull/366
 [#369]: https://github.com/tschaub/mock-fs/pull/369
+[#387]: https://github.com/tschaub/mock-fs/pull/387
+[#390]: https://github.com/tschaub/mock-fs/pull/390
+[#391]: https://github.com/tschaub/mock-fs/pull/391
