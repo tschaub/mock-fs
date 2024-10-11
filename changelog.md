@@ -1,5 +1,17 @@
 # Change Log
 
+## 5.4.0
+
+ * Use setImmediate instead of process.nextTick (thanks @regseb, see [#360][#360])
+
+<details>
+  <summary>Dependency Updates</summary>
+
+ * bump chai from 4.3.4 to 4.5.0
+ * bump eslint from 8.21.0 to 8.57.1
+
+</details>
+
 ## 5.3.0
 
  * Remove conditions for untested versions
@@ -374,3 +386,4 @@ Detailed changes:
 [#387]: https://github.com/tschaub/mock-fs/pull/387
 [#390]: https://github.com/tschaub/mock-fs/pull/390
 [#391]: https://github.com/tschaub/mock-fs/pull/391
+[#360]: https://github.com/tschaub/mock-fs/pull/360
