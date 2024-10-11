@@ -139,11 +139,15 @@ describe('Item', function () {
   });
 
   if (process.getgid && process.getuid) {
-    const uid = process.getuid();
-    const gid = process.getgid();
+    const originalGetuid = process.getuid;
+    const originalGetgid = process.getgid;
+    const uid = originalGetuid();
+    const gid = originalGetgid();
 
     let item;
     beforeEach(function () {
+      process.getuid = originalGetuid;
+      process.getgid = originalGetgid;
       item = new Item();
     });
 
@@ -218,6 +222,14 @@ describe('Item', function () {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
         item.setMode(parseInt('0777', 8));
+        assert.isTrue(item.canRead());
+      });
+
+      it('always returns true if process runs as root', function () {
+        process.getuid = () => 0;
+        item.setUid(42);
+        item.setGid(42);
+        item.setMode(parseInt('0000', 8));
         assert.isTrue(item.canRead());
       });
     });
@@ -295,6 +307,14 @@ describe('Item', function () {
         item.setMode(parseInt('0777', 8));
         assert.isTrue(item.canWrite());
       });
+
+      it('always returns true if process runs as root', function () {
+        process.getuid = () => 0;
+        item.setUid(42);
+        item.setGid(42);
+        item.setMode(parseInt('0000', 8));
+        assert.isTrue(item.canWrite());
+      });
     });
 
     describe('#canExecute()', function () {
@@ -368,6 +388,14 @@ describe('Item', function () {
         item.setUid(uid + 1);
         item.setGid(gid + 1);
         item.setMode(parseInt('0777', 8));
+        assert.isTrue(item.canExecute());
+      });
+
+      it('always returns true if process runs as root', function () {
+        process.getuid = () => 0;
+        item.setUid(42);
+        item.setGid(42);
+        item.setMode(parseInt('0000', 8));
         assert.isTrue(item.canExecute());
       });
     });

@@ -40,7 +40,7 @@ describe('FileSystem', function () {
     });
   });
 
-  describe('#getItem()', function () {
+  describe('#getItem() #getFilepath()', function () {
     it('gets an item', function () {
       const system = FileSystem.create({
         'one/two/three.js': 'contents',
@@ -49,6 +49,7 @@ describe('FileSystem', function () {
       const filepath = path.join('one', 'two', 'three.js');
       const item = system.getItem(filepath);
       assert.instanceOf(item, File);
+      assert.equal(system.getFilepath(item), path.resolve(filepath));
     });
 
     it('returns null if not found', function () {
@@ -79,10 +80,18 @@ describe('FileSystem', function () {
       });
       const file = system.getItem(path.join('dir-link', 'a'));
       assert.instanceOf(file, File);
+      assert.equal(
+        system.getFilepath(file),
+        path.resolve(path.join('b', 'c', 'dir', 'a'))
+      );
 
       const dir = system.getItem(path.join('dir-link', 'b'));
       assert.instanceOf(dir, Directory);
       assert.deepEqual(dir.list().sort(), ['c', 'd']);
+      assert.equal(
+        system.getFilepath(dir),
+        path.resolve(path.join('b', 'c', 'dir', 'b'))
+      );
     });
   });
 });

@@ -27,10 +27,13 @@ describe('fs.writeFile(filename, data, [options], callback)', function () {
   });
 
   it('promise writes a string to a file', function (done) {
-    fs.promises.writeFile('dir/foo', 'bar').then(function () {
-      assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
-      done();
-    }, done);
+    fs.promises
+      .writeFile('dir/foo', 'bar')
+      .then(function () {
+        assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
+        done();
+      })
+      .catch(done);
   });
 
   it('updates mtime of parent directory', function (done) {
@@ -47,11 +50,14 @@ describe('fs.writeFile(filename, data, [options], callback)', function () {
 
   it('promise updates mtime of parent directory', function (done) {
     const oldTime = fs.statSync('dir').mtime;
-    fs.promises.writeFile('dir/foo', 'bar').then(function () {
-      const newTime = fs.statSync('dir').mtime;
-      assert.isTrue(newTime > oldTime);
-      done();
-    }, done);
+    fs.promises
+      .writeFile('dir/foo', 'bar')
+      .then(function () {
+        const newTime = fs.statSync('dir').mtime;
+        assert.isTrue(newTime > oldTime);
+        done();
+      })
+      .catch(done);
   });
 
   it('writes a buffer to a file', function (done) {
@@ -65,10 +71,13 @@ describe('fs.writeFile(filename, data, [options], callback)', function () {
   });
 
   it('promise writes a buffer to a file', function (done) {
-    fs.promises.writeFile('dir/foo', Buffer.from('bar')).then(function () {
-      assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
-      done();
-    }, done);
+    fs.promises
+      .writeFile('dir/foo', Buffer.from('bar'))
+      .then(function () {
+        assert.equal(String(fs.readFileSync('dir/foo')), 'bar');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if directory does not exist', function (done) {

@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 
 const testParentPerms = process.getuid && process.getgid;
 
@@ -64,11 +63,14 @@ describe('fs.rmdir(path, callback)', function () {
   it('promise removes an empty directory', function (done) {
     assert.equal(fs.statSync('path/to').nlink, 3);
 
-    fs.promises.rmdir('path/to/empty').then(function () {
-      assert.isFalse(fs.existsSync('path/to/empty'));
-      assert.equal(fs.statSync('path/to').nlink, 2);
-      done();
-    }, done);
+    fs.promises
+      .rmdir('path/to/empty')
+      .then(function () {
+        assert.isFalse(fs.existsSync('path/to/empty'));
+        assert.equal(fs.statSync('path/to').nlink, 2);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if not empty', function (done) {
@@ -113,54 +115,56 @@ describe('fs.rmdir(path, callback)', function () {
     );
   });
 
-  inVersion('>=12.10').run(function () {
-    it('recursively remove empty directory', function (done) {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
+  it('recursively remove empty directory', function (done) {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
 
-      fs.rmdir('path2/to/empty', {recursive: true}, function (err) {
-        if (err) {
-          return done(err);
-        }
+    fs.rmdir('path2/to/empty', {recursive: true}, function (err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('path2/to/empty'));
+      assert.equal(fs.statSync('path2/to').nlink, 3);
+      done();
+    });
+  });
+
+  it('promise recursively remove empty directory', function (done) {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
+
+    fs.promises
+      .rmdir('path2/to/empty', {recursive: true})
+      .then(function () {
         assert.isFalse(fs.existsSync('path2/to/empty'));
         assert.equal(fs.statSync('path2/to').nlink, 3);
         done();
-      });
+      })
+      .catch(done);
+  });
+
+  it('recursively remove non-empty directory', function (done) {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
+
+    fs.rmdir('path2/to/non-empty', {recursive: true}, function (err) {
+      if (err) {
+        return done(err);
+      }
+      assert.isFalse(fs.existsSync('path2/to/non-empty'));
+      assert.equal(fs.statSync('path2/to').nlink, 3);
+      done();
     });
+  });
 
-    it('promise recursively remove empty directory', function (done) {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
+  it('promise recursively remove non-empty directory', function (done) {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
 
-      fs.promises.rmdir('path2/to/empty', {recursive: true}).then(function () {
-        assert.isFalse(fs.existsSync('path2/to/empty'));
-        assert.equal(fs.statSync('path2/to').nlink, 3);
-        done();
-      }, done);
-    });
-
-    it('recursively remove non-empty directory', function (done) {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
-
-      fs.rmdir('path2/to/non-empty', {recursive: true}, function (err) {
-        if (err) {
-          return done(err);
-        }
+    fs.promises
+      .rmdir('path2/to/non-empty', {recursive: true})
+      .then(function () {
         assert.isFalse(fs.existsSync('path2/to/non-empty'));
         assert.equal(fs.statSync('path2/to').nlink, 3);
         done();
-      });
-    });
-
-    it('promise recursively remove non-empty directory', function (done) {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
-
-      fs.promises
-        .rmdir('path2/to/non-empty', {recursive: true})
-        .then(function () {
-          assert.isFalse(fs.existsSync('path2/to/non-empty'));
-          assert.equal(fs.statSync('path2/to').nlink, 3);
-          done();
-        }, done);
-    });
+      })
+      .catch(done);
   });
 
   if (testParentPerms) {
@@ -214,20 +218,18 @@ describe('fs.rmdirSync(path)', function () {
     });
   });
 
-  inVersion('>=12.10').run(function () {
-    it('recursively remove empty directory', function () {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
-      fs.rmdirSync('path2/to/empty', {recursive: true});
-      assert.isFalse(fs.existsSync('path2/to/empty'));
-      assert.equal(fs.statSync('path2/to').nlink, 3);
-    });
+  it('recursively remove empty directory', function () {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
+    fs.rmdirSync('path2/to/empty', {recursive: true});
+    assert.isFalse(fs.existsSync('path2/to/empty'));
+    assert.equal(fs.statSync('path2/to').nlink, 3);
+  });
 
-    it('recursively remove non-empty directory', function () {
-      assert.equal(fs.statSync('path2/to').nlink, 4);
-      fs.rmdirSync('path2/to/non-empty', {recursive: true});
-      assert.isFalse(fs.existsSync('path2/to/non-empty'));
-      assert.equal(fs.statSync('path2/to').nlink, 3);
-    });
+  it('recursively remove non-empty directory', function () {
+    assert.equal(fs.statSync('path2/to').nlink, 4);
+    fs.rmdirSync('path2/to/non-empty', {recursive: true});
+    assert.isFalse(fs.existsSync('path2/to/non-empty'));
+    assert.equal(fs.statSync('path2/to').nlink, 3);
   });
 
   if (testParentPerms) {

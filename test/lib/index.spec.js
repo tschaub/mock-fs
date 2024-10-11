@@ -191,7 +191,6 @@ describe('The API', function () {
       'mtime',
       'gid',
       'uid',
-      'mtime',
       'mode',
     ];
     const filterStats = (stats) => {
@@ -199,12 +198,15 @@ describe('The API', function () {
       for (const key of statsCompareKeys) {
         const k =
           (stats.hasOwnProperty(key) && key) ||
-          (stats.hasOwnProperty(`_${key}`) && `_${key}`);
+          (stats.hasOwnProperty(`_${key}`) && `_${key}`) ||
+          (stats.hasOwnProperty(`${key}Ms`) && `${key}Ms`);
 
         if (k) {
           res[key] =
             k === 'mode' && stats.isDirectory()
               ? fixWin32Permissions(stats[k])
+              : k.endsWith('Ms')
+              ? new Date(stats[k])
               : stats[k];
         }
       }
@@ -340,50 +342,6 @@ describe('The API', function () {
         assert.equal(fs.readFileSync('/dir/file1.txt'), 'data1');
         mock.restore();
       });
-    });
-  });
-
-  xdescribe('mock.fs()', function () {
-    it('generates a mock fs module with a mock file system', function (done) {
-      const mockFs = mock.fs({
-        'path/to/file.txt': 'file content',
-      });
-
-      mockFs.exists('path/to/file.txt', function (exists) {
-        assert.isTrue(exists);
-        done();
-      });
-    });
-
-    it('passes options to the FileSystem constructor', function () {
-      const mockFs = mock.fs(
-        {
-          '/path/to/file.txt': 'file content',
-        },
-        {
-          createCwd: false,
-          createTmp: false,
-        }
-      );
-
-      assert.isTrue(mockFs.existsSync('/path/to/file.txt'));
-      assert.deepEqual(mockFs.readdirSync('/'), ['path']);
-    });
-
-    it('accepts an arbitrary nesting of files and directories', function () {
-      const mockFs = mock.fs({
-        'dir-one': {
-          'dir-two': {
-            'some-file.txt': 'file content here',
-          },
-        },
-        'empty-dir': {},
-      });
-
-      assert.isTrue(mockFs.existsSync('dir-one/dir-two/some-file.txt'));
-      assert.isTrue(mockFs.statSync('dir-one/dir-two/some-file.txt').isFile());
-      assert.isTrue(mockFs.statSync('dir-one/dir-two').isDirectory());
-      assert.isTrue(mockFs.statSync('empty-dir').isDirectory());
     });
   });
 });

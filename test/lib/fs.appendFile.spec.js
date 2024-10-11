@@ -26,10 +26,13 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
   });
 
   it('promise writes a string to a new file', function (done) {
-    fs.promises.appendFile('foo', 'bar').then(function () {
-      assert.equal(String(fs.readFileSync('foo')), 'bar');
-      done();
-    }, done);
+    fs.promises
+      .appendFile('foo', 'bar')
+      .then(function () {
+        assert.equal(String(fs.readFileSync('foo')), 'bar');
+        done();
+      })
+      .catch(done);
   });
 
   it('appends a string to an existing file', function (done) {
@@ -43,10 +46,16 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
   });
 
   it('promise appends a string to an existing file', function (done) {
-    fs.promises.appendFile('dir/file.txt', ' bar').then(function () {
-      assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
-      done();
-    }, done);
+    fs.promises
+      .appendFile('dir/file.txt', ' bar')
+      .then(function () {
+        assert.equal(
+          String(fs.readFileSync('dir/file.txt')),
+          'file content bar'
+        );
+        done();
+      })
+      .catch(done);
   });
 
   it('appends a buffer to a file', function (done) {
@@ -68,7 +77,8 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
           'file content bar'
         );
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('appends via a symbolic link file', function (done) {
@@ -82,10 +92,16 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
   });
 
   it('promise appends via a symbolic link file', function (done) {
-    fs.promises.appendFile('link.txt', ' bar').then(function () {
-      assert.equal(String(fs.readFileSync('dir/file.txt')), 'file content bar');
-      done();
-    }, done);
+    fs.promises
+      .appendFile('link.txt', ' bar')
+      .then(function () {
+        assert.equal(
+          String(fs.readFileSync('dir/file.txt')),
+          'file content bar'
+        );
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if directory does not exist', function (done) {

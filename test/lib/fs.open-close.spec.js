@@ -5,7 +5,6 @@ const fs = require('fs');
 const mock = require('../../lib/index.js');
 
 const assert = helper.assert;
-const inVersion = helper.inVersion;
 
 describe('fs.open(path, flags, [mode], callback)', function () {
   beforeEach(function () {
@@ -45,10 +44,13 @@ describe('fs.open(path, flags, [mode], callback)', function () {
   });
 
   it('promise opens an existing file for reading (r)', function (done) {
-    fs.promises.open('nested/sub/dir/one.txt', 'r').then(function (fd) {
-      assert.isNumber(fd.fd);
-      done();
-    }, done);
+    fs.promises
+      .open('nested/sub/dir/one.txt', 'r')
+      .then(function (fd) {
+        assert.isNumber(fd.fd);
+        done();
+      })
+      .catch(done);
   });
 
   it('fails if file does not exist (r)', function (done) {
@@ -90,7 +92,8 @@ describe('fs.open(path, flags, [mode], callback)', function () {
         assert.isNumber(fd.fd);
         assert.isTrue(fs.existsSync('path/to/new.txt'));
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('opens an existing file for writing (w)', function (done) {
@@ -109,7 +112,8 @@ describe('fs.open(path, flags, [mode], callback)', function () {
       .then(function (fd) {
         assert.isNumber(fd.fd);
         done();
-      }, done);
+      })
+      .catch(done);
   });
 
   it('fails if file exists (wx)', function (done) {
@@ -215,30 +219,6 @@ describe('fs.close(fd, callback)', function () {
       });
     });
   });
-
-  inVersion('<14.0.0').it(
-    'promise fails for closed file descriptors',
-    function (done) {
-      fs.promises
-        .open('dir/file.txt', 'w')
-        .then(function (fd) {
-          return fd.close().then(function () {
-            // in Nodejs v14+, closing on closed file descriptor is silently ignored.
-            return fd.close();
-          });
-        })
-        .then(
-          function () {
-            done(new Error('should not succeed.'));
-          },
-          function (err) {
-            assert.instanceOf(err, Error);
-            assert.equal(err.code, 'EBADF');
-            done();
-          }
-        );
-    }
-  );
 });
 
 describe('fs.closeSync(fd)', function () {

@@ -29,11 +29,14 @@ describe('fs.readFile(filename, [options], callback)', function () {
   });
 
   it('promise allows a file to be read asynchronously', function (done) {
-    fs.promises.readFile('path/to/file.txt').then(function (data) {
-      assert.isTrue(Buffer.isBuffer(data));
-      assert.equal(String(data), 'file content');
-      done();
-    }, done);
+    fs.promises
+      .readFile('path/to/file.txt')
+      .then(function (data) {
+        assert.isTrue(Buffer.isBuffer(data));
+        assert.equal(String(data), 'file content');
+        done();
+      })
+      .catch(done);
   });
 
   it('fails for directory', function (done) {
@@ -91,6 +94,11 @@ describe('fs.readFileSync(filename, [options])', function () {
     });
   });
   afterEach(mock.restore);
+
+  it('works with utf-8', function () {
+    const content = fs.readFileSync('path/to/file.txt', 'utf-8').toString();
+    assert.equal(content, 'file content');
+  });
 
   it('allows a file to be read synchronously', function () {
     const data = fs.readFileSync('path/to/file.txt');
