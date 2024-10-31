@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.4.1
+
+ * Avoid errors in `fs.existsSync` (see [#401][#401])
+
 ## 5.4.0
 
  * Use setImmediate instead of process.nextTick (thanks @regseb, see [#360][#360])
@@ -387,3 +391,4 @@ Detailed changes:
 [#390]: https://github.com/tschaub/mock-fs/pull/390
 [#391]: https://github.com/tschaub/mock-fs/pull/391
 [#360]: https://github.com/tschaub/mock-fs/pull/360
+[#401]: https://github.com/tschaub/mock-fs/pull/401
