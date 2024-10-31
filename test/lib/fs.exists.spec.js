@@ -76,6 +76,13 @@ describe('fs.exists(path, callback)', function () {
       done();
     });
   });
+
+  it('calls with false for bogus path (III)', function (done) {
+    fs.exists(path.join('path', 'to', 'a.bin', 'foo'), function (exists) {
+      assert.isFalse(exists);
+      done();
+    });
+  });
 });
 
 describe('fs.existsSync(path)', function () {
@@ -122,5 +129,9 @@ describe('fs.existsSync(path)', function () {
 
   it('returns false for bogus path (II)', function () {
     assert.isFalse(fs.existsSync(path.join('nested', 'dir', 'none')));
+  });
+
+  it('returns false for a path beyond a file', function () {
+    assert.isFalse(fs.existsSync(path.join('path', 'to', 'a.bin', 'foo')));
   });
 });
