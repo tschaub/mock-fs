@@ -8,7 +8,9 @@ const assert = helper.assert;
 
 describe('fs.createWriteStream(path[, options])', function () {
   beforeEach(function () {
-    mock();
+    mock({
+      existing: 'content',
+    });
   });
   afterEach(mock.restore);
 
@@ -30,6 +32,24 @@ describe('fs.createWriteStream(path[, options])', function () {
     output.write(Buffer.from('lots '));
     output.write(Buffer.from('of '));
     output.write(Buffer.from('source '));
+    output.end(Buffer.from('content'));
+  });
+
+  it('can be used with the append flag', function (done) {
+    const filename = 'existing';
+    const output = fs.createWriteStream(filename, {flags: 'a'});
+    output.on('close', function () {
+      fs.readFile(filename, function (err, data) {
+        if (err) {
+          return done(err);
+        }
+        assert.equal(String(data), 'contentmorecontent');
+        done();
+      });
+    });
+    output.on('error', done);
+
+    output.write(Buffer.from('more'));
     output.end(Buffer.from('content'));
   });
 
