@@ -1,8 +1,7 @@
-'use strict';
-
-const Item = require('../../lib/item.js');
+const {describe, it} = require('mocha');
 const Directory = require('../../lib/directory.js');
 const File = require('../../lib/file.js');
+const Item = require('../../lib/item.js');
 const assert = require('../helper.js').assert;
 
 describe('Directory', function () {

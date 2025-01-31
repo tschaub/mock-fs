@@ -1,10 +1,16 @@
 const assert = require('assert');
 const fs = require('fs');
-
-const mock = require('..');
+const mock = require('../lib/index.js');
 
 /**
  * Test setup.  Not timed.
+ */
+exports.afterEach = function () {
+  mock.restore();
+};
+
+/**
+ * Test teardown.  Not timed.
  */
 exports.beforeEach = function () {
   mock({
@@ -14,7 +20,7 @@ exports.beforeEach = function () {
 
 /**
  * Timed test.
- * @param {function(Error)} done Callback.
+ * @param {function(Error):void} done Callback.
  */
 exports.test = function (done) {
   fs.readFile('foo-mock.txt', 'utf8', function (err, str) {
@@ -22,11 +28,4 @@ exports.test = function (done) {
     assert.equal(str, 'foo');
     done();
   });
-};
-
-/**
- * Test teardown.  Not timed.
- */
-exports.afterEach = function () {
-  mock.restore();
 };

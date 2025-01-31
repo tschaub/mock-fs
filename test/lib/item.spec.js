@@ -1,5 +1,4 @@
-'use strict';
-
+const {beforeEach, describe, it} = require('mocha');
 const Item = require('../../lib/item.js');
 const assert = require('../helper.js').assert;
 

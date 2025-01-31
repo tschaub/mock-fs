@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -135,7 +134,7 @@ describe('fs.link(srcpath, dstpath, callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EPERM');
         done();
-      }
+      },
     );
   });
 });
@@ -208,7 +207,7 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
           assert.isTrue(fs.statSync('dir/link.txt').isFile());
           assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
           done();
-        }
+        },
       );
     });
   } else {
@@ -223,7 +222,7 @@ describe('fs.symlink(srcpath, dstpath, [type], callback)', function () {
           assert.isTrue(fs.statSync('dir/link.txt').isFile());
           assert.equal(String(fs.readFileSync('dir/link.txt')), 'content');
           done();
-        }
+        },
       );
     });
   }

@@ -1,9 +1,8 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index.js');
 const path = require('path');
+const {afterEach, beforeEach, describe, it} = require('mocha');
+const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -184,7 +183,7 @@ if (fs.mkdtemp) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'ENOENT');
           done();
-        }
+        },
       );
     });
 
@@ -210,7 +209,7 @@ if (fs.mkdtemp) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'ENOTDIR');
           done();
-        }
+        },
       );
     });
 
@@ -237,7 +236,7 @@ if (fs.mkdtemp) {
             assert.instanceOf(err, Error);
             assert.equal(err.code, 'EACCES');
             done();
-          }
+          },
         );
       });
     }

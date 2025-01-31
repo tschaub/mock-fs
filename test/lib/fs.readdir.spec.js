@@ -1,9 +1,8 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index.js');
 const path = require('path');
+const {afterEach, beforeEach, describe, it} = require('mocha');
+const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -97,7 +96,7 @@ describe('fs.readdir(path, callback)', function () {
       function (err) {
         assert.instanceOf(err, Error);
         done();
-      }
+      },
     );
   });
 
@@ -119,7 +118,7 @@ describe('fs.readdir(path, callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EACCES');
         done();
-      }
+      },
     );
   });
 
@@ -132,13 +131,13 @@ describe('fs.readdir(path, callback)', function () {
         assert.isArray(items);
         assert.deepEqual(
           items.map((i) => i.name),
-          ['empty', 'one.txt', 'two.txt']
+          ['empty', 'one.txt', 'two.txt'],
         );
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
         assert.ok(items[2].isFile());
         done();
-      }
+      },
     );
   });
 
@@ -149,7 +148,7 @@ describe('fs.readdir(path, callback)', function () {
         assert.isArray(items);
         assert.deepEqual(
           items.map((i) => i.name),
-          ['empty', 'one.txt', 'two.txt']
+          ['empty', 'one.txt', 'two.txt'],
         );
         assert.ok(items[0].isDirectory());
         assert.ok(items[1].isFile());
@@ -177,7 +176,7 @@ describe('fs.readdir(path, callback)', function () {
         assert.ok(items[1].isFile());
         assert.ok(items[2].isFile());
         done();
-      }
+      },
     );
   });
 

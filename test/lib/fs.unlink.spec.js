@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -94,7 +93,7 @@ describe('fs.unlink(path, callback)', function () {
         assert.equal(err.code, 'EPERM');
         assert.isTrue(fs.existsSync('dir'));
         done();
-      }
+      },
     );
   });
 

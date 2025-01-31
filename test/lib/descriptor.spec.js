@@ -1,6 +1,5 @@
-'use strict';
-
 const constants = require('constants');
+const {describe, it} = require('mocha');
 const FileDescriptor = require('../../lib/descriptor.js');
 const helper = require('../helper.js');
 

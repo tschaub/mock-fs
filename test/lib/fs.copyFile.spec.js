@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -35,10 +34,10 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.isTrue(fs.existsSync('empty/dest.txt'));
           assert.equal(
             String(fs.readFileSync('empty/dest.txt')),
-            'file content'
+            'file content',
           );
           done();
-        }
+        },
       );
     });
 
@@ -49,7 +48,7 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.isTrue(fs.existsSync('empty/dest.txt'));
           assert.equal(
             String(fs.readFileSync('empty/dest.txt')),
-            'file content'
+            'file content',
           );
           done();
         })
@@ -61,7 +60,7 @@ if (fs.copyFile && fs.copyFileSync) {
         assert.isTrue(!err);
         assert.equal(
           String(fs.readFileSync('path/to/other.txt')),
-          'file content'
+          'file content',
         );
         done();
       });
@@ -73,7 +72,7 @@ if (fs.copyFile && fs.copyFileSync) {
         .then(function () {
           assert.equal(
             String(fs.readFileSync('path/to/other.txt')),
-            'file content'
+            'file content',
           );
           done();
         })
@@ -89,7 +88,7 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EEXIST');
           done();
-        }
+        },
       );
     });
 
@@ -98,7 +97,7 @@ if (fs.copyFile && fs.copyFileSync) {
         .copyFile(
           'path/to/src.txt',
           'path/to/other.txt',
-          fs.constants.COPYFILE_EXCL
+          fs.constants.COPYFILE_EXCL,
         )
         .then(
           function () {
@@ -108,7 +107,7 @@ if (fs.copyFile && fs.copyFileSync) {
             assert.instanceOf(err, Error);
             assert.equal(err.code, 'EEXIST');
             done();
-          }
+          },
         );
     });
 
@@ -129,7 +128,7 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'ENOENT');
           done();
-        }
+        },
       );
     });
 
@@ -150,7 +149,7 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'ENOENT');
           done();
-        }
+        },
       );
     });
 
@@ -171,7 +170,7 @@ if (fs.copyFile && fs.copyFileSync) {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EISDIR');
           done();
-        }
+        },
       );
     });
   });
