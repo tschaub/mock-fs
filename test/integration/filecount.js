@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 
@@ -30,7 +28,7 @@ function numFiles(dir, items, callback) {
 /**
  * Count the number of files in a directory.
  * @param {string} dir Path to directory.
- * @param {function(Error, number)} callback Callback.
+ * @param {function(Error, number):void} callback Callback.
  */
 module.exports = function (dir, callback) {
   fs.readdir(dir, function (err, items) {

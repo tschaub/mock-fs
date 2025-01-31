@@ -1,13 +1,12 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index.js');
 const os = require('os');
 const path = require('path');
-const File = require('../../lib/file.js');
-const {fixWin32Permissions} = require('../../lib/item.js');
+const {afterEach, beforeEach, describe, it, xit} = require('mocha');
 const Directory = require('../../lib/directory.js');
+const File = require('../../lib/file.js');
+const mock = require('../../lib/index.js');
+const {fixWin32Permissions} = require('../../lib/item.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 const assetsPath = path.resolve(__dirname, '../assets');
@@ -206,8 +205,8 @@ describe('The API', function () {
             k === 'mode' && stats.isDirectory()
               ? fixWin32Permissions(stats[k])
               : k.endsWith('Ms')
-              ? new Date(stats[k])
-              : stats[k];
+                ? new Date(stats[k])
+                : stats[k];
         }
       }
       return res;
@@ -230,11 +229,11 @@ describe('The API', function () {
         it('creates accessors', () => {
           assert.typeOf(
             Object.getOwnPropertyDescriptor(file, '_content').get,
-            'function'
+            'function',
           );
           assert.typeOf(
             Object.getOwnPropertyDescriptor(file, '_content').set,
-            'function'
+            'function',
           );
         });
         it('read file loads data and replaces accessors', () => {
@@ -242,15 +241,15 @@ describe('The API', function () {
 
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(file, '_content').value,
-            Buffer
+            Buffer,
           );
           assert.isNotOk(
             Object.getOwnPropertyDescriptor(file, '_content').get,
-            'function'
+            'function',
           );
           assert.isNotOk(
             Object.getOwnPropertyDescriptor(file, '_content').set,
-            'function'
+            'function',
           );
         });
         it('write file updates content and replaces accessors', () => {
@@ -259,15 +258,15 @@ describe('The API', function () {
           assert.equal(file._content.toString(), 'new data');
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(file, '_content').value,
-            Buffer
+            Buffer,
           );
           assert.isNotOk(
             Object.getOwnPropertyDescriptor(file, '_content').get,
-            'function'
+            'function',
           );
           assert.isNotOk(
             Object.getOwnPropertyDescriptor(file, '_content').set,
-            'function'
+            'function',
           );
         });
       });
@@ -279,7 +278,7 @@ describe('The API', function () {
 
         assert.equal(
           Object.getOwnPropertyDescriptor(file, '_content').value.toString(),
-          'data1'
+          'data1',
         );
       });
 
@@ -319,13 +318,13 @@ describe('The API', function () {
           dir = mock.load(assetsPath, {recursive: true, lazy: true})();
           assert.typeOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').get,
-            'function'
+            'function',
           );
 
           dir = mock.load(assetsPath, {recursive: true, lazy: false})();
           assert.instanceOf(
             Object.getOwnPropertyDescriptor(getFile(), '_content').value,
-            Buffer
+            Buffer,
           );
         });
       });

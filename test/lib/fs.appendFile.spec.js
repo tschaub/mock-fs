@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -51,7 +50,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
       .then(function () {
         assert.equal(
           String(fs.readFileSync('dir/file.txt')),
-          'file content bar'
+          'file content bar',
         );
         done();
       })
@@ -74,7 +73,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
       .then(function () {
         assert.equal(
           String(fs.readFileSync('dir/file.txt')),
-          'file content bar'
+          'file content bar',
         );
         done();
       })
@@ -97,7 +96,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
       .then(function () {
         assert.equal(
           String(fs.readFileSync('dir/file.txt')),
-          'file content bar'
+          'file content bar',
         );
         done();
       })
@@ -120,7 +119,7 @@ describe('fs.appendFile(filename, data, [options], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
-      }
+      },
     );
   });
 });

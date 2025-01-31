@@ -1,9 +1,6 @@
-/* eslint-env mocha */
-'use strict';
-
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
 const assert = require('../helper.js').assert;
-
 const count = require('./filecount.js');
 
 describe('count(dir, callback)', function () {

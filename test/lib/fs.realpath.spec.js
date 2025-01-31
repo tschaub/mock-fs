@@ -1,9 +1,8 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
 const path = require('path');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 const assertEqualPaths = helper.assertEqualPaths;
@@ -74,7 +73,7 @@ describe('fs.realpath(path, [cache], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
-      }
+      },
     );
   });
 });

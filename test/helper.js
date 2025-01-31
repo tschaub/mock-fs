@@ -1,7 +1,6 @@
-'use strict';
-
-const chai = require('chai');
 const constants = require('constants');
+const chai = require('chai');
+const {describe, it, xdescribe, xit} = require('mocha');
 const semver = require('semver');
 
 /** @type {boolean} */
@@ -35,19 +34,13 @@ const NO_TEST = {
   run: noRun,
 };
 
-exports.inVersion = function (range) {
-  if (semver.satisfies(process.version, range)) {
-    return TEST;
+exports.assertEqualPaths = function (actual, expected) {
+  if (process.platform === 'win32') {
+    chai.assert.equal(actual.toLowerCase(), expected.toLowerCase());
   } else {
-    return NO_TEST;
+    chai.assert(actual, expected);
   }
 };
-
-/**
- * Convert a string to flags for fs.open.
- * @param {string} str String.
- * @return {number} Flags.
- */
 exports.flags = function (str) {
   switch (str) {
     case 'r':
@@ -106,11 +99,16 @@ exports.flags = function (str) {
       throw new Error('Unsupported flag: ' + str);
   }
 };
-
-exports.assertEqualPaths = function (actual, expected) {
-  if (process.platform === 'win32') {
-    chai.assert.equal(actual.toLowerCase(), expected.toLowerCase());
+exports.inVersion = function (range) {
+  if (semver.satisfies(process.version, range)) {
+    return TEST;
   } else {
-    chai.assert(actual, expected);
+    return NO_TEST;
   }
 };
+
+/**
+ * Convert a string to flags for fs.open.
+ * @param {string} str String.
+ * @return {number} Flags.
+ */

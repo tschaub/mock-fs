@@ -1,9 +1,8 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
-const mock = require('../../lib/index.js');
+const {afterEach, beforeEach, describe, it, xit} = require('mocha');
 const semver = require('semver');
+const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -94,7 +93,7 @@ describe('fs.stat(path, options, callback)', function () {
         assert.isFalse(stats.isDirectory());
         assert.equal(typeof stats.mtimeMs, 'bigint');
         done();
-      }
+      },
     );
   });
 
@@ -528,7 +527,7 @@ describe('fs.fstat(fd, options, callback)', function () {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EBADF');
           done();
-        }
+        },
       );
   });
 });

@@ -1,7 +1,6 @@
-'use strict';
-
 const os = require('os');
 const path = require('path');
+const {describe, it} = require('mocha');
 const Directory = require('../../lib/directory.js');
 const File = require('../../lib/file.js');
 const FileSystem = require('../../lib/filesystem.js');
@@ -82,7 +81,7 @@ describe('FileSystem', function () {
       assert.instanceOf(file, File);
       assert.equal(
         system.getFilepath(file),
-        path.resolve(path.join('b', 'c', 'dir', 'a'))
+        path.resolve(path.join('b', 'c', 'dir', 'a')),
       );
 
       const dir = system.getItem(path.join('dir-link', 'b'));
@@ -90,7 +89,7 @@ describe('FileSystem', function () {
       assert.deepEqual(dir.list().sort(), ['c', 'd']);
       assert.equal(
         system.getFilepath(dir),
-        path.resolve(path.join('b', 'c', 'dir', 'b'))
+        path.resolve(path.join('b', 'c', 'dir', 'b')),
       );
     });
   });

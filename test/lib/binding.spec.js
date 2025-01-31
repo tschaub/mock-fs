@@ -1,13 +1,12 @@
-'use strict';
-
+const constants = require('constants');
 const path = require('path');
+const {beforeEach, describe, it} = require('mocha');
 const Binding = require('../../lib/binding.js');
 const Directory = require('../../lib/directory.js');
-const SymbolicLink = require('../../lib/symlink.js');
 const File = require('../../lib/file.js');
 const FileSystem = require('../../lib/filesystem.js');
+const SymbolicLink = require('../../lib/symlink.js');
 const helper = require('../helper.js');
-const constants = require('constants');
 
 const assert = helper.assert;
 const assertEqualPaths = helper.assertEqualPaths;
@@ -82,7 +81,7 @@ describe('Binding', function () {
           }
           assert.instanceOf(stats, Float64Array);
           done();
-        }
+        },
       );
     });
 
@@ -103,7 +102,7 @@ describe('Binding', function () {
           }
           assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
           done();
-        }
+        },
       );
     });
 
@@ -141,22 +140,22 @@ describe('Binding', function () {
           }
           assert.equal(
             stats[10] * 1000 + stats[11] / 1000000,
-            new Date(1).getTime()
+            new Date(1).getTime(),
           );
           assert.equal(
             stats[12] * 1000 + stats[13] / 1000000,
-            new Date(3).getTime()
+            new Date(3).getTime(),
           );
           assert.equal(
             stats[14] * 1000 + stats[15] / 1000000,
-            new Date(2).getTime()
+            new Date(2).getTime(),
           );
           assert.equal(
             stats[16] * 1000 + stats[17] / 1000000,
-            new Date(4).getTime()
+            new Date(4).getTime(),
           );
           done();
-        }
+        },
       );
     });
 
@@ -171,7 +170,7 @@ describe('Binding', function () {
           }
           assert.equal(stats[1] & parseInt('0777', 8), parseInt('0666', 8));
           done();
-        }
+        },
       );
     });
 
@@ -186,7 +185,7 @@ describe('Binding', function () {
           }
           assert.equal(stats[1] & parseInt('0777', 8), parseInt('0644', 8));
           done();
-        }
+        },
       );
     });
 
@@ -201,7 +200,7 @@ describe('Binding', function () {
           }
           assert.equal(stats[8], 11);
           done();
-        }
+        },
       );
     });
 
@@ -254,7 +253,7 @@ describe('Binding', function () {
       const binding = new Binding(system);
       const stats = binding.stat(
         path.join('mock-dir', 'dir-link', 'a.txt'),
-        false
+        false,
       );
       assert.equal(stats[1] & constants.S_IFMT, constants.S_IFREG);
       assert.equal(stats[1] & 0x1ff, parseInt('0644', 8));
@@ -301,7 +300,7 @@ describe('Binding', function () {
           }
           assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
           done();
-        }
+        },
       );
     });
 
@@ -316,7 +315,7 @@ describe('Binding', function () {
           }
           assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
           done();
-        }
+        },
       );
     });
 
@@ -353,7 +352,7 @@ describe('Binding', function () {
           }
           assertEqualPaths(realPath, path.resolve('mock-dir/non-empty/b.txt'));
           done();
-        }
+        },
       );
     });
 
@@ -368,7 +367,7 @@ describe('Binding', function () {
           }
           assertEqualPaths(realPath, path.resolve('mock-dir/one.txt'));
           done();
-        }
+        },
       );
     });
 
@@ -395,7 +394,7 @@ describe('Binding', function () {
           }
           assert.equal(err.code, 'ENOENT');
           done();
-        }
+        },
       );
     });
 
@@ -410,7 +409,7 @@ describe('Binding', function () {
           }
           assert.equal(err.code, 'ENOTDIR');
           done();
-        }
+        },
       );
     });
   });
@@ -565,7 +564,7 @@ describe('Binding', function () {
           assert.isArray(items);
           assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
           done();
-        }
+        },
       );
     });
 
@@ -580,7 +579,7 @@ describe('Binding', function () {
           assert.isArray(items);
           assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
           done();
-        }
+        },
       );
     });
 
@@ -589,7 +588,7 @@ describe('Binding', function () {
       const items = binding.readdir(
         path.join('mock-dir', 'dir-link'),
         'utf8',
-        false
+        false,
       );
       assert.isArray(items);
       assert.deepEqual(items.sort(), ['a.txt', 'b.txt']);
@@ -614,7 +613,7 @@ describe('Binding', function () {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
-        }
+        },
       );
     });
 
@@ -628,7 +627,7 @@ describe('Binding', function () {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
-        }
+        },
       );
     });
 
@@ -642,7 +641,7 @@ describe('Binding', function () {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
-        }
+        },
       );
     });
 
@@ -656,7 +655,7 @@ describe('Binding', function () {
           assert.instanceOf(err, Error);
           assert.isUndefined(items);
           done();
-        }
+        },
       );
     });
   });
@@ -735,7 +734,7 @@ describe('Binding', function () {
       binding.open(
         path.join('mock-dir', 'two.txt'),
         flags('w'),
-        parseInt('0666', 8)
+        parseInt('0666', 8),
       );
       const file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
@@ -770,7 +769,7 @@ describe('Binding', function () {
       binding.open(
         path.join('mock-dir', 'one.txt'),
         flags('w+'),
-        parseInt('0666', 8)
+        parseInt('0666', 8),
       );
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
@@ -792,7 +791,7 @@ describe('Binding', function () {
         binding.open(
           path.join('mock-dir', 'one.txt'),
           flags('wx+'),
-          parseInt('0666', 8)
+          parseInt('0666', 8),
         );
       });
     });
@@ -811,7 +810,7 @@ describe('Binding', function () {
       binding.open(
         path.join('mock-dir', 'one.txt'),
         flags('a'),
-        parseInt('0666', 8)
+        parseInt('0666', 8),
       );
       const file = system.getItem(path.join('mock-dir', 'one.txt'));
       assert.instanceOf(file, File);
@@ -840,7 +839,7 @@ describe('Binding', function () {
         binding.open(
           path.join('mock-dir', 'one.txt'),
           flags('ax'),
-          parseInt('0666', 8)
+          parseInt('0666', 8),
         );
       });
     });
@@ -859,7 +858,7 @@ describe('Binding', function () {
       binding.open(
         path.join('mock-dir', 'one.txt'),
         flags('a+'),
-        parseInt('0666', 8)
+        parseInt('0666', 8),
       );
       const file = system.getItem(path.join('mock-dir', 'two.txt'));
       assert.instanceOf(file, File);
@@ -881,7 +880,7 @@ describe('Binding', function () {
         binding.open(
           path.join('mock-dir', 'two.txt'),
           flags('ax+'),
-          parseInt('0666', 8)
+          parseInt('0666', 8),
         );
       });
     });
@@ -945,7 +944,7 @@ describe('Binding', function () {
       const binding = new Binding(system);
       const fd = binding.open(
         path.join('mock-dir', 'one-link.txt'),
-        flags('r')
+        flags('r'),
       );
       const buffer = Buffer.alloc(11);
       const read = binding.read(fd, buffer, 0, 11, 0);
@@ -957,7 +956,7 @@ describe('Binding', function () {
       const binding = new Binding(system);
       const fd = binding.open(
         path.join('mock-dir', 'one-link2.txt'),
-        flags('r')
+        flags('r'),
       );
       const buffer = Buffer.alloc(11);
       const read = binding.read(fd, buffer, 0, 11, 0);
@@ -979,7 +978,7 @@ describe('Binding', function () {
       assert.throws(function () {
         binding.open(
           path.join('mock-dir', 'two.txt', 'bogus-path'),
-          flags('r')
+          flags('r'),
         );
       }, 'ENOTDIR');
     });
@@ -1586,7 +1585,7 @@ describe('Binding', function () {
       const binding = new Binding(system);
       const srcPath = binding.readlink(
         path.join('mock-dir', 'one-link.txt'),
-        'buffer'
+        'buffer',
       );
       assert.equal(Buffer.isBuffer(srcPath), true);
       assert.equal(srcPath.toString(), './one.txt');

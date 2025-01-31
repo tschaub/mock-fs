@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -128,7 +127,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.isTrue(stats.isDirectory());
         assert.equal(stats.mode & parseInt('0777', 8), parseInt('0755', 8));
         done();
-      }
+      },
     );
   });
 
@@ -169,7 +168,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
-      }
+      },
     );
   });
 
@@ -188,7 +187,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
       function (err) {
         assert.instanceOf(err, Error);
         done();
-      }
+      },
     );
   });
 
@@ -199,7 +198,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
       function (err) {
         assert.instanceOf(err, Error);
         done();
-      }
+      },
     );
   });
 
@@ -216,7 +215,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         function (err) {
           assert.instanceOf(err, Error);
           done();
-        }
+        },
       );
   });
 
@@ -237,7 +236,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EEXIST');
         done();
-      }
+      },
     );
   });
 
@@ -258,7 +257,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EEXIST');
         done();
-      }
+      },
     );
   });
 
@@ -279,7 +278,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'EEXIST');
         done();
-      }
+      },
     );
   });
 
@@ -312,7 +311,7 @@ describe('fs.mkdir(path, [mode], callback)', function () {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EACCES');
           done();
-        }
+        },
       );
     });
   }

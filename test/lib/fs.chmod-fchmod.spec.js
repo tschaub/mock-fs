@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -64,7 +63,7 @@ describe('fs.chmod(path, mode, callback)', function () {
         assert.instanceOf(err, Error);
         assert.equal(err.code, 'ENOENT');
         done();
-      }
+      },
     );
   });
 });

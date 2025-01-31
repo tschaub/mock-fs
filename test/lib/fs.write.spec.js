@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -122,7 +121,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(buf, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'fiew fintent'
+          'fiew fintent',
         );
         done();
       });
@@ -141,7 +140,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'fiew fintent'
+          'fiew fintent',
         );
         done();
       })
@@ -162,7 +161,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(buf, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file conew fi'
+          'file conew fi',
         );
         done();
       });
@@ -181,7 +180,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file conew fi'
+          'file conew fi',
         );
         done();
       })
@@ -202,7 +201,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(buf, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file content more'
+          'file content more',
         );
         done();
       });
@@ -221,7 +220,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
         assert.equal(result.buffer, buffer);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file content more'
+          'file content more',
         );
         done();
       })
@@ -255,7 +254,7 @@ describe('fs.write(fd, buffer, offset, length, position, callback)', function ()
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EBADF');
           done();
-        }
+        },
       );
   });
 });
@@ -291,7 +290,7 @@ describe('fs.writeSync(fd, buffer, offset, length, position)', function () {
     assert.equal(written, 5);
     assert.equal(
       String(fs.readFileSync('path/to/file.txt')),
-      'file content more'
+      'file content more',
     );
   });
 
@@ -409,7 +408,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
         assert.equal(String(result.buffer), string);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file content more'
+          'file content more',
         );
         done();
       })
@@ -446,7 +445,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
         assert.equal(String(result.buffer), string);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'fil moretent'
+          'fil moretent',
         );
         done();
       })
@@ -483,7 +482,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
         assert.equal(String(result.buffer), string);
         assert.equal(
           String(fs.readFileSync('path/to/file.txt')),
-          'file cont more'
+          'file cont more',
         );
         done();
       })
@@ -516,7 +515,7 @@ describe('fs.write(fd, data[, position[, encoding]], callback)', function () {
           assert.instanceOf(err, Error);
           assert.equal(err.code, 'EBADF');
           done();
-        }
+        },
       );
   });
 });

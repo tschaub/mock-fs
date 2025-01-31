@@ -1,8 +1,7 @@
-'use strict';
-
-const helper = require('../helper.js');
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
 
 const assert = helper.assert;
 
@@ -39,7 +38,7 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
         assert.isFalse(fs.existsSync('path/to/a.bin'));
         assert.isTrue(fs.existsSync('path/to/b.bin'));
         done();
-      }
+      },
     );
   });
 
@@ -95,7 +94,7 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
       function (err) {
         assert.instanceOf(err, Error);
         done();
-      }
+      },
     );
   });
 
@@ -156,7 +155,7 @@ describe('fs.rename(oldPath, newPath, callback)', function () {
       function (err) {
         assert.instanceOf(err, Error);
         done();
-      }
+      },
     );
   });
 });

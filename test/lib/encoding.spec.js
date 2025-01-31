@@ -1,7 +1,9 @@
-const helper = require('../helper.js');
-const assert = helper.assert;
 const fs = require('fs');
+const {afterEach, beforeEach, describe, it} = require('mocha');
 const mock = require('../../lib/index.js');
+const helper = require('../helper.js');
+
+const assert = helper.assert;
 
 const CHARS = [
   // // 1 utf-16, 1 utf-8 byte
