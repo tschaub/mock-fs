@@ -1,5 +1,22 @@
 # Change Log
 
+## 5.5.0
+
+ * Add test and fix exists behaviour for relative symlinks (thanks @timvahlbrock, see [#415][#415])
+ * Add test showing `fs.createWriteStream()` with append (see [#412][#412])
+ * encoding utf8 strings in node 20 (thanks @everett1992, see [#409][#409])
+
+<details>
+  <summary>Dependency Updates</summary>
+
+ * bump semver from 7.6.3 to 7.7.0 (see [#413][#413])
+ * bump eslint-config-tschaub from 14.1.2 to 15.2.0 (see [#408][#408])
+ * bump mocha from 11.0.1 to 11.1.0 (see [#410][#410])
+ * bump mocha from 10.8.2 to 11.0.1 (see [#407][#407])
+ * bump mocha from 10.7.3 to 10.8.2 (see [#402][#402])
+
+</details>
+
 ## 5.4.1
 
  * Avoid errors in `fs.existsSync` (see [#401][#401])
@@ -392,3 +409,11 @@ Detailed changes:
 [#391]: https://github.com/tschaub/mock-fs/pull/391
 [#360]: https://github.com/tschaub/mock-fs/pull/360
 [#401]: https://github.com/tschaub/mock-fs/pull/401
+[#402]: https://github.com/tschaub/mock-fs/pull/402
+[#407]: https://github.com/tschaub/mock-fs/pull/407
+[#408]: https://github.com/tschaub/mock-fs/pull/408
+[#409]: https://github.com/tschaub/mock-fs/pull/409
+[#410]: https://github.com/tschaub/mock-fs/pull/410
+[#412]: https://github.com/tschaub/mock-fs/pull/412
+[#413]: https://github.com/tschaub/mock-fs/pull/413
+[#415]: https://github.com/tschaub/mock-fs/pull/415
