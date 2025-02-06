@@ -309,4 +309,10 @@ describe('fs.symlinkSync(srcpath, dstpath, [type])', function () {
     fs.symlinkSync('dir', 'link');
     assert.isTrue(fs.statSync('link').isDirectory());
   });
+
+  it('exists works if symlink is relative', function () {
+    fs.renameSync('file.txt', 'dir/file.txt');
+    fs.symlinkSync('file.txt', 'dir/link.txt');
+    assert.isTrue(fs.existsSync('dir/link.txt'));
+  });
 });
