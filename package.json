@@ -33,7 +33,7 @@
     "test": "mocha --recursive test"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
+    "chai": "^6.2.1",
     "eslint": "^9.19.0",
     "eslint-config-tschaub": "^15.3.0",
     "mocha": "^11.0.1",
